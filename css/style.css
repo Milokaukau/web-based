@@ -1,0 +1,12 @@
+/* --- 1. IMPORTS (MUST GO FIRST) --- */
+@import url("components/header.css");
+
+/* --- 2. GLOBAL VARIABLES & RESET --- */
+:root {
+  --primary-color: #000;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
