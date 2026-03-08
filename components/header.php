@@ -34,7 +34,7 @@
                 <div class="nav-links">
                     <a href="">PROFILE</a>
                     <span>/</span> <a href="">LOGIN</a>
-                    <a href="" class="cart-link">CART 🛒</a>
+                    <a href="../pages/cart.php" class="cart-link">CART 🛒</a>
                 </div>
             </div>
         </header>
