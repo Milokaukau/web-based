@@ -1,42 +1,52 @@
+<?php
+// Start session only if it hasn't been started yet
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Logic to check if user is logged in
+$isLoggedIn = isset($_SESSION['user_id']); 
+?>
+
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/components/header.css">
+
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title> <?= 'NOAIR | '.$_title ?? 'NOAIR' ?></title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="/css/style.css">  
-    </head>
+<header class="site-header">
+    <div class="header-left">
+        <a href="index.php" class="logo">NOAIR</a>
 
-    <body>
-        <header class="site-header">
-            <div class="header-left">
-                <a href="index.php" class="logo">
-                    <strong>LOGO</strong>
-                </a>
-
-                <div class="category-dropdown">
-                    <button class="dropbtn">CATEGORY ▼</button>
-                    <div class="dropdown-content">
-                        <a href="#">CAT 1</a>
-                        <a href="#">CAT 2</a>
-                        <a href="#">CAT 3</a>
-                    </div>
-                </div>
+        <div class="category-dropdown">
+            <button class="dropbtn">SHOP <small>▼</small></button>
+            <div class="dropdown-content">
+                <a href="#">500 ML</a>
+                <a href="#">1000 ML</a>
+                <a href="#">1500 ML</a>
             </div>
+        </div>
+    </div>
 
-            <div class="header-right">
-                <form class="search-form" action="" method="GET">
-                    <input type="text" name="query" placeholder="Search...">
-                    <button type="submit">🔍</button>
-                </form>
+    <div class="header-right">
+        <form class="search-form" action="/pages/search.php" method="GET">
+            <input type="text" name="query" placeholder="SEARCH">
+            <button type="submit">SEARCH</button>
+        </form>
 
-                <div class="nav-links">
-                    <a href="">PROFILE</a>
-                    <span>/</span> <a href="">LOGIN</a>
-                    <a href="../pages/cart.php" class="cart-link">CART 🛒</a>
-                </div>
-            </div>
-        </header>
+        <div class="nav-links">
+            <?php if ($isLoggedIn): ?>
+                <a href="/pages/profile.php">ACCOUNT</a>
+            <?php else: ?>
+                <a href="/pages/login.php">LOGIN</a>
+            <?php endif; ?>
 
-        <main>
+            <a href="/pages/cart.php" class="cart-link">
+                CART <span class="cart-count-dot"></span>
+            </a>
+        </div>
+    </div>
+</header>
+
+    <main>
+
+    

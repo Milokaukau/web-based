@@ -21,7 +21,7 @@ $shipping = 0.00;
 $total = $subtotal + $shipping;
 ?>
 
-<link rel="stylesheet" href="../css/components/payment.css">
+<link rel="stylesheet" href="../css/style.css">
 
 <div class="payment-grid">
     <div class="payment-form-section">

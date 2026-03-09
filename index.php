@@ -17,7 +17,7 @@ $result = $conn->query($sql);
 include 'components/header.php'; 
 ?>
 
-<link rel="stylesheet" href="../css/components/index.css">
+<link rel="stylesheet" href="../css/style.css">
 
 <main>
     <section class="hero-slider">
