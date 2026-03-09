@@ -1,21 +1,23 @@
 <?php
-// Start session only if it hasn't been started yet
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// Logic to check if user is logged in
 $isLoggedIn = isset($_SESSION['user_id']); 
 ?>
-
-<link rel="stylesheet" href="../css/style.css">
-<link rel="stylesheet" href="../css/components/header.css">
-
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= 'NOAIR | '.($_title ?? 'HOME') ?></title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components/header.css">
+</head>
+<body>
+
 <header class="site-header">
     <div class="header-left">
-        <a href="index.php" class="logo">NOAIR</a>
+        <a href="../index.php" class="logo">NOAIR</a>
 
         <div class="category-dropdown">
             <button class="dropbtn">SHOP <small>▼</small></button>
@@ -28,10 +30,11 @@ $isLoggedIn = isset($_SESSION['user_id']);
     </div>
 
     <div class="header-right">
-        <form class="search-form" action="/pages/search.php" method="GET">
-            <input type="text" name="query" placeholder="SEARCH">
-            <button type="submit">SEARCH</button>
-        </form>
+        <div class="search-wrapper">
+            <form class="search-form" action="/pages/search.php" method="GET">
+                <input type="text" name="query" placeholder="SEARCH">
+            </form>
+        </div>
 
         <div class="nav-links">
             <?php if ($isLoggedIn): ?>
@@ -47,6 +50,4 @@ $isLoggedIn = isset($_SESSION['user_id']);
     </div>
 </header>
 
-    <main>
-
-    
+<main>

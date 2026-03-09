@@ -1,12 +1,10 @@
-/* --- Header Container --- */
 .site-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.2rem 5%;
     background-color: var(--white);
-    /* Ultra-thin line instead of a heavy border */
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-ultra-light);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -15,97 +13,86 @@
 .header-left, .header-right {
     display: flex;
     align-items: center;
-    gap: 3.5rem; /* Wide spacing for a luxury feel */
+    gap: 3.5rem;
 }
 
-/* --- Brand Logo --- */
 .logo {
-    text-decoration: none;
-    color: var(--text-dark);
     font-size: 1.2rem;
     font-weight: 800;
-    letter-spacing: 6px; /* High-fashion spacing */
+    letter-spacing: 6px;
     text-transform: uppercase;
+    color: var(--text-dark);
 }
 
-/* --- Navigation & Dropdown --- */
+/* Category Dropdown */
+.category-dropdown { position: relative; }
+
 .dropbtn {
     background: none;
     border: none;
-    color: var(--text-dark);
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     cursor: pointer;
-    padding: 5px 0;
+    color: var(--text-dark);
 }
 
 .dropbtn small {
     font-size: 0.5rem;
-    color: var(--main-coral); /* Accent color */
-    margin-left: 6px;
-    vertical-align: middle;
+    color: var(--main-coral);
+    margin-left: 5px;
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
     background: var(--white);
-    min-width: 160px;
-    border: 1px solid var(--border-light);
+    min-width: 150px;
+    border: 1px solid var(--border-ultra-light);
     margin-top: 10px;
     padding: 10px 0;
 }
 
 .dropdown-content a {
-    color: var(--text-dark);
-    padding: 12px 20px;
-    text-decoration: none;
     display: block;
+    padding: 12px 20px;
     font-size: 0.65rem;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
 }
 
 .dropdown-content a:hover {
     color: var(--main-coral);
-    background-color: #FDFBFA; /* Very subtle warm tint */
+    background-color: #FAFAFA;
 }
 
-.category-dropdown:hover .dropdown-content {
-    display: block;
-}
+.category-dropdown:hover .dropdown-content { display: block; }
 
-/* --- Minimalist Search (Thin Underline) --- */
+/* Minimalist Underline Search */
 .search-form {
-    display: flex;
-    align-items: center;
     border-bottom: 1px solid var(--text-dark);
     padding-bottom: 3px;
+    display: flex;
 }
 
 .search-form input {
     border: none;
     background: transparent;
-    font-size: 0.65rem;
-    letter-spacing: 1px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 1.5px;
     outline: none;
-    width: 110px;
+    width: 150px;
     color: var(--text-dark);
     text-transform: uppercase;
 }
 
-.search-form button {
-    background: none;
-    border: none;
-    font-size: 0.6rem;
-    font-weight: 800;
-    cursor: pointer;
-    color: var(--text-dark);
-    letter-spacing: 1px;
+.search-form input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.5;
 }
 
-/* --- Nav Links --- */
+/* Nav Links */
 .nav-links {
     display: flex;
     align-items: center;
@@ -113,23 +100,16 @@
 }
 
 .nav-links a {
-    text-decoration: none;
-    color: var(--text-dark);
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 1.5px;
-    text-transform: uppercase;
-    transition: color 0.3s ease;
 }
 
-.nav-links a:hover {
-    color: var(--main-coral);
-}
+.nav-links a:hover { color: var(--main-coral); }
 
-/* --- Bag / Cart Link --- */
 .cart-link {
     position: relative;
-    padding-right: 14px;
+    padding-right: 12px;
 }
 
 .cart-count-dot {
@@ -137,8 +117,8 @@
     top: 50%;
     right: 0;
     transform: translateY(-50%);
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     background-color: var(--main-coral);
     border-radius: 50%;
 }
