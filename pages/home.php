@@ -13,8 +13,6 @@ include '../components/header.php';
 
 <link rel="stylesheet" href="../css/style.css">
 
-<link rel="stylesheet" href="<?= $project_root ?>css/pages/home.css">
-
 <main>
     <section class="hero-slider">
         <div class="swiper mainSwiper">
