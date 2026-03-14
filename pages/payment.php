@@ -1,24 +1,10 @@
 <?php
-session_start();
+$project_root = $_SERVER['DOCUMENT_ROOT']."/";
+require $project_root."config.php";
+require $project_root."logic/payment.php"; // ← variables $subtotal, $total, $shipping are now available here
 
-// 1. Redirect if cart is empty to prevent accessing checkout with no items
-if (empty($_SESSION['cart'])) {
-    header("Location: ../index.php");
-    exit;
-}
-
-// 2. Load Header
+$_title = "payment";
 include '../components/header.php';
-
-// 3. Calculate Totals
-$subtotal = 0;
-foreach ($_SESSION['cart'] as $item) {
-    $subtotal += ($item['price'] * $item['qty']);
-}
-
-// Fixed or dynamic shipping logic
-$shipping = 0.00; 
-$total = $subtotal + $shipping;
 ?>
 
 <link rel="stylesheet" href="../css/style.css">
@@ -77,7 +63,7 @@ $total = $subtotal + $shipping;
             </div>
             
             <button type="submit" class="payment-submit-btn">
-                Complete Purchase (RM <?= number_format($total, 2) ?>)
+                Confirm Payemt (RM <?= number_format($total, 2) ?>)
             </button>
         </form>
     </div>
