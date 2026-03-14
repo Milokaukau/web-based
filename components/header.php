@@ -6,6 +6,7 @@
         <title> <?= 'NOAIR | '.$_title ?? 'NOAIR' ?></title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <link rel="stylesheet" href="/css/style.css">  
+        <link rel="stylesheet" href="/css/auth.css">
     </head>
 
     <body>
@@ -32,11 +33,27 @@
                 </form>
 
                 <div class="nav-links">
-                    <a href="">PROFILE</a>
-                    <span>/</span> <a href="">LOGIN</a>
-                    <a href="" class="cart-link">CART 🛒</a>
+                    <?php if(isMember()): ?>
+                        <a href="/pages/profile.php">PROFILE</a>
+                        <span>|</span>
+                        <a href="/pages/logout.php">LOGOUT</a>
+                        <a href="/pages/cart.php" class="cart-link">CART 🛒</a>
+
+                    <?php elseif(isAdmin()): ?>
+                        <a href="/pages/admin/dashboard.php">DASHBOARD</a>
+                        <span>|</span>
+                        <a href="/pages/logout.php">LOGOUT</a>
+
+                    <?php else: ?>
+                        <a href="/pages/login.php">PROFILE</a>
+                        <span>|</span>
+                        <a href="/pages/login.php">LOGIN</a>
+                        <a href="/pages/cart.php" class="cart-link">CART 🛒</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </header>
-
         <main>
+        </main>
+        <script src="/js/auth.js"></script>
+    </body>
