@@ -1,0 +1,170 @@
+/* Layout Container */
+.payment-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+    font-family: 'Inter', sans-serif; /* Fallback to sans-serif */
+}
+
+/* Form Section */
+.payment-form-section {
+    background: #ffffff;
+    padding: 40px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+}
+
+.section-title {
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.subsection-title {
+    margin: 25px 0 15px 0;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #555;
+}
+
+/* Form Controls */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #000;
+}
+
+.row-flex {
+    display: flex;
+    gap: 20px;
+}
+
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+
+/* Payment Methods Area */
+.payment-methods {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #f4f4f4;
+}
+
+.method-selection {
+    margin-bottom: 15px;
+}
+
+.radio-label {
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-inputs {
+    background: #fcfcfc;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+}
+
+/* Sidebar & Summary */
+.payment-sidebar .summary-card {
+    background: #000;
+    color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    position: sticky;
+    top: 20px;
+}
+
+.payment-sidebar h2 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+}
+
+.payment-sidebar hr {
+    border: 0;
+    border-top: 1px solid #333;
+    margin: 20px 0;
+}
+
+.summary-item-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: #ccc;
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.total-line {
+    margin-top: 20px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.shipping-tag {
+    color: #4BB543; /* Success Green */
+    font-weight: bold;
+}
+
+/* Submit Button */
+.payment-submit-btn {
+    width: 100%;
+    background: #000;
+    color: #fff;
+    padding: 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.payment-submit-btn:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .payment-grid {
+        grid-template-columns: 1fr;
+    }
+    .payment-sidebar .summary-card {
+        position: static;
+    }
+}
