@@ -1,7 +1,7 @@
 <?php
 // 1. Redirect if cart is empty
 if (empty($_SESSION['cart'])) {
-    header("Location: ../home.php");
+    $project_root = $_SERVER['DOCUMENT_ROOT']."/";
     exit;
 }
 

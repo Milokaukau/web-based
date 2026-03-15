@@ -4,7 +4,7 @@ require $project_root."config.php";
 require $project_root."logic/cart.php";
 
 $_title = "Cart"; 
-include '../components/header.php';  
+require $project_root."components/header.php";
 
 // echo "<pre>";
 // var_export($arr);
@@ -113,15 +113,5 @@ include '../components/header.php';
     <?php endif; ?>
 </div>
 
-<script>
-/**
- * Validation for removing items
- * Prevents default link action unless user confirms
- */
-function confirmRemove(productName) {
-    const response = confirm("Do you want to remove " + productName + " from your cart?");
-    return response; 
-}
-</script>
-
-<?php include '../components/footer.php'; ?>
+<?php require $project_root."components/footer.php"; ?>
+<script src="../js/cart.js"></script>

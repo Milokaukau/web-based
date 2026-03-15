@@ -3,8 +3,8 @@ $project_root = $_SERVER['DOCUMENT_ROOT']."/";
 require $project_root."config.php";
 require $project_root."logic/home.php";
 
-$_title = "Home"; 
-include '../components/header.php';  
+$_title = "Home";
+require $project_root."components/header.php";
 
 // echo "<pre>";
 // var_export($arr);

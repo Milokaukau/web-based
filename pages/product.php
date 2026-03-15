@@ -4,7 +4,7 @@ require $project_root."config.php";
 require $project_root."logic/product.php";
 
 $_title = "Product"; 
-include '../components/header.php';  
+require $project_root."components/header.php";
 ?>
 
 <link rel="stylesheet" href="../css/style.css">
@@ -14,7 +14,6 @@ include '../components/header.php';
         
         <div class="product-image-stage">
             <div class="image-wrapper">
-                <!-- Fixed: removed ../ and use project_root only for PHP includes, use relative for HTML -->
                 <img src="<?= $arr->photo ? '../' . $arr->photo : '../assets/placeholder.png' ?>" 
                      alt="<?= htmlspecialchars($arr->name) ?>">
             </div>
@@ -78,5 +77,4 @@ include '../components/header.php';
     </div>
 </main>
 
-<!-- Fixed: use relative path for JS, remove PROJECT_ROOT -->
 <script src="../js/product.js"></script>
