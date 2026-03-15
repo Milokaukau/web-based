@@ -2,6 +2,7 @@
 // 1. Redirect if cart is empty
 if (empty($_SESSION['cart'])) {
     $project_root = $_SERVER['DOCUMENT_ROOT']."/";
+    require $project_root."home.php";
     exit;
 }
 
