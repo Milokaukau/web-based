@@ -1,12 +1,108 @@
-/* --- 1. IMPORTS (MUST GO FIRST) --- */
+/* --- 1. IMPORTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap');
 @import url("components/header.css");
+@import url("components/index.css");
+@import url("components/product.css");
+@import url("components/cart.css");
+@import url("components/payment.css");
 
-/* --- 2. GLOBAL VARIABLES & RESET --- */
+/* --- 2. GLOBAL VARIABLES --- */
 :root {
-  --primary-color: #000;
+    /* Primary Branding (Main Scale Center) */
+    --main-coral: #F39E9E;       
+    --main-coral-dark: #e08585;  
+    --main-coral-soft: #ffb8b8;  
+
+    /* Supporting Palette */
+    --brand-accent: #A280A8;     /* Amethyst */
+    --brand-secondary: #D98DAD;   /* Rose */
+    
+    /* Backgrounds & Neutrals */
+    --bg-peach: #F0C9A3;         
+    --bg-cream: #E6DBB1;         
+    --bg-tan: #CFA884;           
+    
+    /* Text & Borders */
+    --text-dark: #2D2D2D;        
+    --text-muted: #967B78;       
+    --white: #FFFFFF;
+    --border-light: #F2F2F2;
+}
+
+/* --- 3. BASE RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-  margin: 0;
-  font-family: sans-serif;
+    background-color: var(--white);
+    color: var(--text-dark);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
+
+/* --- 4. GLOBAL TYPOGRAPHY --- */
+h1, h2, h3, h4, .logo {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+/* --- 5. GLOBAL UI ELEMENTS (Buttons/Inputs) --- */
+button, .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+/* Primary Action Style - Applied to Checkout/Continue Shopping */
+.btn-primary {
+    background-color: var(--main-coral);
+    color: var(--text-dark);
+    padding: 15px 30px;
+}
+
+.btn-primary:hover {
+    background-color: var(--bg-peach);
+}
+
+/* Input Fields */
+input, select, textarea {
+    font-family: 'Inter', sans-serif;
+    border: 1px solid var(--border-light);
+    padding: 12px;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--main-coral);
+}
+
+/* --- 6. UTILITY CLASSES --- */
+.text-muted { color: var(--text-muted); }
+.bg-soft { background-color: #FDFBFA; }
+.container { width: 90%; max-width: 1400px; margin: 0 auto; }

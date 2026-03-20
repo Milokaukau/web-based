@@ -1,5 +1,5 @@
-            <h1>footer</h1>
-        
+
+       <script src="/js/auth.js"></script> 
         </main>
     </body>
 </html>
