@@ -26,3 +26,9 @@ function changeQty(amt) {
         input.value = newVal;
     }
 }
+
+function addToWishlist(btn) {
+    const id = btn.dataset.id;
+    if (!id) return;
+    window.location.href = `wishlist.php?action=add&id=${id}`;
+}

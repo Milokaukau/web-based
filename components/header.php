@@ -3,7 +3,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $isLoggedIn = isset($_SESSION['user_id']); 
+
+// Fetch categories for the shop dropdown
+$project_root = $_SERVER['DOCUMENT_ROOT']."/";
+require_once $project_root . "database/category.php";
+$categories = getAllCategories();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,9 +28,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
         <div class="category-dropdown">
             <button class="dropbtn">SHOP <small>▼</small></button>
             <div class="dropdown-content">
-                <a href="#">500 ML</a>
-                <a href="#">1000 ML</a>
-                <a href="#">1500 ML</a>
+                <?php foreach ($categories as $cat): ?>
+                    <a href="/pages/shop.php?category=<?= $cat['id'] ?>"><?= htmlspecialchars(ucfirst($cat['name'])) ?></a>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>

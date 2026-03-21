@@ -1,0 +1,164 @@
+/* EXACT MATCH CART/PAYMENT STYLE ALIGNMENT FOR WISHLIST */
+
+.wishlist-container {
+    max-width: 1100px;
+    margin: 60px auto 100px;
+    padding: 0 5%;
+    color: var(--text-dark, #2D2D2D);
+}
+
+.wishlist-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 50px;
+    padding-bottom: 0;
+}
+
+.main-title {
+    font-size: 1.5rem; 
+    font-weight: 800;
+    color: var(--text-dark, #2D2D2D);
+    margin: 0;
+    text-transform: uppercase;
+    display: flex;
+    align-items: baseline;
+}
+
+.w-count {
+    color: var(--text-dark, #2D2D2D);
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    margin-left: 10px;
+}
+
+/* Empty State */
+.w-empty-state {
+    display: block;
+    padding: 0;
+    text-align: left;
+    margin-bottom: 80px;
+}
+
+.w-empty-state p {
+    color: var(--text-dark, #2D2D2D);
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Grid Layout */
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.w-card {
+    background-color: var(--white, #ffffff);
+    border: 1px solid var(--border-light, #F2F2F2);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.w-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+}
+
+.w-card-img-box {
+    background-color: var(--bg-soft, #FDFBFA);
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-light, #F2F2F2);
+    padding: 20px;
+}
+
+.w-card-img-box img {
+    max-width: 85%;
+    max-height: 85%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+}
+
+.w-card:hover .w-card-img-box img {
+    transform: scale(1.05);
+}
+
+.w-card-content {
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.w-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-dark, #2D2D2D);
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+}
+
+.w-price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dark, #2D2D2D);
+    margin-bottom: 25px;
+}
+
+.w-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: auto; /* Pushes buttons to bottom universally */
+}
+
+/* Buttons sharing precise Cart sizes */
+.w-btn-view {
+    flex: 2;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--main-coral, #F39E9E);
+    color: var(--white, #ffffff);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.w-btn-view:hover {
+    background-color: var(--main-coral-dark, #e08585);
+}
+
+.w-btn-remove {
+    flex: 1;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: var(--text-muted, #967B78);
+    border: 1px solid var(--border-light, #F2F2F2);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.w-btn-remove:hover {
+    border-color: var(--text-dark, #2D2D2D);
+    color: var(--text-dark, #2D2D2D);
+}
