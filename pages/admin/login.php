@@ -4,7 +4,7 @@ require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
 if(isAdmin()){
-    header("Location: /pages/admin/dashboard.php");
+    header("Location: /pages/admin/admin.php");
     exit;
 }
 

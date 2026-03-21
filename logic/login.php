@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $errors['general'] = 'Invalid email or password.';
         }else{
             loginAdmin($user);
-            header("Location: /pages/admin/dashboard.php");
+            header("Location: /pages/admin/admin.php");
             exit;
         }
         }else{

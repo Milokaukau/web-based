@@ -32,7 +32,7 @@ function isAdmin(){
 }
 
 function redirectWith($url, $type, $message){
-    $_SESSION['flash'] = ['type', 'message' => $message];
+    $_SESSION['flash'] = ['type' => $type, 'message' => $message]; // ✅ fixed
     header("Location: $url");
     exit;
 }
@@ -44,7 +44,7 @@ function requireMember(){
     }
 }
 
-//force admin to login also
+// force admin to login also
 function requireAdmin(){
     if(!isAdmin()){
         redirectWith('/pages/admin/login.php', 'error', 'Unauthorised access.');
@@ -54,7 +54,7 @@ function requireAdmin(){
 // photo upload
 function uploadPhoto($file, $upload_dir, &$errors){
     $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    $max_size      = 2 * 1024 * 1024; //2mb
+    $max_size      = 2 * 1024 * 1024; // 2mb
 
     if($file['error'] !== UPLOAD_ERR_OK){
         $errors[] = 'Photo upload failed. Please try again.';
@@ -81,5 +81,4 @@ function uploadPhoto($file, $upload_dir, &$errors){
     }
 
     return $filename;
-
-    }
+}
