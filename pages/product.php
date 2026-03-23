@@ -12,7 +12,6 @@ require $project_root."components/header.php";
 <main class="product-details-container">
     <div class="product-layout">
         
-        <!-- Left: Sticky Image Gallery -->
         <div class="product-gallery">
             <div class="main-image">
                 <img src="<?= $arr->photo ? '../' . $arr->photo : '../assets/placeholder.png' ?>" 
@@ -20,7 +19,6 @@ require $project_root."components/header.php";
             </div>
         </div>
 
-        <!-- Right: Detail Panel -->
         <div class="product-info-panel">
             
             <div class="product-header-row">
@@ -28,30 +26,22 @@ require $project_root."components/header.php";
                 <span class="p-price">RM<?= number_format($arr->price, 2) ?></span>
             </div>
 
-            <!-- Color Options -->
             <div class="option-group">
-                <span class="option-label">Colour: <span class="selected-value" id="selectedColorLabel">Signature Coral</span></span>
+                <span class="option-label">Colour: <span class="selected-value" id="selectedColorLabel">Please choose</span></span>
                 <div class="color-swatches">
-                    <div class="swatch active" style="background-color: var(--main-coral, #F39E9E);" onclick="selectColor(this, 'Signature Coral')"></div>
-                    <div class="swatch" style="background-color: var(--text-dark, #2D2D2D);" onclick="selectColor(this, 'Onyx Black')"></div>
-                    <div class="swatch" style="background-color: #faf5f5;" onclick="selectColor(this, 'Pearl White')"></div>
-                    <div class="swatch" style="background-color: #A280A8;" onclick="selectColor(this, 'Amethyst')"></div>
+                    <div class="swatch" style="background-color: #F39E9E;" data-color-id="1" onclick="selectColor(this, 'Signature Coral')"></div>
+                    <div class="swatch" style="background-color: #2D2D2D;" data-color-id="2" onclick="selectColor(this, 'Onyx Black')"></div>
+                    <div class="swatch" style="background-color: #faf5f5;" data-color-id="3" onclick="selectColor(this, 'Pearl White')"></div>
+                    <div class="swatch" style="background-color: #A280A8;" data-color-id="4" onclick="selectColor(this, 'Amethyst')"></div>
                 </div>
             </div>
 
-            <!-- Size Options -->
             <div class="option-group">
                 <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                    <span class="option-label">Size: <span class="selected-value" id="selectedSizeLabel">500ml</span></span>
-                    <a href="#" style="font-size: 0.8rem; color: #64748b; text-decoration: underline;">Size chart</a>
-                </div>
-                <div class="pill-buttons">
-                    <button class="pill active" onclick="selectSize(this, '500ml')">500ml</button>
-                    <button class="pill" onclick="selectSize(this, '1000ml')">1000ml</button>
+                    <span class="option-label">Size: <span class="selected-value"><?= htmlspecialchars($arr->category_name ?? 'Standard') ?></span></span>
                 </div>
             </div>
 
-            <!-- Quantity Picker -->
             <div class="option-group">
                 <span class="option-label" style="text-transform: none;">Quantity:</span>
                 <div class="quantity-picker">
@@ -61,7 +51,6 @@ require $project_root."components/header.php";
                 </div>
             </div>
 
-            <!-- Action Buttons -->
             <div class="add-to-cart-wrapper">
                 <?php if ($arr->stock > 0): ?>
                     <button type="button" 
@@ -86,9 +75,8 @@ require $project_root."components/header.php";
                 </button>
             </div>
         </div>
-    </div> <!-- End Product Layout (Top Section) -->
+    </div> 
 
-    <!-- BOTTOM SECTION (FULL WIDTH Expanded Text) -->
     <div class="product-bottom-section">
         <div class="detail-block">
             <h3 class="detail-title">DESCRIPTION</h3>
@@ -101,10 +89,9 @@ require $project_root."components/header.php";
             <h3 class="detail-title">SPECIFICATIONS</h3>
             <div class="detail-content">
                 <ul>
-                    <li><strong>Capacity:</strong> 500ml / 17oz</li>
-                    <li><strong>Weight:</strong> 295g</li>
-                    <li><strong>Dimensions:</strong> 22.5cm Height x 7.5cm Base</li>
-                    <li><strong>Material:</strong> 18/8 Pro-Grade Stainless Steel</li>
+                    <li><strong>Weight:</strong> <?= htmlspecialchars($arr->weight_g) ?>g</li>
+                    <li><strong>Dimensions:</strong> <?= htmlspecialchars($arr->height_cm) ?>cm Height x <?= htmlspecialchars($arr->base_diameter_cm) ?>cm Base</li>
+                    <li><strong>Material:</strong> <?= htmlspecialchars($arr->material) ?></li>
                 </ul>
             </div>
         </div>
@@ -118,50 +105,6 @@ require $project_root."components/header.php";
         </div>
     </div>
 </main>
-
-<script>
-    // Component Scripts (Color, Size, Accordion)
-    function selectColor(el, colorName) {
-        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('selectedColorLabel').innerText = colorName;
-    }
-
-    function selectSize(el, sizeName) {
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('selectedSizeLabel').innerText = sizeName;
-    }
-
-    function toggleAccordion(btn) {
-        const item = btn.closest('.accordion-item');
-        const content = item.querySelector('.accordion-content');
-        const icon = item.querySelector('.accordion-icon');
-        
-        // Is it currently open?
-        const isOpen = item.classList.contains('active');
-        
-        // Close all
-        document.querySelectorAll('.accordion-item').forEach(i => {
-            i.classList.remove('active');
-            i.querySelector('.accordion-content').style.display = 'none';
-            i.querySelector('.accordion-icon').innerText = '+';
-        });
-
-        // Open if it wasn't open
-        if (!isOpen) {
-            item.classList.add('active');
-            content.style.display = 'block';
-            icon.innerText = '−'; // minus symbol
-        }
-    }
-
-    function changeImage(thumbElement) {
-        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-        thumbElement.classList.add('active');
-        // Not actually replacing src since it's the same image in db, but simulates gallery structure
-    }
-</script>
 
 <script src="../js/product.js"></script>
 

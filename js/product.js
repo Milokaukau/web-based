@@ -1,5 +1,13 @@
 function addToCart(btn) {
     const qty = parseInt(document.getElementById('qty').value) || 1;
+    const activeSwatch = document.querySelector('.swatch.active');
+    
+    if (!activeSwatch) {
+        alert("Please choose a color before adding to your bag.");
+        return;
+    }
+
+    const colorId = activeSwatch.dataset.colorId;
 
     const id = btn.dataset.id;
     const name = encodeURIComponent(btn.dataset.name);
@@ -12,7 +20,7 @@ function addToCart(btn) {
         return;
     }
 
-    window.location.href = `cart.php?action=add&id=${id}&name=${name}&price=${price}&qty=${qty}&photo=${photo}`;
+    window.location.href = `cart.php?action=add&id=${id}&name=${name}&price=${price}&qty=${qty}&photo=${photo}&color=${colorId}`;
 }
 
 function changeQty(amt) {
@@ -30,5 +38,55 @@ function changeQty(amt) {
 function addToWishlist(btn) {
     const id = btn.dataset.id;
     if (!id) return;
-    window.location.href = `wishlist.php?action=add&id=${id}`;
+    
+    const activeSwatch = document.querySelector('.swatch.active');
+    if (!activeSwatch) {
+        alert("Please choose a color before adding to your wishlist.");
+        return;
+    }
+
+    const colorId = activeSwatch.dataset.colorId;
+    window.location.href = `wishlist.php?action=add&id=${id}&color=${colorId}`;
+}
+
+// Component Scripts (Color, Size, Accordion)
+function selectColor(el, colorName) {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('selectedColorLabel').innerText = colorName;
+}
+
+function selectSize(el, sizeName) {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('selectedSizeLabel').innerText = sizeName;
+}
+
+function toggleAccordion(btn) {
+    const item = btn.closest('.accordion-item');
+    const content = item.querySelector('.accordion-content');
+    const icon = item.querySelector('.accordion-icon');
+    
+    // Is it currently open?
+    const isOpen = item.classList.contains('active');
+    
+    // Close all
+    document.querySelectorAll('.accordion-item').forEach(i => {
+        i.classList.remove('active');
+        i.querySelector('.accordion-content').style.display = 'none';
+        i.querySelector('.accordion-icon').innerText = '+';
+    });
+
+    // Open if it wasn't open
+    if (!isOpen) {
+        item.classList.add('active');
+        content.style.display = 'block';
+        icon.innerText = '−'; // minus symbol
+    }
+}
+
+function changeImage(thumbElement) {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    thumbElement.classList.add('active');
+    // Not actually replacing src since it's the same image in db, but simulates gallery structure
 }

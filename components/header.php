@@ -17,7 +17,6 @@ $categories = getAllCategories();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= 'NOAIR | '.($_title ?? 'HOME') ?></title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components/header.css">
 </head>
 <body>
 
@@ -26,10 +25,10 @@ $categories = getAllCategories();
         <a href="../index.php" class="logo">NOAIR</a>
 
         <div class="category-dropdown">
-            <button class="dropbtn">SHOP <small>▼</small></button>
+            <button class="dropbtn">Products<small>▼</small></button>
             <div class="dropdown-content">
                 <?php foreach ($categories as $cat): ?>
-                    <a href="/pages/shop.php?category=<?= $cat['id'] ?>"><?= htmlspecialchars(ucfirst($cat['name'])) ?></a>
+                    <a href="/pages/product.php?id=<?= $cat['id'] ?>"><?= htmlspecialchars(ucfirst($cat['name'])) ?></a>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -48,6 +47,10 @@ $categories = getAllCategories();
             <?php else: ?>
                 <a href="/pages/login.php">LOGIN</a>
             <?php endif; ?>
+
+            <a href="/pages/wishlist.php" class="wishlist-link">
+                WISHLIST <span class="wishlist-count-dot"></span>
+            </a>
 
             <a href="/pages/cart.php" class="cart-link">
                 CART <span class="cart-count-dot"></span>

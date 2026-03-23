@@ -50,15 +50,14 @@ require $project_root."components/header.php";
                         <input type="radio" name="pay_method" value="card" checked>
                         <div class="pay-method-content">
                             <!-- Dual Visa/Mastercard representation -->
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" height="20" style="margin-right: 15px;">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" height="28">
+                            <img src="../images/card_logo.jpg" alt="Visa" height="80";>
                         </div>
                     </label>
                     <label class="pay-method">
                         <input type="radio" name="pay_method" value="tng">
                         <div class="pay-method-content">
                             <!-- TNG eWallet logo representation -->
-                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/5/52/Touch_%27n_Go_eWallet_logo.svg/200px-Touch_%27n_Go_eWallet_logo.svg.png" alt="TNG eWallet" height="35" style="border-radius: 4px;">
+                            <img src="../images/tng_logo.png" alt="TNG eWallet" height="70" style="border-radius: 4px;">
                         </div>
                     </label>
                 </div>
@@ -83,28 +82,32 @@ require $project_root."components/header.php";
                     </div>
 
                     <div class="form-row">
-                        <div class="input-container full active-field">
-                            <label class="floating-label active-label">Card Number</label>
-                            <div class="input-box active-box">
-                                <svg class="left-icon active-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <div class="input-container full" id="cc-num-container">
+                            <label class="floating-label" id="cc-num-label">Card Number</label>
+                            <div class="input-box">
+                                <svg class="left-icon" id="cc-num-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                                 <input type="text" id="cc-num" name="card_number" required placeholder="4356 xxxx xxxx xxxx">
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
-                        <div class="input-container half">
-                            <label class="floating-label">Expiration Date</label>
-                            <div class="input-box">
-                                <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <input type="text" id="cc-exp" name="exp_date" required placeholder="MM/YY">
+                        <div class="input-field-group">
+                            <div class="input-container half" id="cc-exp-container">
+                                <label class="floating-label">Expiration Date</label>
+                                <div class="input-box">
+                                    <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    <input type="text" id="cc-exp" name="exp_date" required placeholder="MM/YY">
+                                </div>
                             </div>
                         </div>
-                        <div class="input-container half">
-                            <label class="floating-label">CVV</label>
-                            <div class="input-box">
-                                <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                                <input type="text" name="cvv" required placeholder="* * *">
+                        <div class="input-field-group">
+                            <div class="input-container half">
+                                <label class="floating-label">CVV</label>
+                                <div class="input-box">
+                                    <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                    <input type="text" name="cvv" required placeholder="* * *" maxlength="3" inputmode="numeric">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -116,7 +119,7 @@ require $project_root."components/header.php";
                         Scan the QR code below using your Touch 'n Go eWallet app to complete the payment.
                     </p>
                     <div style="background: white; padding: 20px; display: inline-block; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid var(--border-light, #eee);">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="TNG QR Code" width="160">
+                        <img src="../images/payment_qr.png" alt="TNG QR Code" width="160">
                     </div>
                 </div>
                 
@@ -178,55 +181,5 @@ require $project_root."components/header.php";
     </div>
 </div>
 
-<script>
-    // Payment method selection logic
-    document.querySelectorAll('.pay-method').forEach(method => {
-        method.addEventListener('click', function() {
-            // Update active styling
-            document.querySelectorAll('.pay-method').forEach(m => m.classList.remove('active'));
-            this.classList.add('active');
-            let radio = this.querySelector('input[type="radio"]');
-            radio.checked = true;
-
-            // Toggle input sections based on payment method
-            let cardSection = document.getElementById('card-details-section');
-            let tngSection = document.getElementById('tng-details-section');
-
-            if (radio.value === 'tng') {
-                cardSection.style.display = 'none';
-                tngSection.style.display = 'block';
-                // Remove required attributes for card inputs so form can submit
-                cardSection.querySelectorAll('input').forEach(input => input.required = false);
-            } else {
-                cardSection.style.display = 'block';
-                tngSection.style.display = 'none';
-                // Re-add required attributes for card inputs
-                cardSection.querySelectorAll('input').forEach(input => input.required = true);
-            }
-        });
-    });
-
-    // Formatting Inputs
-    document.getElementById('cc-num').addEventListener('input', function (e) {
-        let value = e.target.value.replace(/\D/g, ''); 
-        if (value.length > 16) value = value.slice(0, 16);
-        let grouped = value.match(/.{1,4}/g);
-        if (grouped) {
-            e.target.value = grouped.join(' ');
-        } else {
-            e.target.value = value;
-        }
-    });
-
-    document.getElementById('cc-exp').addEventListener('input', function (e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length > 4) value = value.slice(0, 4);
-        if (value.length > 2) {
-            e.target.value = value.substring(0, 2) + '/' + value.substring(2);
-        } else {
-            e.target.value = value;
-        }
-    });
-</script>
-
 <?php include '../components/footer.php'; ?>
+<script src="../js/payment.js"></script>

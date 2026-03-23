@@ -157,6 +157,7 @@
     display: flex;
     gap: 20px;
     margin-bottom: 28px;
+    align-items: flex-start; /* prevent sibling stretching when an error appears */
 }
 
 .input-container {
@@ -165,7 +166,30 @@
     border-radius: 8px;
     background: transparent;
     padding: 10px 16px;
-    margin-top: 5px; /* helps with floating label bleed */
+    margin-top: 5px;
+}
+
+/* Column wrapper so errors sit outside+below the bordered box */
+.input-field-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;   /* children fill the width */
+}
+
+/* Inside the column group, containers must NOT flex-grow vertically */
+.input-field-group .input-container {
+    flex: none;
+    width: 100%;
+}
+
+/* ── Inline validation error messages ── */
+.field-error,
+.cvv-error {
+    font-size: 0.72rem;
+    margin: 5px 0 0 4px;
+    line-height: 1.3;
+    color: #ef4444; /* always red — JS overrides to amber for CVV while typing */
 }
 
 #card-details-section {

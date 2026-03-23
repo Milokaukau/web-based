@@ -120,12 +120,12 @@
 
 .nav-links a:hover { color: var(--main-coral); }
 
-.cart-link {
+.cart-link, .wishlist-link {
     position: relative;
     padding-right: 12px;
 }
 
-.cart-count-dot {
+.cart-count-dot, .wishlist-count-dot {
     position: absolute;
     top: 50%;
     right: 0;

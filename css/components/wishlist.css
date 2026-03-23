@@ -15,6 +15,16 @@
     padding-bottom: 0;
 }
 
+.wishlist-header.centered {
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.wishlist-header.centered .main-title {
+    justify-content: center;
+}
+
 .main-title {
     font-size: 1.5rem; 
     font-weight: 800;
@@ -36,17 +46,40 @@
 
 /* Empty State */
 .w-empty-state {
-    display: block;
-    padding: 0;
-    text-align: left;
-    margin-bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 0 80px;
 }
 
 .w-empty-state p {
-    color: var(--text-dark, #2D2D2D);
+    color: var(--text-muted, #757575);
     font-size: 1.05rem;
     line-height: 1.5;
-    margin: 0;
+    margin: 0 0 40px 0;
+    max-width: 500px;
+}
+
+.w-continue-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--main-coral-light, #f8b4b4);
+    color: var(--white, #ffffff);
+    padding: 16px 40px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    min-width: 240px;
+}
+
+.w-continue-btn:hover {
+    background-color: var(--main-coral, #F39E9E);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(243, 158, 158, 0.3);
 }
 
 /* Grid Layout */
@@ -107,6 +140,20 @@
     text-transform: uppercase;
 }
 
+.w-variant {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.w-color-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--border-light, #F2F2F2);
+}
+
 .w-price {
     font-size: 1.1rem;
     font-weight: 600;
@@ -148,7 +195,7 @@
     align-items: center;
     justify-content: center;
     background-color: transparent;
-    color: var(--text-muted, #967B78);
+    color: #ef4444;
     border: 1px solid var(--border-light, #F2F2F2);
     font-size: 0.85rem;
     font-weight: 700;
@@ -159,6 +206,6 @@
 }
 
 .w-btn-remove:hover {
-    border-color: var(--text-dark, #2D2D2D);
-    color: var(--text-dark, #2D2D2D);
+    border-color: #ef4444;
+    background-color: #fef2f2;
 }

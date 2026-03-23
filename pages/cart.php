@@ -46,8 +46,12 @@ require $project_root."components/header.php";
                 </div>
 
                 <div class="cart-items-wrapper">
-                    <?php foreach ($_SESSION['cart'] as $id => $item): 
+                    <?php 
+                    $color_map = [1 => '#F39E9E', 2 => '#2D2D2D', 3 => '#faf5f5', 4 => '#A280A8'];
+                    foreach ($_SESSION['cart'] as $key => $item): 
                         $line_total = $item['price'] * $item['qty'];
+                        $item_color_code = $color_map[$item['color']] ?? '#F39E9E';
+                        $real_id = $item['id'] ?? $key;
                     ?>
                     <div class="cart-row">
                         <!-- Column 1: Product -->
@@ -58,8 +62,7 @@ require $project_root."components/header.php";
                             <div class="product-info">
                                 <h3><?= htmlspecialchars($item['name']) ?></h3>
                                 <div class="product-variant">
-                                    <span class="color-dot" style="background-color: var(--bg-tan, #CFA884);"></span> <!-- Demo color dot -->
-                                    <span>Size: M</span>
+                                    <span class="color-dot" style="background-color: <?= $item_color_code ?>;"></span> 
                                 </div>
                             </div>
                         </div>
@@ -72,9 +75,9 @@ require $project_root."components/header.php";
                         <!-- Column 3: Quantity Pill -->
                         <div class="col-qty">
                             <div class="qty-pill">
-                                <a href="cart.php?action=minus&id=<?= $id ?>" class="qty-btn" title="Decrease">−</a>
+                                <a href="cart.php?action=minus&id=<?= $real_id ?>&color=<?= $item['color'] ?>" class="qty-btn" title="Decrease">−</a>
                                 <span class="qty-val"><?= $item['qty'] ?></span>
-                                <a href="cart.php?action=plus&id=<?= $id ?>" class="qty-btn" title="Increase">+</a>
+                                <a href="cart.php?action=plus&id=<?= $real_id ?>&color=<?= $item['color'] ?>" class="qty-btn" title="Increase">+</a>
                             </div>
                         </div>
                         
@@ -85,7 +88,7 @@ require $project_root."components/header.php";
                         
                         <!-- Column 5: Remove (X) -->
                         <div class="col-remove">
-                            <a href="cart.php?action=remove&id=<?= $id ?>" class="remove-btn" onclick="return confirmRemove('<?= htmlspecialchars($item['name']) ?>')" title="Remove Item">
+                            <a href="cart.php?action=remove&id=<?= $real_id ?>&color=<?= $item['color'] ?>" class="remove-btn" onclick="return confirmRemove('<?= htmlspecialchars($item['name']) ?>')" title="Remove Item">
                                 Remove
                             </a>
                         </div>
