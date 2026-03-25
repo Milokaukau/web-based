@@ -1,0 +1,138 @@
+/* --- ORDER LISTING / ADMIN STYLES --- */
+.admin-container {
+  padding: 60px 5%;
+  min-height: 70vh;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.admin-title {
+  font-size: 2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.admin-filter-form {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-filter {
+  background-color: var(--text-dark);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 4px;
+}
+
+.btn-filter:hover {
+  background-color: var(--main-coral);
+  color: var(--text-dark);
+}
+
+.btn-clear {
+  background-color: var(--border-light);
+  color: var(--text-muted);
+  padding: 12px 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-clear:hover {
+  color: var(--text-dark);
+}
+
+/* Admin Table */
+.admin-table-wrapper {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th {
+  padding: 15px 10px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--bg-cream);
+  font-weight: 700;
+}
+
+.admin-table td {
+  padding: 25px 10px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  vertical-align: middle;
+}
+
+.admin-table tr:hover td {
+  background-color: var(--bg-soft);
+}
+
+/* Inline Status Form */
+.status-form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+}
+
+/* Inline Status Form Elements */
+.status-select {
+  padding: 10px 15px;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  font-family: "Inter", sans-serif;
+  font-size: 0.85rem;
+  background: var(--white);
+  outline: none;
+  cursor: pointer;
+  text-transform: capitalize;
+  width: 100%; /* Makes the dropdown fill its cell nicely */
+  max-width: 150px;
+}
+
+.status-select:focus {
+  border-color: var(--main-coral);
+}
+
+.btn-save {
+  background-color: var(--main-coral);
+  color: var(--text-dark);
+  padding: 10px 20px;
+  border-radius: 4px;
+  /* Removed margin-left: auto because the table cell alignment handles it now */
+}
+
+.btn-save:hover {
+  background-color: var(--bg-peach);
+}
+
+/* Action Column Centering */
+.action-col {
+  text-align: center !important;
+}
+
+.action-col form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}

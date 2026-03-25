@@ -3,70 +3,77 @@ $project_root = $_SERVER['DOCUMENT_ROOT']."/";
 require $project_root."config.php";
 require $project_root."logic/order_listing.php";
 
-$_title = 'Order Listing';
+$_title = 'Order Management';
 
 include $project_root.'components/header.php';
-echo '<pre>';
-var_export($arr);
-echo '</pre>';
 ?>
 
-
-
-<form method="GET" style="margin-bottom: 20px;">
-    <button type="submit" name="member_id" value="1">Filter Member ID = 1</button>
+<div class="container admin-container">
     
-    <?php 
-        if (isset($_GET['member_id'])) { 
-    ?>
-        <a href="?"><button type="button">Clear Filter</button></a>
-    <?php 
-        } 
-    ?>
-</form>
-
-<table>
-    <tr>
-        <th>Order ID</th>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Total Amount</th>
-        <th>Member</th>
-        <th>Status</th>
-    </tr>
-    <?php 
-        if ($arr){
+    <div class="admin-header">
+        <h1 class="admin-title">Orders</h1>
+        
+        <form method="GET" class="admin-filter-form">
+            <button type="submit" name="member_id" value="1" class="btn btn-filter">Filter Member ID = 1</button>
             
-            foreach ($arr as $data){
-    ?>  
-            <tr>
-                <td><?= $data->order_id ?></td>
-                <td><?= $data->product_name ?></td>
-                <td><?= $data->quantity ?></td>
-                <td><?= $data->amount ?></td>
-                <td><?= $data->member_name ?></td>
-                <td>
-                    <form method="POST" action="order_listing.php" style="display: flex; gap: 5px;">
-                        
-                        <input type="hidden" name="payment_id" value="<?= $data->payment_id ?>">
-                        
-                        <select name="status">
-                            <option value="processing" <?= ($data->status === 'processing') ? 'selected' : '' ?>>Processing</option>
-                            <option value="success" <?= ($data->status === 'success') ? 'selected' : '' ?>>Success</option>
-                            <option value="failed" <?= ($data->status === 'failed') ? 'selected' : '' ?>>Failed</option>
-                        </select>
-                        
-                        <button type="submit">Save</button>
-                        
-                    </form>
-                </td>
-            </tr> 
-    <?php
+            <?php if (isset($_GET['member_id'])): ?>
+                <a href="?" class="btn btn-clear">Clear Filter</a>
+            <?php endif; ?>
+        </form>
+    </div>
 
-            }
-        }
-    ?>
-</table>
+    <div class="admin-table-wrapper">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Total Amount</th>
+                    <th>Member</th>
+                    <th>Status</th>
+                    <th class="action-col">Action</th> 
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($arr): ?>
+                    <?php foreach ($arr as $data): ?>  
+                        <tr>
+                            <td style="font-weight: 700;">#<?= htmlspecialchars($data->order_id) ?></td>
+                            <td><?= htmlspecialchars($data->product_name) ?></td>
+                            <td><?= htmlspecialchars($data->quantity) ?></td>
+                            <td style="font-weight: 600;">$<?= htmlspecialchars($data->amount) ?></td>
+                            <td><?= htmlspecialchars($data->member_name) ?></td>
+                            
+                            <td>
+                                <select name="status" class="status-select" form="update-form-<?= $data->order_id ?>">
+                                    <option value="processing" <?= ($data->status === 'processing') ? 'selected' : '' ?>>Processing</option>
+                                    <option value="success" <?= ($data->status === 'success') ? 'selected' : '' ?>>Success</option>
+                                    <option value="failed" <?= ($data->status === 'failed') ? 'selected' : '' ?>>Failed</option>
+                                </select>
+                            </td>
+
+                            <td class="action-col">
+                                <form method="POST" action="order_listing.php" id="update-form-<?= $data->order_id ?>">
+                                    <input type="hidden" name="payment_id" value="<?= $data->payment_id ?>">
+                                    <button type="submit" class="btn btn-save">Save</button>
+                                </form>
+                            </td>
+
+                        </tr>   
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            No orders found.
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+
+</div>
 
 <?php
 include $project_root.'components/footer.php';
