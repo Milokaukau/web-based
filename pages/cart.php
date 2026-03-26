@@ -37,61 +37,49 @@ require $project_root."components/header.php";
             <div class="cart-left">
                 <h1 class="main-title">SHOPPING CART</h1>
 
-                <div class="cart-labels">
-                    <div class="lbl-product">Product Details</div>
-                    <div class="lbl-center">Price</div>
-                    <div class="lbl-center">Quantity</div>
-                    <div class="lbl-center">Total Price</div>
-                    <div></div> <!-- Remove btn col -->
+                <div class="cart-labels" style="display: flex; justify-content: space-between; font-weight: 600; color: var(--text-dark, #333); font-size: 14px; border-bottom: 1px solid var(--border-light, #eee); padding-bottom: 15px; margin-bottom: 30px; letter-spacing: 0.5px;">
+                    <div style="flex: 2; text-align: left;">Product</div>
+                    <div style="flex: 1; text-align: center;">Quantity</div>
+                    <div style="flex: 1; text-align: right;">Total</div>
                 </div>
 
                 <div class="cart-items-wrapper">
                     <?php 
-                    $color_map = [1 => '#F39E9E', 2 => '#2D2D2D', 3 => '#faf5f5', 4 => '#A280A8'];
+                    $color_map_names = [1 => 'Signature Coral', 2 => 'Onyx Black', 3 => 'Pearl White', 4 => 'Amethyst'];
                     foreach ($_SESSION['cart'] as $key => $item): 
                         $line_total = $item['price'] * $item['qty'];
-                        $item_color_code = $color_map[$item['color']] ?? '#F39E9E';
                         $real_id = $item['id'] ?? $key;
+                        $color_name = isset($item['color']) ? ($color_map_names[$item['color']] ?? 'Default') : 'Default';
                     ?>
-                    <div class="cart-row">
+                    <div class="cart-row-modern" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px;">
+                        
                         <!-- Column 1: Product -->
-                        <div class="col-product">
-                            <div class="product-thumb">
-                                <img src="../<?= htmlspecialchars($item['photo'] ?? 'assets/placeholder.jpg') ?>" alt="Product">
+                        <div style="flex: 2; display: flex; align-items: center; justify-content: flex-start; gap: 25px;">
+                            <div style="width: 80px; height: 100px; display: flex; align-items: center; justify-content: center;">
+                                <img src="../<?= htmlspecialchars($item['photo'] ?? 'assets/placeholder.jpg') ?>" alt="Product" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                             </div>
-                            <div class="product-info">
-                                <h3><?= htmlspecialchars($item['name']) ?></h3>
-                                <div class="product-variant">
-                                    <span class="color-dot" style="background-color: <?= $item_color_code ?>;"></span> 
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Column 2: Price -->
-                        <div class="col-price">
-                            RM <?= number_format($item['price'], 2) ?>
-                        </div>
-                        
-                        <!-- Column 3: Quantity Pill -->
-                        <div class="col-qty">
-                            <div class="qty-pill">
-                                <a href="cart.php?action=minus&id=<?= $real_id ?>&color=<?= $item['color'] ?>" class="qty-btn" title="Decrease">−</a>
-                                <span class="qty-val"><?= $item['qty'] ?></span>
-                                <a href="cart.php?action=plus&id=<?= $real_id ?>&color=<?= $item['color'] ?>" class="qty-btn" title="Increase">+</a>
+                            <div style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+                                <div style="font-size: 17px; font-weight: 500; color: var(--text-dark, #333);"><?= htmlspecialchars($item['name']) ?></div>
+                                <div style="color: var(--text-muted, #888); font-size: 14px;"><?= $color_name ?></div>
+                                <div style="font-size: 15px; color: var(--text-dark, #333);">RM<?= number_format($item['price'], 2) ?></div>
                             </div>
                         </div>
                         
-                        <!-- Column 4: Total -->
-                        <div class="col-total">
-                            RM <?= number_format($line_total, 2) ?>
+                        <!-- Column 2: Quantity -->
+                        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;">
+                            <div style="display: inline-flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-light, #ddd); border-radius: 25px; padding: 6px 16px; width: 90px; background: #fff;">
+                                <a href="cart.php?action=minus&id=<?= $real_id ?>&color=<?= $item['color'] ?>" style="text-decoration: none; color: var(--text-dark, #333); font-weight: border; font-size: 18px;" title="Decrease">−</a>
+                                <span style="font-size: 15px; font-weight: 500; color: var(--text-dark, #333);"><?= $item['qty'] ?></span>
+                                <a href="cart.php?action=plus&id=<?= $real_id ?>&color=<?= $item['color'] ?>" style="text-decoration: none; color: var(--text-dark, #333); font-weight: border; font-size: 18px;" title="Increase">+</a>
+                            </div>
+                            <a href="cart.php?action=remove&id=<?= $real_id ?>&color=<?= $item['color'] ?>" style="color: red; font-size: 14px; text-decoration: underline;" onclick="return confirmRemove('<?= htmlspecialchars($item['name']) ?>')" title="Remove Item">Remove</a>
                         </div>
                         
-                        <!-- Column 5: Remove (X) -->
-                        <div class="col-remove">
-                            <a href="cart.php?action=remove&id=<?= $real_id ?>&color=<?= $item['color'] ?>" class="remove-btn" onclick="return confirmRemove('<?= htmlspecialchars($item['name']) ?>')" title="Remove Item">
-                                Remove
-                            </a>
+                        <!-- Column 3: Total -->
+                        <div style="flex: 1; text-align: right; font-size: 16px; color: var(--text-dark, #333);">
+                            RM<?= number_format($line_total, 2) ?>
                         </div>
+                        
                     </div>
                     <?php endforeach; ?>
                 </div>

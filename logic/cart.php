@@ -29,16 +29,16 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
 
         // --- DB Sync (Add/Update) ---
         if ($isLoggedIn) {
-            $check = db()->prepare("SELECT id FROM tb_cart WHERE member_id = ? AND product_id = ? AND color_id = ?");
-            $check->execute([$user_id, $id, $color]);
+            $check = db()->prepare("SELECT id FROM tb_cart WHERE member_id = ? AND product_id = ?");
+            $check->execute([$user_id, $id]);
             $existing = $check->fetch();
             
             if ($existing) {
                 $upd = db()->prepare("UPDATE tb_cart SET quantity = quantity + ? WHERE id = ?");
                 $upd->execute([$qty, $existing->id]);
             } else {
-                $ins = db()->prepare("INSERT INTO tb_cart (member_id, product_id, quantity, color_id) VALUES (?, ?, ?, ?)");
-                $ins->execute([$user_id, $id, $qty, $color]);
+                $ins = db()->prepare("INSERT INTO tb_cart (member_id, product_id, quantity) VALUES (?, ?, ?)");
+                $ins->execute([$user_id, $id, $qty]);
             }
         }
     }
@@ -47,17 +47,17 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
         if ($_GET['action'] == 'plus') {
             $_SESSION['cart'][$cart_key]['qty']++;
             if ($isLoggedIn) {
-                db()->prepare("UPDATE tb_cart SET quantity = quantity + 1 WHERE member_id = ? AND product_id = ? AND color_id = ?")->execute([$user_id, $id, $color]);
+                db()->prepare("UPDATE tb_cart SET quantity = quantity + 1 WHERE member_id = ? AND product_id = ?")->execute([$user_id, $id]);
             }
         } elseif ($_GET['action'] == 'minus' && $_SESSION['cart'][$cart_key]['qty'] > 1) {
             $_SESSION['cart'][$cart_key]['qty']--;
             if ($isLoggedIn) {
-                db()->prepare("UPDATE tb_cart SET quantity = quantity - 1 WHERE member_id = ? AND product_id = ? AND color_id = ?")->execute([$user_id, $id, $color]);
+                db()->prepare("UPDATE tb_cart SET quantity = quantity - 1 WHERE member_id = ? AND product_id = ?")->execute([$user_id, $id]);
             }
         } elseif ($_GET['action'] == 'remove') {
             unset($_SESSION['cart'][$cart_key]);
             if ($isLoggedIn) {
-                db()->prepare("DELETE FROM tb_cart WHERE member_id = ? AND product_id = ? AND color_id = ?")->execute([$user_id, $id, $color]);
+                db()->prepare("DELETE FROM tb_cart WHERE member_id = ? AND product_id = ?")->execute([$user_id, $id]);
             }
         }
     }
@@ -74,9 +74,9 @@ if ($isLoggedIn && empty($_SESSION['cart_synced'])) {
     $db_items = $stmt->fetchAll();
     
     foreach ($db_items as $item) {
-        $ckey = $item->product_id . "_" . ($item->color_id ?? 1);
+        $prod = getProductById($item->product_id);
+        $ckey = $item->product_id . "_" . ($prod ? $prod->color_id : 1);
         if (!isset($_SESSION['cart'][$ckey])) {
-            $prod = getProductById($item->product_id);
             if ($prod) {
                 $_SESSION['cart'][$ckey] = [
                     "id"    => $item->product_id,
@@ -84,7 +84,7 @@ if ($isLoggedIn && empty($_SESSION['cart_synced'])) {
                     "price" => $prod->price,
                     "qty"   => $item->quantity,
                     "photo" => $prod->photo,
-                    "color" => $item->color_id ?? 1
+                    "color" => $prod->color_id ?? 1
                 ];
             }
         }

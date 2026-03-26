@@ -22,17 +22,35 @@ require $project_root."components/header.php";
         <div class="product-info-panel">
             
             <div class="product-header-row">
-                <h1 class="p-title"><?= htmlspecialchars($arr->name) ?></h1>
+                <h1 class="p-title"><?= htmlspecialchars($arr->name) ?><?= isset($current_color_name) && $current_color_name != 'Default' ? ' - ' . htmlspecialchars($current_color_name) : '' ?></h1>
                 <span class="p-price">RM<?= number_format($arr->price, 2) ?></span>
             </div>
 
             <div class="option-group">
-                <span class="option-label">Colour: <span class="selected-value" id="selectedColorLabel">Please choose</span></span>
+                <?php 
+                    $color_map = [1 => '#F39E9E', 2 => '#2D2D2D', 3 => '#faf5f5', 4 => '#A280A8'];
+                    $name_map = [1 => 'Signature Coral', 2 => 'Onyx Black', 3 => 'Pearl White', 4 => 'Amethyst'];
+                    $current_color_name = $name_map[$arr->color_id] ?? 'Default';
+                ?>
+                <span class="option-label">Colour: <span class="selected-value" id="selectedColorLabel"><?= htmlspecialchars($current_color_name) ?></span></span>
                 <div class="color-swatches">
-                    <div class="swatch" style="background-color: #F39E9E;" data-color-id="1" onclick="selectColor(this, 'Signature Coral')"></div>
-                    <div class="swatch" style="background-color: #2D2D2D;" data-color-id="2" onclick="selectColor(this, 'Onyx Black')"></div>
-                    <div class="swatch" style="background-color: #faf5f5;" data-color-id="3" onclick="selectColor(this, 'Pearl White')"></div>
-                    <div class="swatch" style="background-color: #A280A8;" data-color-id="4" onclick="selectColor(this, 'Amethyst')"></div>
+                    <?php if (isset($variants) && count($variants) > 0): ?>
+                        <?php foreach($variants as $variant): ?>
+                            <?php 
+                                $v_color = $color_map[$variant->color_id] ?? '#ccc'; 
+                                $v_name = $name_map[$variant->color_id] ?? 'Default';
+                            ?>
+                            <a href="product.php?id=<?= $variant->id ?>" 
+                               class="swatch <?= ($variant->id == $arr->id) ? 'active' : '' ?>" 
+                               style="background-color: <?= $v_color ?>;"
+                               title="<?= htmlspecialchars($v_name) ?>"
+                               data-color-id="<?= $variant->color_id ?>"
+                               data-color-name="<?= htmlspecialchars($v_name) ?>">
+                            </a>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="swatch active" style="background-color: #ccc;"></div>
+                    <?php endif; ?>
                 </div>
             </div>
 

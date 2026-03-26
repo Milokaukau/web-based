@@ -15,9 +15,13 @@ if (empty($_SESSION['cart'])) {
 }
 
 // ─── Collect & sanitise POST fields ──────────────────────────────────────────
-$pay_method = in_array($_POST['pay_method'] ?? '', ['card', 'tng'])
-    ? $_POST['pay_method']
-    : 'card';
+$pay_input = $_POST['pay_method'] ?? '';
+$pay_method = 'credit_card'; // default
+if ($pay_input === 'tng') {
+    $pay_method = 'e_wallet';
+} elseif ($pay_input === 'card') {
+    $pay_method = 'credit_card';
+}
 
 $email      = filter_var($_POST['email']    ?? '', FILTER_SANITIZE_EMAIL);
 $fullname   = htmlspecialchars($_POST['fullname']  ?? '', ENT_QUOTES, 'UTF-8');
@@ -34,7 +38,9 @@ $shipping = 0.00;
 $total    = $subtotal + $shipping;
 
 // ─── Determine logged-in member ID (0 = guest) ───────────────────────────────
-$member_id = $_SESSION['member_id'] ?? 0;
+$member_id = $_SESSION['user_id'] ?? 0;
+// Fallback: If guest (0), assign to default guest handler (ID 1) to satisfy DB FK rule
+if ($member_id == 0) $member_id = 1;
 
 // ─── Persist order ───────────────────────────────────────────────────────────
 $order_id    = null;
@@ -42,19 +48,24 @@ $error       = null;
 $order_items = $_SESSION['cart']; // snapshot before clearing
 
 try {
+    $status = ($pay_method === 'credit_card') ? 'success' : 'failed';
     $order_id = insertOrder(
         $member_id,
         $total,
         $pay_method,
-        'paid',
+        $status,
         $order_items,
         $address,
         $city,
         $postcode
     );
 
-    // Clear cart only on success
-    $_SESSION['cart'] = [];
+    if ($status === 'failed') {
+        $error = "Payment failed. Touch 'n Go eWallet payment is currently unavailable.";
+    } else {
+        // Clear cart only on success
+        $_SESSION['cart'] = [];
+    }
 
 } catch (Exception $e) {
     $error = "Something went wrong while placing your order. Please try again.";

@@ -120,18 +120,12 @@
 
 .nav-links a:hover { color: var(--main-coral); }
 
-.cart-link, .wishlist-link {
-    position: relative;
-    padding-right: 12px;
-}
-
-.cart-count-dot, .wishlist-count-dot {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    width: 5px;
-    height: 5px;
-    background-color: var(--main-coral);
-    border-radius: 50%;
+.count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--main-coral);
 }

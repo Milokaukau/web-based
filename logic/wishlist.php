@@ -20,8 +20,8 @@ if (isset($_GET['action'])) {
                 
                 // --- DB SYNC (Add) ---
                 if ($isLoggedIn) {
-                    $stmt = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id, quantity, color_id) VALUES (?, ?, ?, ?)");
-                    $stmt->execute([$user_id, $id, 1, $color]); 
+                    $stmt = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id, quantity) VALUES (?, ?, ?)");
+                    $stmt->execute([$user_id, $id, 1]); 
                 }
             }
         } elseif ($_GET['action'] == 'remove') {
@@ -30,8 +30,8 @@ if (isset($_GET['action'])) {
                 
                 // --- DB SYNC (Remove) ---
                 if ($isLoggedIn) {
-                    $stmt = db()->prepare("DELETE FROM tb_wishlist WHERE member_id = ? AND product_id = ? AND color_id = ?");
-                    $stmt->execute([$user_id, $id, $color]);
+                    $stmt = db()->prepare("DELETE FROM tb_wishlist WHERE member_id = ? AND product_id = ?");
+                    $stmt->execute([$user_id, $id]);
                 }
             } else {
                 // Fallback for old items
@@ -52,13 +52,14 @@ if (isset($_GET['action'])) {
 // --- DB SYNC (On Initial Load) ---
 if ($isLoggedIn && empty($_SESSION['wishlist_synced'])) {
     // 1. Fetch current DB items
-    $stmt = db()->prepare("SELECT product_id, color_id FROM tb_wishlist WHERE member_id = ?");
+    $stmt = db()->prepare("SELECT product_id FROM tb_wishlist WHERE member_id = ?");
     $stmt->execute([$user_id]);
     $db_items_raw = $stmt->fetchAll();
     
     $db_keys = [];
     foreach ($db_items_raw as $item) {
-        $db_keys[] = $item->product_id . "_" . ($item->color_id ?? 1);
+        $prod = getProductById($item->product_id);
+        $db_keys[] = $item->product_id . "_" . ($prod ? $prod->color_id : 1);
     }
     
     // 2. Sync From DB -> Session
@@ -75,8 +76,8 @@ if ($isLoggedIn && empty($_SESSION['wishlist_synced'])) {
             $pid = $parts[0];
             $cid = $parts[1] ?? 1;
             
-            $ins = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id, color_id, quantity) VALUES (?, ?, ?, 1)");
-            $ins->execute([$user_id, $pid, $cid]);
+            $ins = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id, quantity) VALUES (?, ?, 1)");
+            $ins->execute([$user_id, $pid]);
         }
     }
 

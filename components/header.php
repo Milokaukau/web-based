@@ -4,6 +4,13 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 $isLoggedIn = isset($_SESSION['user_id']); 
 
+$wishlistCount = isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0;
+$cartCount = 0;
+if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cartCount += $item['qty'];
+    }
+}
 // Fetch categories for the shop dropdown
 $project_root = $_SERVER['DOCUMENT_ROOT']."/";
 require_once $project_root . "database/category.php";
@@ -28,7 +35,13 @@ $categories = getAllCategories();
             <button class="dropbtn">Products<small>▼</small></button>
             <div class="dropdown-content">
                 <?php foreach ($categories as $cat): ?>
-                    <a href="/pages/product.php?id=<?= $cat['id'] ?>"><?= htmlspecialchars(ucfirst($cat['name'])) ?></a>
+                    <?php
+                        $stmt = db()->prepare("SELECT id FROM tb_product WHERE category_id = ? LIMIT 1");
+                        $stmt->execute([$cat['id']]);
+                        $first_prod = $stmt->fetch();
+                        $target_id = $first_prod ? $first_prod->id : 1;
+                    ?>
+                    <a href="/pages/product.php?id=<?= $target_id ?>"><?= htmlspecialchars(ucfirst($cat['name'])) ?></a>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -49,11 +62,11 @@ $categories = getAllCategories();
             <?php endif; ?>
 
             <a href="/pages/wishlist.php" class="wishlist-link">
-                WISHLIST <span class="wishlist-count-dot"></span>
+                WISHLIST <?php if ($wishlistCount > 0): ?><span class="count-badge"><?= $wishlistCount ?></span><?php endif; ?>
             </a>
 
             <a href="/pages/cart.php" class="cart-link">
-                CART <span class="cart-count-dot"></span>
+                CART <?php if ($cartCount > 0): ?><span class="count-badge"><?= $cartCount ?></span><?php endif; ?>
             </a>
         </div>
     </div>

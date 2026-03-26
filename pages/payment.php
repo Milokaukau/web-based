@@ -65,28 +65,34 @@ require $project_root."components/header.php";
                 <!-- Credit Card Details Section -->
                 <div id="card-details-section">
                     <div class="form-row">
-                        <div class="input-container half">
-                            <label class="floating-label">Email Address</label>
-                            <div class="input-box">
-                                <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                <input type="email" name="email" required placeholder="example@gmail.com">
+                        <div class="input-field-group">
+                            <div class="input-container half">
+                                <label class="floating-label">Email Address</label>
+                                <div class="input-box">
+                                    <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    <input type="email" name="email" required placeholder="example@gmail.com">
+                                </div>
                             </div>
                         </div>
-                        <div class="input-container half">
-                            <label class="floating-label">Card Holder</label>
-                            <div class="input-box">
-                                <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                <input type="text" name="fullname" required placeholder="Jane Cooper">
+                        <div class="input-field-group">
+                            <div class="input-container half">
+                                <label class="floating-label">Card Holder</label>
+                                <div class="input-box">
+                                    <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    <input type="text" name="fullname" required placeholder="Jane Cooper">
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
-                        <div class="input-container full" id="cc-num-container">
-                            <label class="floating-label" id="cc-num-label">Card Number</label>
-                            <div class="input-box">
-                                <svg class="left-icon" id="cc-num-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                                <input type="text" id="cc-num" name="card_number" required placeholder="4356 xxxx xxxx xxxx">
+                        <div class="input-field-group">
+                            <div class="input-container full" id="cc-num-container">
+                                <label class="floating-label" id="cc-num-label">Card Number</label>
+                                <div class="input-box">
+                                    <svg class="left-icon" id="cc-num-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                    <input type="text" id="cc-num" name="card_number" required placeholder="4356 xxxx xxxx xxxx">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -102,7 +108,7 @@ require $project_root."components/header.php";
                             </div>
                         </div>
                         <div class="input-field-group">
-                            <div class="input-container half">
+                            <div class="input-container half" id="cvv-container">
                                 <label class="floating-label">CVV</label>
                                 <div class="input-box">
                                     <svg class="left-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -156,22 +162,24 @@ require $project_root."components/header.php";
                 <span><?= date('d/m/Y', strtotime('+3 days')) ?></span>
             </div>
 
-            <div class="summary-products-list">
+            <div class="summary-products-list" style="margin-top: 20px;">
                 <?php foreach ($_SESSION['cart'] as $index => $item): ?>
-                <div class="summary-product">
-                    <div class="product-title"><?= htmlspecialchars($item['name']) ?></div>
-                    <div class="product-details">
-                        <div class="product-image">
-                            <!-- Show a placeholder dark gray box like the design if no real image -->
-                            <div class="img-placeholder" style="background: url('<?= htmlspecialchars($item['image'] ?? '') ?>') center/cover no-repeat; background-color: var(--bg-peach, #F0C9A3);"></div>
+                <?php 
+                    $color_map_names = [1 => 'Signature Coral', 2 => 'Onyx Black', 3 => 'Pearl White', 4 => 'Amethyst'];
+                    $color_name = isset($item['color']) ? ($color_map_names[$item['color']] ?? 'Default') : 'Default';
+                ?>
+                <div class="summary-product-modern" style="display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid var(--border-light, #eee);">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="sp-img-box" style="position: relative; width: 65px; height: 65px; border-radius: 12px; border: 2px solid var(--main-coral-soft, #ffb8b8); background: #fff; display: flex; align-items: center; justify-content: center;">
+                            <img style="max-height: 80%; max-width: 80%; object-fit: contain;" src="<?= !empty($item['photo']) ? '../' . htmlspecialchars($item['photo']) : '../assets/placeholder.png' ?>" alt="">
+                            <span class="sp-qty-badge" style="position: absolute; top: -10px; right: -10px; background: #888; color: #fff; font-size: 12px; font-weight: bold; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #fff;"><?= $item['qty'] ?></span>
                         </div>
-                        <div class="product-data">
-                            <div class="product-id">Product ID: #<?= str_pad($item['id'] ?? (4601+$index), 4, '0', STR_PAD_LEFT) ?></div>
-                            <div class="product-qty">Quantity: <?= $item['qty'] ?></div>
-                            <div class="product-unit">Unit price: RM <?= number_format($item['price'], 2) ?></div>
-                            <div class="product-total-price">Total price: RM <?= number_format($item['price'] * $item['qty'], 2) ?></div>
+                        <div class="sp-info" style="display: flex; flex-direction: column;">
+                            <span class="sp-name" style="font-weight: 600; font-size: 15px; color: var(--text-dark, #333);"><?= htmlspecialchars($item['name']) ?></span>
+                            <span class="sp-variant" style="font-size: 13px; color: #888; margin-top: 4px;"><?= $color_name ?></span>
                         </div>
                     </div>
+                    <div class="sp-price" style="font-weight: 500; font-size: 15px; color: var(--text-dark, #333);">RM <?= number_format($item['price'], 2) ?></div>
                 </div>
                 <?php endforeach; ?>
             </div>

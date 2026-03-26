@@ -87,7 +87,19 @@ ccNum.addEventListener('input', function () {
 
     // Highlight only when at least one digit has been entered
     setActive('cc-num-container', 'cc-num-label', 'cc-num-icon', value.length > 0);
+    
+    // Real-time validation
+    validateCardNumber();
 });
+
+function validateCardNumber() {
+    const value = ccNum.value.replace(/\D/g, '');
+    if (value.length > 0 && value.length < 16) {
+        setError('cc-num-container', 'Card number must be 16 digits.');
+    } else {
+        setError('cc-num-container', null);
+    }
+}
 
 // ══════════════════════════════════════════════════════════
 // 3. Expiry Date — format MM/YY + must be future month
@@ -128,6 +140,8 @@ ccExp.addEventListener('input', function () {
         } else {
             setError('cc-exp-container', null);
         }
+    } else if (value.length > 0) {
+        setError('cc-exp-container', 'Enter a complete expiry date (MM/YY).');
     } else {
         setError('cc-exp-container', null);
     }
@@ -165,28 +179,10 @@ cvvInput.addEventListener('input', function () {
 
 function validateCvv() {
     const val = cvvInput.value;
-    const container = cvvInput.closest('.input-container');
-    if (!container) return;
-
-    // Error lives as the next sibling of the container, outside the border
-    let err = container.nextElementSibling;
-    if (err && !err.classList.contains('cvv-error')) err = null;
-
     if (val.length > 0 && val.length < 3) {
-        container.style.borderColor = '#ef4444'; // red
-        if (!err) {
-            err = document.createElement('p');
-            err.className = 'cvv-error';
-            container.insertAdjacentElement('afterend', err);
-        }
-        err.style.color = '#ef4444';
-        err.textContent = 'CVV must be exactly 3 digits.';
-    } else if (val.length === 3) {
-        container.style.borderColor = '';
-        if (err) err.remove();
+        setError('cvv-container', 'CVV must be 3 digits.');
     } else {
-        container.style.borderColor = '';
-        if (err) err.remove();
+        setError('cvv-container', null);
     }
 }
 
@@ -195,6 +191,13 @@ function validateCvv() {
 // ══════════════════════════════════════════════════════════
 document.querySelector('.payment-form').addEventListener('submit', function (e) {
     let hasError = false;
+
+    // --- Card Number validation ---
+    const cardVal = ccNum.value.replace(/\D/g, '');
+    if (ccNum.required && cardVal.length !== 16) {
+        setError('cc-num-container', 'Invalid card number (must be 16 digits).');
+        hasError = true;
+    }
 
     // --- Expiry validation ---
     const expVal = ccExp.value.replace(/\D/g, '');
@@ -216,17 +219,7 @@ document.querySelector('.payment-form').addEventListener('submit', function (e) 
 
     // --- CVV validation ---
     if (cvvInput.value.length !== 3 && cvvInput.required) {
-        const container = cvvInput.closest('.input-container');
-        container.style.borderColor = '#ef4444';
-        let err = container.nextElementSibling;
-        if (err && !err.classList.contains('cvv-error')) err = null;
-        if (!err) {
-            err = document.createElement('p');
-            err.className = 'cvv-error';
-            container.insertAdjacentElement('afterend', err);
-        }
-        err.style.color = '#ef4444';
-        err.textContent = 'CVV must be exactly 3 digits.';
+        setError('cvv-container', 'CVV must be 3 digits.');
         hasError = true;
     }
 

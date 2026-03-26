@@ -8,9 +8,14 @@ function addToCart(btn) {
     }
 
     const colorId = activeSwatch.dataset.colorId;
+    const colorName = activeSwatch.dataset.colorName;
 
     const id = btn.dataset.id;
-    const name = encodeURIComponent(btn.dataset.name);
+    let finalName = btn.dataset.name;
+    if (colorName && colorName !== 'Default') {
+        finalName += ' - ' + colorName;
+    }
+    const name = encodeURIComponent(finalName);
     const price = btn.dataset.price;
     const photo = encodeURIComponent(btn.dataset.photo);
     const maxStock = parseInt(btn.dataset.stock);
