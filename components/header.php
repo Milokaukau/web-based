@@ -3,7 +3,20 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 $isLoggedIn = isset($_SESSION['user_id']); 
+
+$wishlistCount = isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0;
+$cartCount = 0;
+if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cartCount += $item['qty'];
+    }
+}
+// Fetch categories for the shop dropdown
+$project_root = $_SERVER['DOCUMENT_ROOT']."/";
+require_once $project_root . "database/category.php";
+$categories = getAllCategories();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +24,6 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= 'NOAIR | '.($_title ?? 'HOME') ?></title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components/header.css">
 </head>
 <body>
 
@@ -20,11 +32,17 @@ $isLoggedIn = isset($_SESSION['user_id']);
         <a href="../index.php" class="logo">NOAIR</a>
 
         <div class="category-dropdown">
-            <button class="dropbtn">SHOP <small>▼</small></button>
+            <button class="dropbtn">Products<small>▼</small></button>
             <div class="dropdown-content">
-                <a href="#">500 ML</a>
-                <a href="#">1000 ML</a>
-                <a href="#">1500 ML</a>
+                <?php foreach ($categories as $cat): ?>
+                    <?php
+                        $stmt = db()->prepare("SELECT id FROM tb_product WHERE category_id = ? LIMIT 1");
+                        $stmt->execute([$cat['id']]);
+                        $first_prod = $stmt->fetch();
+                        $target_id = $first_prod ? $first_prod->id : 1;
+                    ?>
+                    <a href="/pages/product.php?id=<?= $target_id ?>"><?= htmlspecialchars(ucfirst($cat['name'])) ?></a>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
@@ -43,8 +61,12 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <a href="/pages/login.php">LOGIN</a>
             <?php endif; ?>
 
+            <a href="/pages/wishlist.php" class="wishlist-link">
+                WISHLIST <?php if ($wishlistCount > 0): ?><span class="count-badge"><?= $wishlistCount ?></span><?php endif; ?>
+            </a>
+
             <a href="/pages/cart.php" class="cart-link">
-                CART <span class="cart-count-dot"></span>
+                CART <?php if ($cartCount > 0): ?><span class="count-badge"><?= $cartCount ?></span><?php endif; ?>
             </a>
         </div>
     </div>
