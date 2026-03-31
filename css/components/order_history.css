@@ -1,0 +1,190 @@
+/* --- REFINED ORDER CARD UI (DIV LAYOUT) --- */
+.history-container {
+  padding: 60px 5%;
+  max-width: 1000px;
+  margin: 0 auto;
+  min-height: 60vh;
+  font-family: "Inter", sans-serif;
+}
+
+.history-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+
+.orders-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--border-light);
+  padding-bottom: 15px;
+}
+
+/* The Card */
+.order-card {
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+/* Header Section */
+.order-header {
+  background-color: var(--white); /* Explicitly set to crisp white */
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.order-header-info {
+  display: flex;
+  gap: 40px; /* Spacing between Date, Total, and Order # */
+}
+
+.order-info span {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.order-info strong {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+/* Main Body Section */
+.order-body {
+  padding: 25px 30px;
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.order-body:last-child {
+  border-bottom: none;
+}
+
+/* Left: Thumbnail */
+.item-thumbnail {
+  width: 100px;
+  height: 100px;
+  background: #fdfbfa;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.item-thumbnail img {
+  width: 70%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Center: Details & Buy Again */
+.item-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertically centers the text next to the image */
+}
+
+.item-details h3 {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin: 0 0 4px 0;
+}
+
+.item-meta {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: inline-block;
+}
+
+.status-success {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.status-processing {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+.status-failed {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* Buttons */
+/* Buttons on the Right */
+.item-actions {
+  width: 180px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column; /* Stacks the buttons */
+  gap: 10px; /* Spacing between buttons */
+}
+
+/* Base styling for both buttons */
+.item-actions .btn {
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  width: 100%;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+/* Primary Action: Buy It Again (Coral) */
+.btn-buy-again {
+  background-color: var(--main-coral);
+  color: var(--text-dark);
+}
+
+.btn-buy-again:hover {
+  background-color: #e08585; /* Slightly darker coral for hover */
+  transform: translateY(-2px);
+}
+
+/* Secondary Action: View Details (Dark) */
+.btn-view-details {
+  background-color: var(--text-dark);
+  color: var(--white);
+}
+
+.btn-view-details:hover {
+  background-color: var(--text-muted);
+  transform: translateY(-2px);
+}

@@ -10,6 +10,7 @@
 @import url("components/wishlist.css");
 @import url("components/shop.css");
 @import url("components/order_listing.css");
+@import url("components/order_history.css");
 
 /* --- 2. GLOBAL VARIABLES --- */
 :root {

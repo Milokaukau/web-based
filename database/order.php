@@ -98,3 +98,37 @@ function updateOrderStatus($payment_id, $status) {
     ");
     $stmt->execute([$status, $payment_id]); 
 }
+
+function getOrdersByMember($member_id) {
+    $stmt = db()->prepare("
+        SELECT 
+            o.id AS order_id, 
+            o.amount, 
+            o.created_at, 
+            p.status AS payment_status, 
+            p.method AS payment_method
+        FROM tb_order o
+        JOIN tb_payment p ON o.payment_id = p.id
+        WHERE o.member_id = ?
+        ORDER BY o.created_at DESC
+    ");
+    $stmt->execute([$member_id]);
+    return $stmt->fetchAll();
+}
+
+function getOrderItems($order_id) {
+    $stmt = db()->prepare("
+        SELECT 
+            op.quantity, 
+            pr.name AS product_name, 
+            pr.price,
+            pr.photo, 
+            c.name AS color_name
+        FROM tb_order_product op
+        JOIN tb_product pr ON op.product_id = pr.id
+        LEFT JOIN tb_color c ON pr.color_id = c.id
+        WHERE op.order_id = ?
+    ");
+    $stmt->execute([$order_id]);
+    return $stmt->fetchAll();
+}
