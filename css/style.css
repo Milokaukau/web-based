@@ -11,6 +11,7 @@
 @import url("components/shop.css");
 @import url("components/order_listing.css");
 @import url("components/order_history.css");
+@import url("components/order_details.css");
 
 /* --- 2. GLOBAL VARIABLES --- */
 :root {

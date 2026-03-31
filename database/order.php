@@ -132,3 +132,19 @@ function getOrderItems($order_id) {
     $stmt->execute([$order_id]);
     return $stmt->fetchAll();
 }
+
+function getOrderById($order_id, $member_id) {
+    $stmt = db()->prepare("
+        SELECT 
+            o.id AS order_id, 
+            o.amount, 
+            o.created_at, 
+            p.status AS payment_status, 
+            p.method AS payment_method
+        FROM tb_order o
+        JOIN tb_payment p ON o.payment_id = p.id
+        WHERE o.id = ? AND o.member_id = ?
+    ");
+    $stmt->execute([$order_id, $member_id]);
+    return $stmt->fetch(); 
+}

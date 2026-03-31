@@ -1,0 +1,121 @@
+/* --- ORDER DETAILS PAGE --- */
+.details-container {
+  padding: 60px 5%;
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 60vh;
+  font-family: "Inter", sans-serif;
+}
+
+.back-link {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-decoration: none;
+  margin-bottom: 20px;
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: var(--main-coral);
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.details-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-dark);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* Summary Box */
+.summary-box {
+  background: #fafafa;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 30px;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.summary-block span {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.summary-block strong {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
+/* Item List */
+.details-items {
+  border-top: 2px solid var(--border-light);
+  padding-top: 20px;
+}
+
+.details-item-row {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-light);
+  gap: 20px;
+}
+
+.details-item-center {
+  flex: 1;
+}
+
+.details-item-price {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+/* Totals Section */
+.details-total-section {
+  padding-top: 30px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.totals-wrapper {
+  width: 300px;
+}
+
+.total-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.total-line.grand-total {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  border-top: 1px solid var(--border-light);
+  padding-top: 15px;
+  margin-top: 15px;
+}

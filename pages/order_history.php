@@ -61,8 +61,8 @@ include $project_root.'components/header.php';
                         </div>
 
                         <div class="item-actions">
-                            <button type="button" class="btn btn-details">Buy it again</button>
-                            <a href="#" class="btn btn-details">View order details</a>
+                            <button type="button" class="btn btn-buy-again">Buy it again</button>
+                            <a href="order_details.php?id=<?= $order->order_id ?>" class="btn btn-view-details">View order details</a>
                         </div>
 
                     </div>
