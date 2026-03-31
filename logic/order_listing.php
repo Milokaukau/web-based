@@ -1,6 +1,7 @@
 <?php
 $project_root = $_SERVER['DOCUMENT_ROOT']."/";
 require_once $project_root . "database/order.php";
+require_once $project_root . "database/member.php";
 
 $arr = [];
 
@@ -14,11 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment_id'], $_POST[
     exit;
 }
 
+$members = getAllMembers();
+
 if (isset($_GET['member_id']) && is_numeric($_GET['member_id'])) {
     $arr = getOrderListByMemberId($_GET['member_id']);
-    return;
+} else {
+    $arr = getOrderList();
 }
-    
-$arr = getOrderList();
-
 ?>

@@ -14,10 +14,20 @@ include $project_root.'components/header.php';
         <h1 class="admin-title">Orders</h1>
         
         <form method="GET" class="admin-filter-form">
-            <button type="submit" name="member_id" value="1" class="btn btn-filter">Filter Member ID = 1</button>
+            <select name="member_id" class="status-select" style="min-width: 200px;">
+                <option value="" disabled <?= !isset($_GET['member_id']) ? 'selected' : '' ?>>Select a Member...</option>
+                
+                <?php foreach ($members as $member): ?>
+                    <option value="<?= $member->id ?>" <?= (isset($_GET['member_id']) && $_GET['member_id'] == $member->id) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($member->name) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            
+            <button type="submit" class="btn btn-filter">Filter</button>
             
             <?php if (isset($_GET['member_id'])): ?>
-                <a href="?" class="btn btn-clear">Clear Filter</a>
+                <a href="order_listing.php" class="btn btn-clear">Clear Filter</a>
             <?php endif; ?>
         </form>
     </div>
