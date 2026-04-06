@@ -171,12 +171,6 @@ body{
     font-size:40px;
 }
 
-/* ================================================================
-   MERGED ADMIN CSS — combines all three stylesheets
-   Sections: Layout · Top bar · Sidebar · Main · Table · Form ·
-             Upload · Badges · Actions · Footer
-   ================================================================ */
-
 /* ── Layout shell ── */
 .admin-shell {
     display: flex;
@@ -510,8 +504,36 @@ tbody td {
     padding: 8px 0;
     display: block;
 }
+
 .tbl-wrap {
-    overflow-x: auto;  
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.tbl-wrap table {
+    min-width: 1200px;
+}
+
+/* Description cell — truncate long text, show full on hover */
+.desc-cell {
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
+}
+
+/* No-photo placeholder */
+.no-photo {
+    display: inline-block;
+    width: 48px;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
+    background: #f0f0f0;
+    color: #aaa;
+    font-size: 10px;
+    border-radius: 4px;
 }
 
 /* ── Photo upload ── */

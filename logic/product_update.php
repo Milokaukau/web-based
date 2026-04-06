@@ -262,13 +262,6 @@ include '../components/header.php';
 
 </div><!-- /.admin-shell -->
 
-<script>
-// Live photo preview
-document.querySelector('input[name="photo"]').addEventListener('change', function() {
-    if (this.files && this.files[0]) {
-        document.getElementById('preview').src = URL.createObjectURL(this.files[0]);
-    }
-});
-</script>
+<script src="../js/admin_product.js"></script>
 
 <?php include '../components/footer.php'; ?>

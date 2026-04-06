@@ -122,67 +122,7 @@ include '../components/header.php';
 
 </div><!-- /.admin-shell -->
 
-<style>
-.tbl-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.tbl-wrap table {
-    min-width: 1200px;
-}
-
-/* Description cell — truncate long text, show full on hover */
-.desc-cell {
-    max-width: 180px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: default;
-}
-
-/* No-photo placeholder */
-.no-photo {
-    display: inline-block;
-    width: 48px;
-    height: 48px;
-    line-height: 48px;
-    text-align: center;
-    background: #f0f0f0;
-    color: #aaa;
-    font-size: 10px;
-    border-radius: 4px;
-}
-</style>
+<script src="../js/admin_product.js"></script>
 
 <?php include '../components/footer.php'; ?>
 
-<script>
-const table = document.querySelector('table');
-const headers = table.querySelectorAll('th.sortable');
-let sortCol = -1, sortDir = 1;
-
-headers.forEach(th => {
-    th.addEventListener('click', () => {
-        const col = parseInt(th.dataset.col);
-        const isNum = th.dataset.type === 'num';
-
-        sortDir = (sortCol === col) ? sortDir * -1 : 1;
-        sortCol = col;
-
-        headers.forEach(h => h.classList.remove('asc', 'desc'));
-        th.classList.add(sortDir === 1 ? 'asc' : 'desc');
-
-        const tbody = table.querySelector('tbody');
-        Array.from(tbody.querySelectorAll('tr'))
-            .sort((a, b) => {
-                const aVal = a.cells[col].textContent.trim();
-                const bVal = b.cells[col].textContent.trim();
-                return isNum
-                    ? (parseFloat(aVal) - parseFloat(bVal)) * sortDir
-                    : aVal.localeCompare(bVal) * sortDir;
-            })
-            .forEach(r => tbody.appendChild(r));
-    });
-});
-</script>

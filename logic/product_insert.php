@@ -218,7 +218,7 @@ include '../components/header.php';
 
                     <div class="form-actions">
                         <button class="btn-submit" type="submit">Submit</button>
-                        <button class="btn-reset"  type="reset" onclick="resetPreview()">Reset</button>
+                        <button class="btn-reset"  type="reset">Reset</button>
                     </div>
                 </form>
             </div>
@@ -233,18 +233,6 @@ include '../components/header.php';
 
 </div><!-- /.admin-shell -->
 
-<script>
-const defaultSrc = '/images/photo.jpg';
-
-document.querySelector('input[name="photo"]').addEventListener('change', function () {
-    if (this.files && this.files[0]) {
-        document.getElementById('preview').src = URL.createObjectURL(this.files[0]);
-    }
-});
-
-function resetPreview() {
-    document.getElementById('preview').src = defaultSrc;
-}
-</script>
+<script src="../js/admin_product.js"></script>
 
 <?php include '../components/footer.php'; ?>
