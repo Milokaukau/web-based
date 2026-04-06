@@ -12,6 +12,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <title><?= 'NOAIR | '.($_title ?? 'HOME') ?></title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/components/header.css">
+    <link rel="stylesheet" href="../css/merged.css">
 </head>
 <body>
 

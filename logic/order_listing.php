@@ -11,4 +11,4 @@ if (isset($_GET['member_id']) && is_numeric($_GET['member_id'])) {
     
 $arr = getOrderList();
 
-?>
+?> 

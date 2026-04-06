@@ -8,16 +8,25 @@ $_title = 'Home';
 include $project_root.'components/header.php';
 ?>
 
-<?php 
-    if ($arr){
-        foreach ($arr as $data){
-?>
-    <p><?= $data->name ?></p>
-<?php
 
-        }
-    }
-?>
+
+<div style="text-align:center; margin-top:50px;">
+    
+    <a href="/product/index.php">
+        <button style="
+            padding:12px 25px;
+            font-size:18px;
+            background:#007bff;
+            color:white;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+        ">
+            Product Maintenance
+        </button>
+    </a>
+
+</div>
 
 <?php
 include $project_root.'components/footer.php';
