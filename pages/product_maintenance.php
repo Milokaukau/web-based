@@ -35,7 +35,7 @@ include '../components/header.php';
             </a>
 
             <div class="nav-section">Sales</div>
-            <a class="nav-item" href="../pages/order.php">
+            <a class="nav-item" href="../pages/order_listing.php">
                 <span class="nav-icon">&#128203;</span> Order
             </a>
             <a class="nav-item" href="../logic/member.php">
