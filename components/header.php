@@ -24,7 +24,7 @@ $categories = getAllCategories();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= 'NOAIR | '.($_title ?? 'HOME') ?></title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/components/header.css">
+    <link rel="stylesheet" href="../css/merged.css">
 </head>
 <body>
 
