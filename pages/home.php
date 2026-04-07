@@ -1,33 +1,26 @@
 <?php
 $project_root = $_SERVER['DOCUMENT_ROOT']."/";
 require $project_root."config.php";
-require $project_root."logic/member.php";
+require $project_root."logic/home.php";
 
-$_title = 'Home';
-
-include $project_root.'components/header.php';
+$_title = "Home";
+require $project_root."components/header.php";
 ?>
 
-
-
-<div style="text-align:center; margin-top:50px;">
-    
-    <a href="/product/index.php">
-        <button style="
-            padding:12px 25px;
-            font-size:18px;
-            background:#007bff;
-            color:white;
-            border:none;
-            border-radius:6px;
-            cursor:pointer;
-        ">
-            Product Maintenance
-        </button>
-    </a>
-
-</div>
-
+<?php 
+    if ($arr){
+        foreach ($arr as $data){
+?>
+    <p><?= $data->name ?></p>
 <?php
-include $project_root.'components/footer.php';
+
+        }
+    }
 ?>
+
+<?php 
+// Ensure footer is placed at the most bottom
+require $project_root."components/footer.php"; 
+?>
+
+<script src="../js/home.js"></script>
