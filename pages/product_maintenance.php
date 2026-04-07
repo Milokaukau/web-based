@@ -1,48 +1,20 @@
 <?php
 include '../database/product_base.php';
+include '../database/product_query.php';
 
-$arr = $_db->query('
-    SELECT p.*, c.name AS color_name, cat.name AS category_name
-    FROM tb_product p
-    JOIN tb_color c      ON p.color_id    = c.id
-    JOIN tb_category cat ON p.category_id = cat.id
-')->fetchAll();
+$arr = get_all_products($_db);
 
 $_title = 'Product | Index';
 include '../components/header.php';
 ?>
 
-
 <div class="admin-shell">
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <a class="logo" href="../pages/product_maintenance.php"> Admin Panel</a>
-        <div class="user-info">
-            <span>admin@example.com</span>
-            <div class="avatar">A</div>
-        </div>
-    </div>
+    <?php include '../components/admin_topbar.php'; ?>
 
-    <!-- Body -->
     <div class="admin-body">
 
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="nav-section">Catalogue</div>
-            <a class="nav-item active" href="../pages/product_maintenance.php">
-                <span class="nav-icon">&#128230;</span> Product
-            </a>
-
-            <div class="nav-section">Sales</div>
-            <a class="nav-item" href="../pages/order_listing.php">
-                <span class="nav-icon">&#128203;</span> Order
-            </a>
-            <a class="nav-item" href="../logic/member.php">
-                <span class="nav-icon">&#128101;</span> Member
-            </a>
-
-        </nav>
+        <?php $active = 'product'; include '../components/admin_sidebar.php'; ?>
 
         <!-- Main -->
         <main class="main-content">
@@ -115,14 +87,10 @@ include '../components/header.php';
 
     </div><!-- /.admin-body -->
 
-    <!-- Footer -->
-    <div class="admin-footer">
-        &copy; <?= date('Y') ?> Admin Panel
-    </div>
+    <?php include '../components/admin_footer.php'; ?>
 
 </div><!-- /.admin-shell -->
 
 <script src="../js/admin_product.js"></script>
 
 <?php include '../components/footer.php'; ?>
-

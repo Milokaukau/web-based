@@ -1,14 +1,13 @@
 <?php
 include '../database/product_base.php';
+include '../database/product_query.php';
 
 // ----------------------------------------------------------------------------
 
 if (is_get()) {
     $id = req('id');
 
-    $stm = $_db->prepare('SELECT * FROM tb_product WHERE id = ?');
-    $stm->execute([$id]);
-    $p = $stm->fetch();
+    $p = get_product_by_id($_db, $id);
 
     if (!$p) {
         redirect('index.php');
@@ -71,16 +70,9 @@ if (is_post()) {
             $photo = save_photo($f, '../photos');
         }
 
-        $stm = $_db->prepare('
-            UPDATE tb_product
-            SET color_id = ?, category_id = ?, name = ?, description = ?,
-                weight_g = ?, height_cm = ?, base_diameter_cm = ?, material = ?,
-                price = ?, stock = ?, photo = ?
-            WHERE id = ?
-        ');
-        $stm->execute([$color_id, $category_id, $name, $description,
+        update_product($_db, $color_id, $category_id, $name, $description,
                        $weight_g, $height_cm, $base_diameter_cm, $material,
-                       $price, $stock, $photo, $id]);
+                       $price, $stock, $photo, $id);
 
         temp('info', 'Record updated');
         redirect('../pages/product_maintenance.php');
@@ -89,45 +81,20 @@ if (is_post()) {
 
 // ----------------------------------------------------------------------------
 
-$colors     = $_db->query('SELECT id, name FROM tb_color ORDER BY name')
-                  ->fetchAll(PDO::FETCH_KEY_PAIR);
-
-$categories = $_db->query('SELECT id, name FROM tb_category ORDER BY name')
-                  ->fetchAll(PDO::FETCH_KEY_PAIR);
+$colors     = get_colors($_db);
+$categories = get_categories($_db);
 
 $_title = 'Product | Update';
 include '../components/header.php';
 ?>
 
-
 <div class="admin-shell">
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <a class="logo" href="/index.php">Admin Panel</a>
-        <div class="user-info">
-            <span>admin@example.com</span>
-            <div class="avatar">A</div>
-        </div>
-    </div>
+    <?php include '../components/admin_topbar.php'; ?>
 
-    <!-- Body -->
     <div class="admin-body">
 
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="nav-section">Catalogue</div>
-            <a class="nav-item active" href="../pages/product_maintenance.php">
-                <span class="nav-icon">&#128230;</span> Product
-            </a>
-            <div class="nav-section">Sales</div>
-            <a class="nav-item" href="../pages/order_listing.php">
-                <span class="nav-icon">&#128203;</span> Order
-            </a>
-            <a class="nav-item" href="../logic/member.php">
-                <span class="nav-icon">&#128101;</span> Member
-            </a>
-        </nav>
+        <?php $active = 'product'; include '../components/admin_sidebar.php'; ?>
 
         <!-- Main -->
         <main class="main-content">
@@ -253,12 +220,10 @@ include '../components/header.php';
             </div>
 
         </main>
-    </div><!-- /.admin-body -->
 
-    <!-- Footer -->
-    <div class="admin-footer">
-        &copy; <?= date('Y') ?> Admin Panel
-    </div>
+        <?php include '../components/admin_footer.php'; ?>
+
+    </div><!-- /.admin-body -->
 
 </div><!-- /.admin-shell -->
 

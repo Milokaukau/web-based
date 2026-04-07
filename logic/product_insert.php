@@ -1,20 +1,21 @@
 <?php
 include '../database/product_base.php';
+include '../database/product_query.php';
 
 // ----------------------------------------------------------------------------
 
 if (is_post()) {
-    $color_id        = req('color_id');
-    $category_id     = req('category_id');
-    $name            = req('name');
-    $description     = req('description');
-    $weight_g        = req('weight_g');
-    $height_cm       = req('height_cm');
+    $color_id         = req('color_id');
+    $category_id      = req('category_id');
+    $name             = req('name');
+    $description      = req('description');
+    $weight_g         = req('weight_g');
+    $height_cm        = req('height_cm');
     $base_diameter_cm = req('base_diameter_cm');
-    $material        = req('material');
-    $price           = req('price');
-    $stock           = req('stock');
-    $f               = get_file('photo');
+    $material         = req('material');
+    $price            = req('price');
+    $stock            = req('stock');
+    $f                = get_file('photo');
 
     if ($color_id == '')                    $_err['color_id'] = 'Required';
     else if (!is_exists($color_id, 'tb_color', 'id')) $_err['color_id'] = 'Invalid';
@@ -53,11 +54,9 @@ if (is_post()) {
     if (!$_err) {
         $photo = save_photo($f, '../photos');
 
-        $stm = $_db->prepare('
-            INSERT INTO tb_product (color_id, category_id, name, description, weight_g, height_cm, base_diameter_cm, material, price, stock, photo)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ');
-        $stm->execute([$color_id, $category_id, $name, $description, $weight_g, $height_cm, $base_diameter_cm, $material, $price, $stock, $photo]);
+        insert_product($_db, $color_id, $category_id, $name, $description,
+                       $weight_g, $height_cm, $base_diameter_cm, $material,
+                       $price, $stock, $photo);
 
         temp('info', 'Record inserted');
         redirect('../pages/product_maintenance.php');
@@ -66,47 +65,20 @@ if (is_post()) {
 
 // ----------------------------------------------------------------------------
 
-$colors     = $_db->query('SELECT id, name FROM tb_color ORDER BY name')
-                  ->fetchAll(PDO::FETCH_KEY_PAIR);
-
-$categories = $_db->query('SELECT id, name FROM tb_category ORDER BY name')
-                  ->fetchAll(PDO::FETCH_KEY_PAIR);
+$colors     = get_colors($_db);
+$categories = get_categories($_db);
 
 $_title = 'Product | Insert';
 include '../components/header.php';
 ?>
 
-
 <div class="admin-shell">
 
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <a class="logo" href="../pages/product_maintenance.php"> Admin Panel</a>
-        <div class="user-info">
-            <span>admin@example.com</span>
-            <div class="avatar">A</div>
-        </div>
-    </div>
+    <?php include '../components/admin_topbar.php'; ?>
 
-    <!-- Body -->
     <div class="admin-body">
 
-        <!-- Sidebar -->
-        <nav class="sidebar">
-            <div class="nav-section">Catalogue</div>
-            <a class="nav-item active" href="../pages/product_maintenance.php">
-                <span class="nav-icon">&#128230;</span> Product
-            </a>
-
-            <div class="nav-section">Sales</div>
-            <a class="nav-item" href="../pages/order_listing.php">
-                <span class="nav-icon">&#128203;</span> Order
-            </a>
-            <a class="nav-item" href="../logic/member.php">
-                <span class="nav-icon">&#128101;</span> Member
-            </a>
-
-        </nav>
+        <?php $active = 'product'; include '../components/admin_sidebar.php'; ?>
 
         <!-- Main -->
         <main class="main-content">
@@ -185,7 +157,7 @@ include '../components/header.php';
                                 <?= err('material') ?>
                             </td>
                         </tr>
-                        <tr>  
+                        <tr>
                             <th><label for="price">Price (RM)</label></th>
                             <td>
                                 <?= html_number('price', 0.01, 99.99, 0.01) ?>
@@ -224,12 +196,10 @@ include '../components/header.php';
             </div>
 
         </main>
-    </div><!-- /.admin-body -->
 
-    <!-- Footer -->
-    <div class="admin-footer">
-        &copy; <?= date('Y') ?> Admin Panel
-    </div>
+        <?php include '../components/admin_footer.php'; ?>
+
+    </div><!-- /.admin-body -->
 
 </div><!-- /.admin-shell -->
 
