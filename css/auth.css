@@ -61,6 +61,7 @@
 
 .password-group{
     position: relative;
+    align-items: flex-start;
 }
 
 .password-group input{
@@ -81,6 +82,7 @@
     color: #888;
     padding:0;
     line-height: 1;
+    z-index: 1;
 }
 
 .toggle-password:hover{

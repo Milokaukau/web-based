@@ -1,17 +1,14 @@
 <?php
-// 1. Start session first
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Define paths safely
 $project_root = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\') . DIRECTORY_SEPARATOR;
 
-// 3. Load dependencies BEFORE using them
+require_once $project_root . "database/product.php";
 require_once $project_root . "database/category.php";
 require_once $project_root . "logic/auth_helper.php";
 
-// 4. Logic
 $isLoggedIn = isset($_SESSION['user_id']); 
 
 $wishlistCount = isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0;
@@ -43,21 +40,13 @@ $categories = getAllCategories() ?: []; // Ensure it's at least an empty array
             <div class="category-dropdown">
                 <button class="dropbtn">Products <small>▼</small></button>
                 <div class="dropdown-content">
-                    <?php foreach ($categories as $cat): ?>
+<?php foreach ($categories as $cat): ?>
     <?php
-        // 1. Get the category ID (Works whether $cat is an object or array)
         $catId = is_object($cat) ? $cat->id : $cat['id'];
         $catName = is_object($cat) ? $cat->name : $cat['name'];
-
-        $stmt = db()->prepare("SELECT id FROM tb_product WHERE category_id = ? LIMIT 1");
-        $stmt->execute([$catId]);
-        $first_prod = $stmt->fetch();
-
-        // 2. Get the product ID (Works whether $first_prod is an object or array)
-        $target_id = 1; // Default fallback
-        if ($first_prod) {
-            $target_id = is_object($first_prod) ? $first_prod->id : ($first_prod['id'] ?? 1);
-        }
+        
+        $first_prod = getFirstProductByCategory($catId);
+        $target_id = $first_prod ? (is_object($first_prod) ? $first_prod->id : $first_prod['id']) : 1;
     ?>
     <a href="/pages/product.php?id=<?= $target_id ?>">
         <?= htmlspecialchars(ucfirst($catName)) ?>

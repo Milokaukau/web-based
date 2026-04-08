@@ -120,7 +120,6 @@ require $project_root."components/header.php";
         </div>
     </section>
 
-<<<<<<< HEAD
     <section class="section-container">
         <div class="container-wide">
             <div class="section-header">
@@ -165,13 +164,3 @@ require $project_root."components/header.php";
     </section>
 </main>
 <?php require $project_root."components/footer.php"; ?>
-=======
-</div>
-
-<?php 
-// Ensure footer is placed at the most bottom
-require $project_root."components/footer.php"; 
-?>
-
-<script src="../js/home.js"></script>
->>>>>>> 5ec4dfb2d51dd80d29231e4af0a30df242d91161
