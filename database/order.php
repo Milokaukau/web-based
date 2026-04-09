@@ -1,25 +1,25 @@
 <?php
 require_once "db.php";
 
-
 function getOrderListQuery(){
     return "
     SELECT 
         o.id AS order_id,
         o.member_id,
-        o.payment_id,
+        o.status AS order_status,
         o.amount,
         o.created_at,
         m.name AS member_name,
         op.quantity,
+        op.price AS purchase_price,
         p.name AS product_name,
-        pm.method,
-        pm.status
+        pm.method AS payment_method,
+        pm.status AS payment_status
     FROM tb_order o
     JOIN tb_member m ON m.id = o.member_id
     JOIN tb_order_product op ON op.order_id = o.id
     JOIN tb_product p ON p.id = op.product_id
-    JOIN tb_payment pm ON pm.id = o.payment_id
+    LEFT JOIN tb_payment pm ON pm.order_id = o.id
     ";
 }
 
@@ -40,45 +40,43 @@ function getOrderListByMemberId($member_id){
 
 /**
  * Insert a new order with payment info and cart items.
- *
- * @param int    $member_id   Logged-in member's ID (0 for guest)
- * @param float  $amount      Total amount charged
- * @param string $pay_method  'card' | 'tng'
- * @param string $pay_status  e.g. 'paid'
- * @param array  $cart        $_SESSION['cart'] — keys are product IDs
- * @param string $address
- * @param string $city
- * @param string $postcode
- * @return int   Newly created order ID
  */
 function insertOrder($member_id, $amount, $pay_method, $pay_status, $cart, $address, $city, $postcode) {
     $db = db();
     $db->beginTransaction();
 
     try {
-        // 1. Insert payment record
+        // 1. Insert order record FIRST (Defaults to 'pending_payment' based on your DB rules)
         $stmt = $db->prepare("
-            INSERT INTO tb_payment (method, status, created_at, completed_at)
-            VALUES (?, ?, NOW(), NOW())
+            INSERT INTO tb_order (member_id, amount, status, created_at)
+            VALUES (?, ?, 'pending_payment', NOW())
         ");
-        $stmt->execute([$pay_method, $pay_status]);
-        $payment_id = $db->lastInsertId();
-
-        // 2. Insert order record
-        $stmt = $db->prepare("
-            INSERT INTO tb_order (member_id, payment_id, amount, created_at)
-            VALUES (?, ?, ?, NOW())
-        ");
-        $stmt->execute([$member_id, $payment_id, $amount]);
+        $stmt->execute([$member_id, $amount]);
         $order_id = $db->lastInsertId();
 
-        // 3. Insert each cart item as an order_product row
+        // 2. Insert payment record SECOND (linked to the order_id)
         $stmt = $db->prepare("
-            INSERT INTO tb_order_product (order_id, product_id, quantity)
-            VALUES (?, ?, ?)
+            INSERT INTO tb_payment (order_id, method, status, created_at, completed_at)
+            VALUES (?, ?, ?, NOW(), NOW())
+        ");
+        $stmt->execute([$order_id, $pay_method, $pay_status]);
+        
+        // If payment is success, update the order status
+        if ($pay_status === 'success') {
+            $stmtUpdate = $db->prepare("UPDATE tb_order SET status = 'confirmed' WHERE id = ?");
+            $stmtUpdate->execute([$order_id]);
+        }
+
+        // 3. Insert each cart item as an order_product row (WITH price snapshot)
+        $stmt = $db->prepare("
+            INSERT INTO tb_order_product (order_id, product_id, quantity, price)
+            VALUES (?, ?, ?, ?)
         ");
         foreach ($cart as $key => $item) {
-            $stmt->execute([$order_id, $item['id'], $item['qty']]);
+            // Note: Make sure your session $cart array includes 'price'. If it doesn't, 
+            // you will need to SELECT the price from tb_product inside this loop.
+            $price = $item['price'] ?? 0; 
+            $stmt->execute([$order_id, $item['id'], $item['qty'], $price]);
         }
 
         $db->commit();
@@ -90,13 +88,13 @@ function insertOrder($member_id, $amount, $pay_method, $pay_status, $cart, $addr
     }
 }
 
-function updateOrderStatus($payment_id, $status) {
+function updateOrderStatus($order_id, $status) {
     $stmt = db()->prepare("
-        UPDATE tb_payment 
+        UPDATE tb_order 
         SET status = ? 
         WHERE id = ?
     ");
-    $stmt->execute([$status, $payment_id]); 
+    $stmt->execute([$status, $order_id]); 
 }
 
 function getOrdersByMember($member_id) {
@@ -104,11 +102,12 @@ function getOrdersByMember($member_id) {
         SELECT 
             o.id AS order_id, 
             o.amount, 
+            o.status AS order_status, 
             o.created_at, 
             p.status AS payment_status, 
             p.method AS payment_method
         FROM tb_order o
-        JOIN tb_payment p ON o.payment_id = p.id
+        LEFT JOIN tb_payment p ON o.id = p.order_id AND p.status = 'success'
         WHERE o.member_id = ?
         ORDER BY o.created_at DESC
     ");
@@ -120,8 +119,8 @@ function getOrderItems($order_id) {
     $stmt = db()->prepare("
         SELECT 
             op.quantity, 
+            op.price AS purchase_price,
             pr.name AS product_name, 
-            pr.price,
             pr.photo, 
             c.name AS color_name
         FROM tb_order_product op
@@ -138,11 +137,12 @@ function getOrderById($order_id, $member_id) {
         SELECT 
             o.id AS order_id, 
             o.amount, 
+            o.status AS order_status, 
             o.created_at, 
             p.status AS payment_status, 
             p.method AS payment_method
         FROM tb_order o
-        JOIN tb_payment p ON o.payment_id = p.id
+        LEFT JOIN tb_payment p ON o.id = p.order_id
         WHERE o.id = ? AND o.member_id = ?
     ");
     $stmt->execute([$order_id, $member_id]);

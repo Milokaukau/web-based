@@ -65,7 +65,19 @@ $categories = getAllCategories() ?: []; // Ensure it's at least an empty array
 
             <div class="nav-links">
                 <?php if(isMember()): ?>
-                    <a href="/pages/profile.php">PROFILE</a>
+                    <?php 
+                        // Safely fetch the member's name from session, fallback to 'MY ACCOUNT'
+                        $memberName = $_SESSION['name'] ?? $_SESSION['member_name'] ?? 'MY ACCOUNT'; 
+                    ?>
+                    <div class="category-dropdown">
+                        <button class="dropbtn">
+                            <?= htmlspecialchars(strtoupper($memberName)) ?> <small>▼</small>
+                        </button>
+                        <div class="dropdown-content user-menu">
+                            <a href="/pages/profile.php">PROFILE</a>
+                            <a href="/pages/order_history.php">ORDER HISTORY</a>
+                        </div>
+                    </div>
                     <span>|</span>
                     <a href="/pages/logout.php">LOGOUT</a>
                     <a href="/pages/wishlist.php" class="wishlist-link">

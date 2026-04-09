@@ -13,8 +13,8 @@ include $project_root.'components/header.php';
     
     <div class="details-header">
         <h1 class="details-title">Order Details</h1>
-        <span class="status-badge status-<?= htmlspecialchars($order->payment_status) ?>">
-            <?= htmlspecialchars($order->payment_status) ?>
+        <span class="status-badge status-<?= htmlspecialchars($order->order_status) ?>">
+            <?= htmlspecialchars($status_labels[$order->order_status] ?? 'Unknown Status') ?>
         </span>
     </div>
 
@@ -54,13 +54,13 @@ include $project_root.'components/header.php';
                         <div class="item-meta">
                             Color: <?= htmlspecialchars($item->color_name) ?> <br>
                             Qty: <?= htmlspecialchars($item->quantity) ?> 
-                            (@ $<?= number_format($item->price, 2) ?> each)
+                            (@ $<?= number_format($item->purchase_price, 2) ?> each)
                         </div>
                     </div>
                 </div>
 
                 <div class="details-item-price">
-                    $<?= number_format($item->price * $item->quantity, 2) ?>
+                    $<?= number_format($item->purchase_price * $item->quantity, 2) ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -74,13 +74,25 @@ include $project_root.'components/header.php';
             </div>
             <div class="total-line">
                 <span>Shipping</span>
-                <span>$0.00</span> </div>
+                <span>$0.00</span> 
+            </div>
             <div class="total-line grand-total">
                 <span>Total</span>
                 <span>$<?= number_format($order->amount, 2) ?></span>
             </div>
         </div>
     </div>
+
+    <?php if ($order->order_status === 'pending_payment' || $order->order_status === 'confirmed'): ?>
+        <div class="order-actions" style="margin-top: 30px; text-align: right;">
+            <form action="../logic/cancel_order.php" method="POST">
+                <input type="hidden" name="order_id" value="<?= htmlspecialchars($order->order_id) ?>">
+                <button type="submit" class="btn btn-primary" style="background-color: #dc3545; color: white;" onclick="return confirm('Are you sure you want to cancel this order?');">
+                    Cancel Order
+                </button>
+            </form>
+        </div>
+    <?php endif; ?>
 
 </div>
 
