@@ -101,10 +101,7 @@ require $project_root."components/header.php";
                         <span>Subtotal</span>
                         <span>RM <?= number_format($subtotal, 2) ?></span>
                     </div>
-                    <div class="summary-line">
-                        <span>Shipping fee</span>
-                        <span><?= $shipping == 0 ? 'FREE' : 'RM '.number_format($shipping, 2) ?></span>
-                    </div>
+
                     <div class="summary-line total-amount">
                         <span>Total amount</span>
                         <span>RM <?= number_format($total, 2) ?></span>
