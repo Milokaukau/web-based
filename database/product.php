@@ -34,3 +34,12 @@ function getFirstProductByCategory($categoryId){
         $stmt->execute([$categoryId]);
         return $stmt->fetch();
 }
+
+/**
+ * Get all products that belong to a specific category.
+ */
+function getProductsByCategoryId($category_id) {
+    $stmt = db()->prepare("SELECT * FROM tb_product WHERE category_id = ? ORDER BY id ASC");
+    $stmt->execute([$category_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
