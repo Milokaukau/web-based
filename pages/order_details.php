@@ -13,9 +13,18 @@ include $project_root.'components/header.php';
     
     <div class="details-header">
         <h1 class="details-title">Order Details</h1>
-        <span class="status-badge status-<?= htmlspecialchars($order->order_status) ?>">
-            <?= htmlspecialchars($status_labels[$order->order_status] ?? 'Unknown Status') ?>
-        </span>
+        
+        <div class="status-badges" style="display: flex; gap: 10px; align-items: center;">
+            <span class="status-badge status-<?= htmlspecialchars($order->order_status) ?>">
+                Order: <?= htmlspecialchars($order_status_labels[$order->order_status] ?? 'Unknown') ?>
+            </span>
+            
+            <?php if (!empty($order->payment_status)): ?>
+                <span class="status-badge status-<?= htmlspecialchars($order->payment_status) ?>">
+                    Payment: <?= htmlspecialchars($payment_status_labels[$order->payment_status] ?? 'Unknown') ?>
+                </span>
+            <?php endif; ?>
+        </div>
     </div>
 
     <div class="summary-box">
@@ -29,7 +38,7 @@ include $project_root.'components/header.php';
         </div>
         <div class="summary-block">
             <span>Payment Method</span>
-            <strong><?= htmlspecialchars($payment_labels[$order->payment_method] ?? 'Unknown') ?></strong>
+            <strong><?= htmlspecialchars($payment_methods[$order->payment_method] ?? 'N/A') ?></strong>
         </div>
         <div class="summary-block">
             <span>Total Amount</span>
@@ -83,11 +92,19 @@ include $project_root.'components/header.php';
         </div>
     </div>
 
+    <?php if (!empty($_SESSION['flash'])): ?>
+        <div class="alert alert-<?= htmlspecialchars($_SESSION['flash']['type']) ?>" style="margin-top: 20px; padding: 15px; background: #d4edda; color: #155724; border-radius: 5px;">
+            <?= htmlspecialchars($_SESSION['flash']['message']) ?>
+        </div>
+        <?php unset($_SESSION['flash']); ?>
+    <?php endif; ?>
+
     <?php if ($order->order_status === 'pending_payment' || $order->order_status === 'confirmed'): ?>
         <div class="order-actions" style="margin-top: 30px; text-align: right;">
-            <form action="../logic/cancel_order.php" method="POST">
+            <form action="" method="POST">
+                <input type="hidden" name="action" value="cancel_order">
                 <input type="hidden" name="order_id" value="<?= htmlspecialchars($order->order_id) ?>">
-                <button type="submit" class="btn btn-primary" style="background-color: #dc3545; color: white;" onclick="return confirm('Are you sure you want to cancel this order?');">
+                <button type="submit" class="btn btn-primary" style="background-color: #dc3545; color: white;" onclick="return confirm('Are you sure you want to cancel this order? This action cannot be undone.');">
                     Cancel Order
                 </button>
             </form>

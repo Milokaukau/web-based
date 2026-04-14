@@ -36,10 +36,9 @@ include $project_root.'components/header.php';
                             <strong><?= htmlspecialchars($order->order_id) ?></strong>
                         </div>
                     </div>
-                    
-                    <div class="order-header-status">
-                        <span class="status-badge status-<?= htmlspecialchars($order->payment_status) ?>">
-                            <?= htmlspecialchars($order->payment_status) ?>
+                    <div class="order-header-status" style="display: flex; gap: 8px;">
+                        <span class="status-badge status-<?= htmlspecialchars($order->order_status) ?>">
+                            Status: <?= ucwords(str_replace('_', ' ', htmlspecialchars($order->order_status))) ?>
                         </span>
                     </div>
                 </div>
@@ -60,13 +59,20 @@ include $project_root.'components/header.php';
                             </div>
                         </div>
 
-                        <div class="item-actions">
-                            <button type="button" class="btn btn-buy-again">Buy it again</button>
-                            <a href="order_details.php?id=<?= $order->order_id ?>" class="btn btn-view-details">View order details</a>
-                        </div>
+                        <!-- <div class="item-actions">
+                            <button type="button" class="btn btn-buy-again" style="background-color: transparent; color: var(--text-dark, #333); border: 1px solid #ccc; padding: 8px 16px;">
+                                Buy it again
+                            </button>
+                        </div> -->
 
                     </div>
                 <?php endforeach; ?>
+
+                <div class="order-footer" style="padding: 15px 20px; border-top: 1px solid var(--border-ultra-light, #eee); display: flex; justify-content: flex-end; background-color: #fafafa; border-radius: 0 0 8px 8px;">
+                    <a href="order_details.php?id=<?= $order->order_id ?>" class="btn btn-primary" style="padding: 8px 16px;">
+                        View order details
+                    </a>
+                </div>
 
             </div>
         <?php endforeach; ?>

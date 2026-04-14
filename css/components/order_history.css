@@ -168,7 +168,7 @@
 }
 
 /* Primary Action: Buy It Again (Coral) */
-.btn-buy-again {
+.btn-vie-again {
   background-color: var(--main-coral);
   color: var(--text-dark);
 }
@@ -179,12 +179,86 @@
 }
 
 /* Secondary Action: View Details (Dark) */
-.btn-view-details {
+.btn-buy-again {
   background-color: var(--text-dark);
   color: var(--white);
 }
 
-.btn-view-details:hover {
+.btn-buy-again:hover {
   background-color: var(--text-muted);
   transform: translateY(-2px);
+}
+
+/* --- GLOBAL STATUS BADGES --- */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+/* Order Status Colors */
+.status-pending_payment {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+.status-confirmed {
+  background-color: #cce5ff;
+  color: #004085;
+  border: 1px solid #b8daff;
+}
+.status-in_delivery {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border: 1px solid #bee5eb;
+}
+.status-delivered {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.status-completed {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Payment Status Colors */
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+.status-processing {
+  background-color: #cce5ff;
+  color: #004085;
+  border: 1px solid #b8daff;
+}
+.status-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.status-failed {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+.status-pending_refund {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+.status-refunded {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
 }

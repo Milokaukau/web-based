@@ -148,3 +148,34 @@ function getOrderById($order_id, $member_id) {
     $stmt->execute([$order_id, $member_id]);
     return $stmt->fetch(); 
 }
+
+function cancelAndRefundOrder($order_id) {
+    $db = db();
+    
+    try {
+        $db->beginTransaction();
+
+        // 1. Update Order Status to cancelled
+        $stmtOrder = $db->prepare("UPDATE tb_order SET status = 'cancelled' WHERE id = ?");
+        $stmtOrder->execute([$order_id]);
+        
+        // 2. Update Payment Status to refunded
+        $stmtPay = $db->prepare("UPDATE tb_payment SET status = 'refunded' WHERE order_id = ? AND status = 'success'");
+        $stmtPay->execute([$order_id]);
+        
+        // 3. Restore Stock
+        $stmtStock = $db->prepare("
+            UPDATE tb_product p 
+            JOIN tb_order_product op ON p.id = op.product_id 
+            SET p.stock = p.stock + op.quantity 
+            WHERE op.order_id = ?
+        ");
+        $stmtStock->execute([$order_id]);
+        
+        $db->commit();
+        
+    } catch (Exception $e) {
+        $db->rollBack();
+        throw $e; // Throw back to logic file to handle the error if needed
+    }
+}
