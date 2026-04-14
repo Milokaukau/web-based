@@ -4,10 +4,17 @@ if (!isset($_SESSION['wishlist'])) {
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "/database/product.php";
-$isLoggedIn = isset($_SESSION['user_id']);
+$isLoggedIn = isset($_SESSION['role']) && $_SESSION['role'] === 'member';
 $user_id = $_SESSION['user_id'] ?? null;
 
 if (isset($_GET['action'])) {
+    // Require login for all wishlist actions
+    if (!$isLoggedIn) {
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        header("Location: /pages/login.php");
+        exit;
+    }
+
     $id = $_GET['id'] ?? null;
     $color = $_GET['color'] ?? 1;
     
@@ -20,8 +27,8 @@ if (isset($_GET['action'])) {
                 
                 // --- DB SYNC (Add) ---
                 if ($isLoggedIn) {
-                    $stmt = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id, quantity) VALUES (?, ?, ?)");
-                    $stmt->execute([$user_id, $id, 1]); 
+                    $stmt = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id) VALUES (?, ?)");
+                    $stmt->execute([$user_id, $id]);
                 }
             }
         } elseif ($_GET['action'] == 'remove') {
@@ -76,7 +83,7 @@ if ($isLoggedIn && empty($_SESSION['wishlist_synced'])) {
             $pid = $parts[0];
             $cid = $parts[1] ?? 1;
             
-            $ins = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id, quantity) VALUES (?, ?, 1)");
+            $ins = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id) VALUES (?, ?)");
             $ins->execute([$user_id, $pid]);
         }
     }

@@ -124,6 +124,9 @@ require $project_root."components/header.php";
     </div>
 </main>
 
+<script>
+    const isLoggedIn = <?= isMember() ? 'true' : 'false' ?>;
+</script>
 <script src="../js/product.js"></script>
 
 <?php 

@@ -1,9 +1,19 @@
 <?php
-$isLoggedIn = isset($_SESSION['user_id']);
+require_once $_SERVER['DOCUMENT_ROOT'] . "/database/db.php";
+
+$isLoggedIn = isset($_SESSION['role']) && $_SESSION['role'] === 'member';
 $user_id = $_SESSION['user_id'] ?? null;
 
 // Handle cart actions
 if (isset($_GET['action']) && isset($_GET['id'])) {
+    // Require login for all cart actions
+    if (!$isLoggedIn) {
+        // Preserve the intended destination so user can be sent back after login
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        header("Location: /pages/login.php");
+        exit;
+    }
+
     $id = $_GET['id'];
     $color = $_GET['color'] ?? 1;
     $cart_key = $id . "_" . $color;
