@@ -387,6 +387,25 @@ body{
 }
 .btn-reset:hover { background: #f5f5f5; }
 
+.search-wrap {
+    margin-bottom: 16px;
+}
+
+.search-wrap input {
+    width: 100%;
+    max-width: 400px;
+    padding: 8px 14px;
+    border: 1px solid var(--border-color, #ddd);
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-wrap input:focus {
+    border-color: var(--primary-color, #555);
+}
+
 /* ── Table ── */
 .tbl-wrap {
     background: #fff;

@@ -26,6 +26,10 @@ include '../components/header.php';
                 <a class="btn-add" href="../logic/product_insert.php">&#43; Add Product</a>
             </div>
 
+            <div class="search-wrap">
+                <input type="text" id="product-search" placeholder="Search by name, material, description…" autocomplete="off">
+            </div>
+
             <div class="tbl-wrap">
                 <table>
                     <thead>

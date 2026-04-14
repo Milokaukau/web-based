@@ -53,6 +53,29 @@ function initPhotoPreview(defaultSrc = '/images/photo.jpg') {
     }
 }
 
+// Search filter
+const searchInput = document.getElementById('product-search');
+
+searchInput.addEventListener('input', function () {
+    const q = this.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        // Search across: name (col 4), description (col 5), material (col 9)
+        const name     = row.cells[4]?.textContent.toLowerCase() || '';
+        const desc     = row.cells[5]?.textContent.toLowerCase() || '';
+        const material = row.cells[9]?.textContent.toLowerCase() || '';
+        const id       = row.cells[1]?.textContent.toLowerCase() || '';
+
+        const match = !q || name.includes(q) || desc.includes(q) || material.includes(q) || id.includes(q);
+        row.style.display = match ? '' : 'none';
+    });
+
+    // Update record count
+    const visible = [...rows].filter(r => r.style.display !== 'none').length;
+    document.querySelector('.page-header .sub').textContent = visible + ' record(s) found';
+});
+
 // Auto-init 
 initTableSort();
 initPhotoPreview();
