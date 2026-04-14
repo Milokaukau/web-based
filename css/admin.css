@@ -2,21 +2,27 @@
 
 /* ── VARIABLES ───────────────────────────────────────────── */
 :root {
-    --cream:   #FAF6F0;
-    --warm1:   #F2E8D9;
-    --warm2:   #E8D5BB;
-    --warm3:   #C9A87C;
-    --brown1:  #8B5E3C;
-    --brown2:  #5C3A1E;
-    --brown3:  #3A2010;
-    --accent:  #C4622D;
-    --success: #5A7A4A;
-    --danger:  #A33030;
-    --warning: #8A6020;
-    --text:    #2C1A0E;
-    --muted:   #9A7A60;
-    --border:  #DFD0BB;
+    --cream:   #F5F5F5;
+    --warm1:   #EDEDED;
+    --warm2:   #D6D6D6;
+    --warm3:   #BFBFBF;
+
+    --brown1:  #555555;
+    --brown2:  #333333;
+    --brown3:  #111111;
+
+    --accent:  #E91E63;   /* pink accent */
+
+    --success: #4CAF50;
+    --danger:  #D32F2F;
+    --warning: #F57C00;
+
+    --text:    #111111;
+    --muted:   #777777;
+    --border:  #DDDDDD;
+
     --white:   #FFFFFF;
+    --black:   #000000;
 }
 
 /* ── RESET ───────────────────────────────────────────────── */
@@ -30,7 +36,7 @@ body {
 
 /* ── TOPBAR ──────────────────────────────────────────────── */
 .topbar {
-    background: var(--brown2);
+    background: var(--black);
     padding: 0 28px;
     height: 56px;
     display: flex;
@@ -44,25 +50,25 @@ body {
     font-family: 'Playfair Display', serif;
     font-size: 22px;
     font-weight: 600;
-    color: var(--warm1);
+    color: var(--white);
     letter-spacing: 4px;
 }
-.topbar-brand span { color: var(--warm3); }
+.topbar-brand span { color: var(--white); }
 .topbar-right { display: flex; align-items: center; gap: 18px; }
-.topbar-clock { font-size: 12px; color: var(--warm3); letter-spacing: 0.5px; }
+.topbar-clock { font-size: 12px; color: var(--white); letter-spacing: 0.5px; }
 .topbar-user  { display: flex; align-items: center; gap: 8px; }
 .avatar-sm {
     width: 30px; height: 30px; border-radius: 50%;
-    background: var(--warm3); display: flex; align-items: center;
-    justify-content: center; font-size: 12px; font-weight: 500; color: var(--brown3);
+    background: var(--white); display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 500; color: var(--black);
 }
-.topbar-name { font-size: 13px; color: var(--warm2); }
+.topbar-name { font-size: 13px; color: var(--white); }
 .logout-btn {
-    font-size: 12px; color: var(--warm3); text-decoration: none;
-    border: 0.5px solid var(--warm3); padding: 4px 10px;
+    font-size: 12px; color: var(--white); text-decoration: none;
+    border: 0.5px solid var(--white); padding: 4px 10px;
     border-radius: 4px; transition: all 0.2s;
 }
-.logout-btn:hover { background: var(--warm3); color: var(--brown3); }
+.logout-btn:hover { background: var(--white); color: var(--white); }
 
 /* ── LAYOUT ──────────────────────────────────────────────── */
 .layout { display: flex; min-height: calc(100vh - 56px); }
@@ -70,7 +76,7 @@ body {
 /* ── SIDEBAR ─────────────────────────────────────────────── */
 .sidebar {
     width: 200px;
-    background: var(--brown3);
+    background: var(--white);
     padding: 24px 0;
     position: sticky;
     top: 56px;
@@ -79,19 +85,19 @@ body {
     flex-shrink: 0;
 }
 .sidebar-section {
-    font-size: 9px; font-weight: 500; color: var(--warm3);
+    font-size: 12px; font-weight: 500; color: var(--black);
     text-transform: uppercase; letter-spacing: 1.5px;
     padding: 0 20px 8px; margin-top: 16px;
 }
 .sidebar-section:first-child { margin-top: 0; }
 .nav-link {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 20px; font-size: 13px; color: var(--warm2);
+    padding: 10px 20px; font-size: 13px; color: var(--brown3);
     text-decoration: none; transition: all 0.15s; cursor: pointer;
     border-left: 3px solid transparent;
 }
-.nav-link:hover { background: rgba(255,255,255,0.06); color: var(--warm1); }
-.nav-link.active { background: rgba(196,98,45,0.2); color: var(--warm1); border-left-color: var(--accent); }
+.nav-link:hover { background: rgba(255,255,255,0.06); color: var(--brown1); }
+.nav-link.active { background: rgba(196,98,45,0.2); color: var(--black); border-left-color: var(--accent); }
 .nav-icon { font-size: 15px; width: 18px; text-align: center; }
 
 /* ── CONTENT ─────────────────────────────────────────────── */
@@ -101,7 +107,7 @@ body {
 .page-header { margin-bottom: 24px; }
 .page-header h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 24px; font-weight: 500; color: var(--brown2);
+    font-size: 24px; font-weight: 500; color: var(--black);
 }
 .page-header p { font-size: 13px; color: var(--muted); margin-top: 3px; }
 

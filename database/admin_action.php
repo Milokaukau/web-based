@@ -1,14 +1,7 @@
 <?php
-/**
- * admin_actions.php
- * Handles all admin POST/GET actions before HTML output.
- * Include at top of admin.php after auth check.
- *
- * tb_member columns: id, name, email, password, photo, address_id, gender, phone, login_attempts, locked_until
- */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . "/database/db.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/database/auth.php";
+require_once "db.php";
+require_once "auth.php";
 
 $pdo    = db();
 $action = $_GET['action'] ?? '';
