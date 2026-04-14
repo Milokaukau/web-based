@@ -47,11 +47,24 @@
 .dropdown-content {
     display: none;
     position: absolute;
+    top: 100%;
+    margin-top: 5px;
     background: var(--white);
     min-width: 150px;
     border: 1px solid var(--border-ultra-light);
-    margin-top: 10px;
     padding: 10px 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Adds a nice subtle shadow */
+}
+
+/* This transparent bridge stops the menu from disappearing when the mouse crosses the gap */
+.dropdown-content::after {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: transparent;
 }
 
 .dropdown-content a {
@@ -107,18 +120,12 @@
 
 .nav-links a:hover { color: var(--main-coral); }
 
-.cart-link {
-    position: relative;
-    padding-right: 12px;
-}
-
-.cart-count-dot {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    width: 5px;
-    height: 5px;
-    background-color: var(--main-coral);
-    border-radius: 50%;
+.count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 2px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--main-coral);
 }
