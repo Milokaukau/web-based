@@ -5,7 +5,7 @@ if (!isset($_SESSION['wishlist'])) {
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "/database/product.php";
 $isLoggedIn = isset($_SESSION['role']) && $_SESSION['role'] === 'member';
-$user_id = $_SESSION['user_id'] ?? null;
+$user_id = $_SESSION['member_id'] ?? null;
 
 if (isset($_GET['action'])) {
     // Require login for all wishlist actions

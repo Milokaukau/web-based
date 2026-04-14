@@ -37,11 +37,16 @@ if ($status === 'success' && $session_id) {
             $pay_method_label = $pm === 'grabpay' ? 'Touch \'n Go eWallet' : 'Credit / Debit Card';
 
             // -------------------------------------------------------
-            // TODO: Save order to your database here if not already
+            // Save order to your database here if not already
             // handled by a Stripe webhook (recommended approach).
             // -------------------------------------------------------
+            require_once $project_root."database/payment_status.php";
+            if (!empty($_SESSION['cart'])) {
+                $member_id = $_SESSION['member_id'] ?? 0;
+                processSuccessfulPayment($member_id, $amount_total, $pm, $_SESSION['cart']);
+            }
 
-            // Clear cart only after confirmed payment
+            // Clear cart from session only after confirmed payment
             unset($_SESSION['cart']);
             unset($_SESSION['stripe_session_id']);
 
