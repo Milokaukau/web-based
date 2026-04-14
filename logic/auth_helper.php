@@ -12,6 +12,7 @@ function loginAdmin($admin){
     $_SESSION['admin_id']    = $admin->id;
     $_SESSION['admin_name']  = $admin->name;
     $_SESSION['role']        = 'admin';
+    $_SESSION['is_superadmin'] = $admin->is_superadmin;
 }
 
 function logout(){
@@ -31,6 +32,10 @@ function isAdmin(){
     return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 }
 
+function isSuperAdmin(){
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin' && isset($_SESSION['is_superadmin']) && $_SESSION['is_superadmin'] == 1;
+}
+
 function redirectWith($url, $type, $message){
     $_SESSION['flash'] = ['type' => $type, 'message' => $message];
     header("Location: $url");
@@ -48,6 +53,12 @@ function requireMember(){
 function requireAdmin(){
     if(!isAdmin()){
         redirectWith('/pages/admin/login.php', 'error', 'Unauthorised access.');
+    }
+}
+
+function requireSuperAdmin(){
+    if(!isSuperAdmin()){
+        redirectWith('/pages/admin/index.php', 'error', 'Unauthorised access. Superadmin privileges required.');
     }
 }
 
