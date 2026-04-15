@@ -188,22 +188,18 @@ function err($key) {
 // ============================================================================
 
 // Global PDO object
-$_db = new PDO('mysql:dbname=db_noair', 'root', '', [
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-]);
+require_once"db.php";
 
 // Is unique?
 function is_unique($value, $table, $field) {
-    global $_db;
-    $stm = $_db->prepare("SELECT COUNT(*) FROM $table WHERE $field = ?");
+    $stm = db()->prepare("SELECT COUNT(*) FROM $table WHERE $field = ?");
     $stm->execute([$value]);
     return $stm->fetchColumn() == 0;
 }
 
 // Is exists?
 function is_exists($value, $table, $field) {
-    global $_db;
-    $stm = $_db->prepare("SELECT COUNT(*) FROM $table WHERE $field = ?");
+    $stm = db()->prepare("SELECT COUNT(*) FROM $table WHERE $field = ?");
     $stm->execute([$value]);
     return $stm->fetchColumn() > 0;
 }

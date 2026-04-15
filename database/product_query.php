@@ -2,12 +2,14 @@
 // database/product_query.php
 
 function get_all_products($db) {
-    return $db->query('
-        SELECT p.*, c.name AS color_name, cat.name AS category_name
-        FROM tb_product p
-        JOIN tb_color c      ON p.color_id    = c.id
-        JOIN tb_category cat ON p.category_id = cat.id
-    ')->fetchAll();
+    $stm = $db->query('
+        SELECT *
+        FROM tb_product
+        ORDER BY
+            CASE WHEN is_active = 0 OR stock = 0 THEN 1 ELSE 0 END ASC,
+            id ASC
+    ');
+    return $stm->fetchAll(PDO::FETCH_OBJ);
 }
 
 function get_product_by_id($db, $id) {

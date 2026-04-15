@@ -18,10 +18,10 @@ if (is_post()) {
     $f                = get_file('photo');
 
     if ($color_id == '')                    $_err['color_id'] = 'Required';
-    else if (!is_exists($color_id, 'tb_color', 'id')) $_err['color_id'] = 'Invalid';
+    else if (!is_exists($color_id, 'tb_color', 'id')) $_err['color_id'] = 'Invalid';  
 
     if ($category_id == '')                 $_err['category_id'] = 'Required';
-    else if (!is_exists($category_id, 'tb_category', 'id')) $_err['category_id'] = 'Invalid';
+    else if (!is_exists($category_id, 'tb_category', 'id')) $_err['category_id'] = 'Invalid';  
 
     if ($name == '')                        $_err['name'] = 'Required';
     else if (strlen($name) > 100)           $_err['name'] = 'Maximum 100 characters';
@@ -54,7 +54,7 @@ if (is_post()) {
     if (!$_err) {
         $photo = save_photo($f, '../photos');
 
-        insert_product($_db, $color_id, $category_id, $name, $description,
+        insert_product(db(), $color_id, $category_id, $name, $description,
                        $weight_g, $height_cm, $base_diameter_cm, $material,
                        $price, $stock, $photo);
 
@@ -65,8 +65,8 @@ if (is_post()) {
 
 // ----------------------------------------------------------------------------
 
-$colors     = get_colors($_db);
-$categories = get_categories($_db);
+$colors     = get_colors(db());
+$categories = array_column(get_categories(db()), 'name', 'id');
 
 $_title = 'Product | Insert';
 include '../components/header.php';

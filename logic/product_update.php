@@ -6,8 +6,7 @@ include '../database/product_query.php';
 
 if (is_get()) {
     $id = req('id');
-
-    $p = get_product_by_id($_db, $id);
+    $p = get_product_by_id(db(), $id);
 
     if (!$p) {
         redirect('index.php');
@@ -15,6 +14,11 @@ if (is_get()) {
 
     extract((array)$p);
     $_SESSION['photo'] = $p->photo;
+
+   
+    foreach ((array)$p as $k => $v) {
+        $GLOBALS[$k] = $v;
+    }
 }
 
 if (is_post()) {
@@ -70,7 +74,7 @@ if (is_post()) {
             $photo = save_photo($f, '../photos');
         }
 
-        update_product($_db, $color_id, $category_id, $name, $description,
+        update_product(db(), $color_id, $category_id, $name, $description,
                        $weight_g, $height_cm, $base_diameter_cm, $material,
                        $price, $stock, $photo, $id);
 
@@ -81,8 +85,8 @@ if (is_post()) {
 
 // ----------------------------------------------------------------------------
 
-$colors     = get_colors($_db);
-$categories = get_categories($_db);
+$colors     = get_colors(db());
+$categories = array_column(get_categories(db()), 'name', 'id');
 
 $_title = 'Product | Update';
 include '../components/header.php';
@@ -214,6 +218,10 @@ include '../components/header.php';
 
                     <div class="form-actions">
                         <button class="btn-submit" type="submit">Submit</button>
+                        <?php if (!$p->is_active || $p->stock == 0): ?>
+                            <a class="btn-restore" href="../logic/product_restore.php?id=<?= $id ?>"
+                            onclick="return confirm('Restore this product?')">Restore</a>
+                        <?php endif; ?>
                         <button class="btn-reset"  type="reset">Reset</button>
                     </div>
                 </form>
