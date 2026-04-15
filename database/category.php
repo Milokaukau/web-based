@@ -19,8 +19,12 @@ function getCategoryByName($name) {
  * Inserts a new category into the database.
  */
 function insertCategory($name) {
-    $stmt = db()->prepare("INSERT INTO tb_category (name, is_active) VALUES (?, 1)");
-    return $stmt->execute([$name]);
+    $pdo = db();
+    $stmt = $pdo->prepare("INSERT INTO tb_category (name, is_active) VALUES (?, 1)");
+    $stmt->execute([$name]);
+    
+    // Return the ID of the newly inserted row
+    return $pdo->lastInsertId(); 
 }
 
 /**
