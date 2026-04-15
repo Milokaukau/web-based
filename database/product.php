@@ -57,3 +57,11 @@ function updateProductCategory($product_id, $new_category_id) {
     $stmt = db()->prepare("UPDATE tb_product SET category_id = ? WHERE id = ?");
     return $stmt->execute([$new_category_id, $product_id]);
 }
+
+/**
+ * Move all products from one category to another.
+ */
+function moveAllProductsToCategory($old_category_id, $new_category_id) {
+    $stmt = db()->prepare("UPDATE tb_product SET category_id = ? WHERE category_id = ?");
+    return $stmt->execute([$new_category_id, $old_category_id]);
+}

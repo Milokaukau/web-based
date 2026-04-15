@@ -111,3 +111,15 @@ function submitBatchRemove() {
   document.getElementById("batchActionType").value = "batch_remove";
   form.submit();
 }
+
+// Add to bottom of js/category_items.js
+
+// Confirm Deactivate for the Category itself (Top badge button)
+function confirmCategoryDeactivate(productCount) {
+  let msg = "Are you sure you want to deactivate this category?";
+  if (productCount > 0) {
+    msg =
+      'Deactivating this category will move all its products to "Uncategorized". Are you sure? Want to move them to another category first?';
+  }
+  return confirm(msg);
+}

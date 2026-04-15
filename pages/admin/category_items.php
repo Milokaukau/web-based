@@ -30,11 +30,26 @@ include $project_root . "components/header.php";
                 <p style="margin: 5px 0; color: #555;"><strong>ID:</strong> <?= htmlspecialchars($category['id']) ?></p>
                 <p style="margin: 5px 0; color: #555;"><strong>Name:</strong> <?= htmlspecialchars($category['name']) ?></p>
             </div>
-            <div>
+            <div style="display: flex; gap: 10px; align-items: center;">
                 <?php if ($category['is_active'] == 1): ?>
                     <span style="background: #d4edda; color: #155724; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Active</span>
+                    <?php if ($category['id'] != 0): ?>
+                        <form action="" method="POST" style="margin: 0;">
+                            <input type="hidden" name="action" value="deactivate_category">
+                            <input type="hidden" name="current_category_id" value="<?= $category['id'] ?>">
+                            <input type="hidden" name="product_count" value="<?= count($products) ?>">
+                            <button type="submit" onclick="return confirmCategoryDeactivate(<?= count($products) ?>);" class="btn" style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 6px 12px; font-size: 0.85rem; cursor: pointer; border-radius: 4px;">Deactivate</button>
+                        </form>
+                    <?php endif; ?>
                 <?php else: ?>
                     <span style="background: #f8d7da; color: #721c24; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">Inactive</span>
+                    <?php if ($category['id'] != 0): ?>
+                        <form action="" method="POST" style="margin: 0;">
+                            <input type="hidden" name="action" value="activate_category">
+                            <input type="hidden" name="current_category_id" value="<?= $category['id'] ?>">
+                            <button type="submit" onclick="return confirm('Are you sure you want to activate this category?');" class="btn" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 6px 12px; font-size: 0.85rem; cursor: pointer; border-radius: 4px;">Activate</button>
+                        </form>
+                    <?php endif; ?>
                 <?php endif; ?>
             </div>
         </div>

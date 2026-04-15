@@ -32,6 +32,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
         redirectWith('/pages/admin/category_items.php?id=' . $current_category_id, 'success', count($product_ids) . ' products successfully moved.');
     }
+
+    // C. Category Status Actions
+    if ($action === 'deactivate_category') {
+        $product_count = isset($_POST['product_count']) ? (int)$_POST['product_count'] : 0;
+        
+        if ($current_category_id != 0) { // Safety check
+            moveAllProductsToCategory($current_category_id, 0); 
+            setCategoryActiveStatus($current_category_id, 0);
+        }
+        
+        // Dynamically set the message based on item count
+        $msg = ($product_count > 0) 
+            ? "Category deactivated and $product_count product(s) moved to Uncategorized." 
+            : "Category deactivated successfully.";
+            
+        // Redirect to the list page since the category is now inactive
+        redirectWith('/pages/admin/category_list.php', 'success', $msg);
+    }
 }
 
 // 2. Fetch Data for the UI (GET)

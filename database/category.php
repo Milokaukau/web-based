@@ -42,7 +42,15 @@ function getAllCategoriesWithCount() {
         FROM tb_category c 
         LEFT JOIN tb_product p ON c.id = p.category_id 
         GROUP BY c.id 
-        ORDER BY c.id ASC
+        ORDER BY is_active DESC, id ASC
     ");
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Update the active status of a category.
+ */
+function setCategoryActiveStatus($category_id, $is_active) {
+    $stmt = db()->prepare("UPDATE tb_category SET is_active = ? WHERE id = ?");
+    return $stmt->execute([$is_active, $category_id]);
 }
