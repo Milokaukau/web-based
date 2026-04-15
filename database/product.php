@@ -36,10 +36,24 @@ function getFirstProductByCategory($categoryId){
 }
 
 /**
- * Get all products that belong to a specific category.
+ * Fetch all products in a specific category (including their Color Name)
  */
 function getProductsByCategoryId($category_id) {
-    $stmt = db()->prepare("SELECT * FROM tb_product WHERE category_id = ? ORDER BY id ASC");
+    // We use a LEFT JOIN so products without a color still show up
+    $sql = "SELECT p.*, c.name AS color_name 
+            FROM tb_product p 
+            LEFT JOIN tb_color c ON p.color_id = c.id 
+            WHERE p.category_id = ?";
+            
+    $stmt = db()->prepare($sql);
     $stmt->execute([$category_id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * Move a product to a new category.
+ */
+function updateProductCategory($product_id, $new_category_id) {
+    $stmt = db()->prepare("UPDATE tb_product SET category_id = ? WHERE id = ?");
+    return $stmt->execute([$new_category_id, $product_id]);
 }

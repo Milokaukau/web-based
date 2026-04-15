@@ -67,11 +67,12 @@ include $project_root . "components/header.php";
                             <td style="padding: 15px 20px;">
                                 <div style="display: flex; justify-content: flex-end; gap: 8px;">
                                     <a href="/pages/admin/category_items.php?id=<?= htmlspecialchars($category['id']) ?>" class="btn" style="background: transparent; border: 1px solid #ccc; color: #333; padding: 6px 12px; text-decoration: none; white-space: nowrap;">View Items</a>
-                                    
-                                    <?php if ($category['is_active'] == 1): ?>
-                                        <button class="btn" style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 6px 12px; white-space: nowrap;">Deactivate</button>
-                                    <?php else: ?>
-                                        <button class="btn" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 6px 12px; white-space: nowrap;">Activate</button>
+                                    <?php if ($category['id'] != 0): ?>
+                                        <?php if ($category['is_active'] == 1): ?>
+                                            <button class="btn" style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 6px 12px; white-space: nowrap;">Deactivate</button>
+                                        <?php else: ?>
+                                            <button class="btn" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 6px 12px; white-space: nowrap;">Activate</button>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
                             </td>

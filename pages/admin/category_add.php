@@ -34,7 +34,7 @@ include $project_root . "components/header.php";
 
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px;">
                 <a href="/pages/admin/category_list.php" class="btn" style="background: transparent; color: #555; border: 1px solid #ccc; padding: 10px 20px; text-decoration: none;">Cancel</a>
-                <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Save Category</button>
+                <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Add</button>
             </div>
         </form>
     </div>
