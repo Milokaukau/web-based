@@ -79,8 +79,8 @@ require $project_root."components/header.php";
                         data-photo="<?= $arr->photo ?? '' ?>"
                         data-stock="<?= $arr->stock ?>"
                         onclick="addToCart(this)">
-                        <span>ADD TO BAG</span>
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" class="bag-icon">
+                        <span>ADD TO CART</span>
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" class="cart-icon">
                             <path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M16 10V6a4 4 0 0 0-8 0v4m-2 0h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"></path>
                         </svg>
                     </button>
