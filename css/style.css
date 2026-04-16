@@ -9,6 +9,7 @@
 @import url("components/payment.css");
 @import url("components/wishlist.css");
 @import url("components/shop.css");
+@import url("components/search.css");
 
 /* --- 2. GLOBAL VARIABLES --- */
 :root {
