@@ -119,6 +119,11 @@ function getOrderStatusBreakdown(): array {
         return [(object)['status' => 'pending', 'total' => 0]];
     }
 }
+
+function updateOrderStatus(int $id, string $status): void {
+    $stmt = db()->prepare("UPDATE tb_order SET status = ? WHERE id = ?");
+    $stmt->execute([$status, $id]);
+}
  
 // ── Monthly revenue (last 12 months, excluding cancelled) ─────────────────
 function getMonthlyRevenue(): array {
