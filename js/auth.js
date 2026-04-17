@@ -2,7 +2,7 @@ $(document).ready(function(){
 
     /* PROFILE TABS */
 
-    $('tab-btn').on('click', function(){
+    $('.tab-btn').on('click', function(){
         var target = $(this).data('tab');
 
         // UPDATE BUTTONS
@@ -35,7 +35,7 @@ $(document).ready(function(){
 
         var reader = new FileReader();
         reader.onload = function (e) {
-            $('#photo-preview').attr('src, e.target.result');
+            $('#photo-preview').attr('src', e.target.result);
             $('#avatar-preview').attr('src', e.target.result);
         };
         reader.readAsDataURL(file);

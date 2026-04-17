@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="../css/style.css">
-
+<script src="/js/auth.js"></script> 
 <footer class="site-footer">
         <div class="footer-container">
             <div class="footer-branding">

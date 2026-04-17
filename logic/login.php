@@ -5,7 +5,6 @@ require_once $project_root . "logic/auth_helper.php";
 
 $errors = [];
 $MAX_ATTEMPTS = 3;
-$LOCK_MINUTES = 15;
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $login      = trim($_POST['login'] ??'');
@@ -48,23 +47,28 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 }elseif (!password_verify($password, $user->password)){
 
                     // if wrong fail to login again, then lock longer haha
-
                     $attempts = ($user->login_attempts ?? 0) + 1;
                     if ($attempts >= $MAX_ATTEMPTS){
-                        $locked_until = date('Y-m-d H:i:s', strtotime("+{$LOCK_MINUTES} minutes"));
+                        // lock logic:
+                        // 1st lock (4th attempt) : 1 minute
+                        // 2nd lock (5th attempt) : 3 minutes
+                        // 3rd lock (6th attempt) : 5 minutes
+                        $extra_attempts = $attempts - $MAX_ATTEMPTS;
+                        $lock_duration =  1 + ($extra_attempts * 2);
+                        $locked_until = date('Y-m-d H:i:s', strtotime("+{$lock_duration} minutes"));
 
                         lockMemberAccount($user->id, $locked_until);
                         updateMemberLoginAttempts($user->id, $attempts);
-                        $errors['general'] = "Too many failed attempts. Account locked for {$LOCK_MINUTES} minutes";
+                        $errors['general'] = "Too many failed attempts. Account locked for {$lock_duration} minutes";
                     }else{
                         updateMemberLoginAttempts($user->id, $attempts);
                         $remaining = $MAX_ATTEMPTS - $attempts;
                         $errors['general'] = "Invalid email or password. {$remaining} attempt(s) remaining.";
                     }
                 }else{
-
+                    $userId = is_array($user) ? $user['id'] : $user->id;
                     // if correct, log in and reset locked attempts
-                    resetMemberLoginAttempts($user->id);
+                    resetMemberLoginAttempts($userId);
                     loginMember($user);
                     header("Location: /pages/home.php");
                     exit;

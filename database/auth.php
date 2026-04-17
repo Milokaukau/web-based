@@ -27,7 +27,7 @@ function updateMemberLoginAttempts($id, $attempts){
 
 function resetMemberLoginAttempts($id){
     $stmt = db()->prepare("UPDATE tb_member SET login_attempts = 0, locked_until = NULL WHERE id = ?");
-    $stmt->execute([$id]);
+    return $stmt->execute([$id]);
 }
 
 function lockMemberAccount($id, $until){
