@@ -50,7 +50,7 @@ include $project_root . 'components/header.php';
                 <?php endif; ?>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-full">Login as Admin</button>
+            <button type="submit" class="btn btn-primary">Login as Admin</button>
         </form>
 
         <p class="auth-footer"><a href="/pages/login.php">← Member Login</a></p>

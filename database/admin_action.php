@@ -1,14 +1,21 @@
 <?php
+/**
+ * database/admin_action.php
+ * Handles all POST/GET admin actions: lock, unlock, delete, add member,
+ * and change admin password.
+ *
+ * Included by pages/admin/admin_action.php (the URL endpoint).
+ */
 
-require_once "db.php";
-require_once "auth.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/config.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/logic/auth_helper.php";
 
 $pdo    = db();
 $action = $_GET['action'] ?? '';
 
-// ── LOCK member (set locked_until to far future) ──────────────────────────
+// ── LOCK member ───────────────────────────────────────────────────────────
 if ($action === 'lock' && isset($_GET['id'])) {
-    $id = (int)$_GET['id'];
+    $id           = (int) $_GET['id'];
     $locked_until = date('Y-m-d H:i:s', strtotime('+100 years'));
     $stmt = $pdo->prepare("UPDATE tb_member SET locked_until = ? WHERE id = ?");
     $stmt->execute([$locked_until, $id]);
@@ -20,7 +27,7 @@ if ($action === 'lock' && isset($_GET['id'])) {
 
 // ── UNLOCK member ─────────────────────────────────────────────────────────
 if ($action === 'unlock' && isset($_GET['id'])) {
-    $id = (int)$_GET['id'];
+    $id   = (int) $_GET['id'];
     $stmt = $pdo->prepare("UPDATE tb_member SET locked_until = NULL, login_attempts = 0 WHERE id = ?");
     $stmt->execute([$id]);
     $_SESSION['flash'] = ['type' => 'success', 'message' => 'Member account has been unlocked.'];
@@ -31,7 +38,7 @@ if ($action === 'unlock' && isset($_GET['id'])) {
 
 // ── DELETE member ─────────────────────────────────────────────────────────
 if ($action === 'delete' && isset($_GET['id'])) {
-    $id = (int)$_GET['id'];
+    $id   = (int) $_GET['id'];
     $stmt = $pdo->prepare("DELETE FROM tb_member WHERE id = ?");
     $stmt->execute([$id]);
     $_SESSION['flash'] = ['type' => 'success', 'message' => 'Member deleted successfully.'];
@@ -48,15 +55,16 @@ if ($action === 'add_member' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $gender   = $_POST['gender']        ?? '';
 
     if ($name && $email && $password) {
-        // Check duplicate email
         $check = $pdo->prepare("SELECT id FROM tb_member WHERE email = ?");
         $check->execute([$email]);
         if ($check->fetch()) {
             $_SESSION['flash'] = ['type' => 'error', 'message' => 'Email already exists.'];
         } else {
             $hashed = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("INSERT INTO tb_member (name, email, password, phone, gender, login_attempts)
-                                    VALUES (?, ?, ?, ?, ?, 0)");
+            $stmt   = $pdo->prepare("
+                INSERT INTO tb_member (name, email, password, phone, gender, login_attempts)
+                VALUES (?, ?, ?, ?, ?, 0)
+            ");
             $stmt->execute([$name, $email, $hashed, $phone ?: null, $gender ?: null]);
             $_SESSION['flash'] = ['type' => 'success', 'message' => "Member '$name' added successfully."];
         }
@@ -74,7 +82,7 @@ if ($action === 'change_pw' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($new && $new === $conf && strlen($new) >= 6) {
         $hashed = password_hash($new, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("UPDATE tb_admin SET password = ? WHERE id = ?");
+        $stmt   = $pdo->prepare("UPDATE tb_admin SET password = ? WHERE id = ?");
         $stmt->execute([$hashed, $_SESSION['admin_id'] ?? 1]);
         $_SESSION['flash'] = ['type' => 'success', 'message' => 'Password updated successfully.'];
     } else {

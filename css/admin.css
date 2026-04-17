@@ -1,297 +1,571 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 /* ── VARIABLES ───────────────────────────────────────────── */
 :root {
-    --cream:   #F5F5F5;
-    --warm1:   #EDEDED;
-    --warm2:   #D6D6D6;
-    --warm3:   #BFBFBF;
+    --white:           #FFFFFF;
+    --bg-page:         #F7F7F7;   /* login page bg — off-white */
+    --bg-card:         #FFFFFF;   /* login card bg */
+    --bg-input:        #FFFFFF;   /* input fields */
+    --border-input:    #D1D5DB;   /* login input border — light gray */
+    --border-card:     #E5E7EB;   /* card border */
 
-    --brown1:  #555555;
-    --brown2:  #333333;
-    --brown3:  #111111;
+    --text-dark:       #111111;   /* LOGIN heading weight */
+    --text-body:       #374151;   /* body text */
+    --text-muted:      #9CA3AF;   /* "Login as Admin" gray */
+    --text-link:       #6B7280;   /* "Forgot Password" */
 
-    --accent:  #E91E63;   /* pink accent */
+    /* Coral — exactly from login button */
+    --coral:           #F39E9E;
+    --coral-dark:      #e08585;
+    --coral-soft:      #fecaca;   /* border tint on focus */
 
-    --success: #4CAF50;
-    --danger:  #D32F2F;
-    --warning: #F57C00;
-
-    --text:    #111111;
-    --muted:   #777777;
-    --border:  #DDDDDD;
-
-    --white:   #FFFFFF;
-    --black:   #000000;
+    /* Status */
+    --success-bg:      #DCFCE7;
+    --success-text:    #166534;
+    --warning-bg:      #FEF9C3;
+    --warning-text:    #854D0E;
+    --danger-bg:       #FEE2E2;
+    --danger-text:     #991B1B;
 }
 
 /* ── RESET ───────────────────────────────────────────────── */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-page);
+    color: var(--text-body);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
+a { text-decoration: none; color: inherit; }
 
-/* ── TOPBAR ──────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   TOPBAR
+   Heavy Inter heading like "LOGIN" title — same weight (800)
+══════════════════════════════════════════════════════════ */
 .topbar {
-    background: var(--black);
-    padding: 0 28px;
-    height: 56px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border-card);
+    padding: 0 5%;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
 }
+/* Brand uses same heavy weight as login "LOGIN" heading */
 .topbar-brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--white);
-    letter-spacing: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    letter-spacing: 6px;
+    text-transform: uppercase;
 }
-.topbar-brand span { color: var(--white); }
-.topbar-right { display: flex; align-items: center; gap: 18px; }
-.topbar-clock { font-size: 12px; color: var(--white); letter-spacing: 0.5px; }
-.topbar-user  { display: flex; align-items: center; gap: 8px; }
-.avatar-sm {
-    width: 30px; height: 30px; border-radius: 50%;
-    background: var(--white); display: flex; align-items: center;
-    justify-content: center; font-size: 12px; font-weight: 500; color: var(--black);
-}
-.topbar-name { font-size: 13px; color: var(--white); }
-.logout-btn {
-    font-size: 12px; color: var(--white); text-decoration: none;
-    border: 0.5px solid var(--white); padding: 4px 10px;
-    border-radius: 4px; transition: all 0.2s;
-}
-.logout-btn:hover { background: var(--white); color: var(--white); }
+.topbar-brand span { color: var(--coral); }
 
-/* ── LAYOUT ──────────────────────────────────────────────── */
-.layout { display: flex; min-height: calc(100vh - 56px); }
+.topbar-right  { display: flex; align-items: center; gap: 16px; }
+.topbar-clock  { font-size: 0.72rem; color: var(--text-muted); }
+.topbar-user   { display: flex; align-items: center; gap: 8px; }
+
+/* Avatar — rounded like login card */
+.avatar-sm {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--coral);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; font-weight: 700; color: var(--white);
+}
+.topbar-name { font-size: 0.8rem; font-weight: 500; color: var(--text-body); }
+
+/* Logout — ghost pill, same feel as "Forgot Password" link area */
+.logout-btn {
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--text-muted); text-decoration: none;
+    border: 1px solid var(--border-card);
+    padding: 5px 14px; border-radius: 9999px;   /* pill — matches login btn radius */
+    transition: all 0.2s;
+}
+.logout-btn:hover { border-color: var(--coral); color: var(--coral); }
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════════════════ */
+.layout { display: flex; min-height: calc(100vh - 60px); }
 
 /* ── SIDEBAR ─────────────────────────────────────────────── */
 .sidebar {
-    width: 200px;
+    width: 210px;
     background: var(--white);
+    border-right: 1px solid var(--border-card);
     padding: 24px 0;
     position: sticky;
-    top: 56px;
-    height: calc(100vh - 56px);
+    top: 60px;
+    height: calc(100vh - 60px);
     overflow-y: auto;
     flex-shrink: 0;
 }
+/* Section label — same muted caps as login placeholder style */
 .sidebar-section {
-    font-size: 12px; font-weight: 500; color: var(--black);
-    text-transform: uppercase; letter-spacing: 1.5px;
-    padding: 0 20px 8px; margin-top: 16px;
+    font-size: 0.65rem; font-weight: 700;
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 1.5px; padding: 0 20px 6px; margin-top: 22px;
 }
 .sidebar-section:first-child { margin-top: 0; }
+
 .nav-link {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 20px; font-size: 13px; color: var(--brown3);
-    text-decoration: none; transition: all 0.15s; cursor: pointer;
-    border-left: 3px solid transparent;
+    padding: 9px 20px; font-size: 0.82rem; font-weight: 500;
+    color: var(--text-muted); border-left: 3px solid transparent;
+    transition: all 0.15s;
 }
-.nav-link:hover { background: rgba(255,255,255,0.06); color: var(--brown1); }
-.nav-link.active { background: rgba(196,98,45,0.2); color: var(--black); border-left-color: var(--accent); }
-.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.nav-link:hover { background: var(--bg-page); color: var(--text-dark); }
+.nav-link.active {
+    background: #FEF2F2;                /* very light coral tint */
+    color: var(--coral-dark);
+    border-left-color: var(--coral);
+    font-weight: 700;
+}
+.nav-icon { width: 18px; text-align: center; font-size: 0.85rem; }
 
 /* ── CONTENT ─────────────────────────────────────────────── */
-.content { flex: 1; padding: 28px 32px; overflow-x: hidden; }
-.page        { display: none; }
-.page.active { display: block; }
-.page-header { margin-bottom: 24px; }
-.page-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 24px; font-weight: 500; color: var(--black);
-}
-.page-header p { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.content { flex: 1; padding: 40px 5%; overflow-x: hidden; }
 
-/* ── STATS ───────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   PAGE HEADER
+   Bold heading exactly like "LOGIN" — Inter 800
+══════════════════════════════════════════════════════════ */
+.page-header { margin-bottom: 28px; }
+.page-header h1 {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;       /* same weight as LOGIN heading */
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+.page-header p {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STAT CARDS
+   White card with rounded corners — mirrors login card
+══════════════════════════════════════════════════════════ */
 .stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-    margin-bottom: 26px;
+    gap: 16px;
+    margin-bottom: 28px;
 }
 .stat-card {
-    background: var(--white);
-    border: 0.5px solid var(--border);
-    border-radius: 10px;
-    padding: 16px 18px;
-    border-top: 3px solid var(--warm3);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 16px;          /* login card uses ~16px radius */
+    padding: 20px 22px;
+    border-top: 3px solid var(--border-card);
+    transition: box-shadow 0.2s;
 }
-.stat-card.s-valid   { border-top-color: var(--success); }
-.stat-card.s-locked  { border-top-color: var(--warning); }
-.stat-card.s-invalid { border-top-color: var(--danger);  }
+.stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.stat-card.s-valid   { border-top-color: #22C55E; }
+.stat-card.s-locked  { border-top-color: #F59E0B; }
+.stat-card.s-invalid { border-top-color: #EF4444; }
+
 .stat-label {
-    font-size: 11px; color: var(--muted); margin-bottom: 6px;
+    font-size: 0.65rem; font-weight: 700;
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 10px;
+}
+/* Number — heavy Inter, coral, same as the login button's text feel */
+.stat-num {
+    font-size: 2rem; font-weight: 800;
+    color: var(--coral); font-family: 'Inter', sans-serif;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOOLBAR — search + filter row
+══════════════════════════════════════════════════════════ */
+.toolbar { display: flex; gap: 10px; margin-bottom: 18px; align-items: center; }
+.search-wrap { position: relative; flex: 1; max-width: 340px; }
+
+/* Input — exact login input style: rounded border, white bg, gray border */
+.search-wrap input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    border: 1px solid var(--border-input);
+    border-radius: 9px;             /* matches login input radius */
+    background: var(--bg-input);
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+}
+.search-wrap input:focus {
+    border-color: var(--coral-soft);
+    box-shadow: 0 0 0 3px rgba(243,158,158,0.15);
+}
+.search-wrap input::placeholder { color: var(--text-muted); }
+.search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%); color: var(--text-muted); font-size: 0.85rem;
+}
+
+select.filter-sel {
+    padding: 10px 14px;
+    border: 1px solid var(--border-input);
+    border-radius: 9px;
+    background: var(--bg-input);
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    cursor: pointer; outline: none;
+}
+select.filter-sel:focus {
+    border-color: var(--coral-soft);
+    box-shadow: 0 0 0 3px rgba(243,158,158,0.15);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BUTTONS
+   Primary = full coral pill — exactly the LOGIN button
+   Outline = ghost pill like the logout/link style
+══════════════════════════════════════════════════════════ */
+.btn-primary {
+    display: inline-block;
+    padding: 10px 24px;
+    background: var(--coral);
+    color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 9999px;          /* full pill — matches LOGIN button */
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s;
+}
+.btn-primary:hover { background: var(--coral-dark); }
+
+.btn-outline {
+    display: inline-block;
+    padding: 10px 20px;
+    background: none;
+    color: var(--text-muted);
+    border: 1px solid var(--border-card);
+    border-radius: 9999px;
+    font-size: 0.8rem; font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer; transition: all 0.2s;
     text-transform: uppercase; letter-spacing: 0.5px;
 }
-.stat-num {
-    font-size: 26px; font-weight: 500; color: var(--brown2);
-    font-family: 'Playfair Display', serif;
-}
+.btn-outline:hover { border-color: var(--coral); color: var(--coral); }
 
-/* ── TOOLBAR ─────────────────────────────────────────────── */
-.toolbar { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; }
-.search-wrap { position: relative; flex: 1; max-width: 320px; }
-.search-wrap input {
-    width: 100%; padding: 8px 12px 8px 34px;
-    border: 0.5px solid var(--border); border-radius: 8px;
-    background: var(--white); font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text); transition: border 0.2s;
-}
-.search-wrap input:focus { outline: none; border-color: var(--warm3); }
-.search-icon {
-    position: absolute; left: 11px; top: 50%;
-    transform: translateY(-50%); color: var(--muted); font-size: 13px;
-}
-select.filter-sel {
-    padding: 8px 12px; border: 0.5px solid var(--border); border-radius: 8px;
-    background: var(--white); font-size: 13px;
-    font-family: 'DM Sans', sans-serif; color: var(--text); cursor: pointer;
-}
-
-/* ── BUTTONS ─────────────────────────────────────────────── */
-.btn-primary {
-    background: var(--accent); color: var(--white); border: none;
-    padding: 8px 16px; border-radius: 8px; font-size: 13px;
-    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s;
-    text-decoration: none; display: inline-block;
-}
-.btn-primary:hover { background: var(--brown1); }
-.btn-outline {
-    background: none; color: var(--brown1); border: 0.5px solid var(--border);
-    padding: 8px 14px; border-radius: 8px; font-size: 13px;
-    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
-    text-decoration: none; display: inline-block;
-}
-.btn-outline:hover { background: var(--warm1); }
-
-/* ── TABLE ───────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   TABLE — inside login-card-style container
+══════════════════════════════════════════════════════════ */
 .table-wrap {
-    background: var(--white);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 16px;
     overflow: hidden;
+    margin-bottom: 20px;
 }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-thead { background: var(--warm1); }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+thead { background: var(--bg-page); }
 th {
-    text-align: left; padding: 11px 14px; font-weight: 500;
-    color: var(--brown2); font-size: 12px;
-    text-transform: uppercase; letter-spacing: 0.4px;
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.65rem; font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1px;
 }
-td { padding: 11px 14px; border-bottom: 0.5px solid var(--warm1); color: var(--text); }
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-card);
+    color: var(--text-body);
+    font-size: 0.85rem;
+}
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: #FDFAF6; }
+tr:hover td { background: var(--bg-page); }
 
-/* ── BADGES ──────────────────────────────────────────────── */
+/* ── BADGES — rounded pill matching login button shape ────── */
 .badge {
-    display: inline-block; padding: 3px 9px;
-    border-radius: 99px; font-size: 11px; font-weight: 500;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.72rem; font-weight: 700;
 }
-.badge-valid   { background: #EAF3DE; color: var(--success); }
-.badge-invalid { background: #FCEBEB; color: var(--danger);  }
-.badge-locked  { background: #FFF3E0; color: var(--warning); }
+.badge-valid   { background: var(--success-bg); color: var(--success-text); }
+.badge-invalid { background: var(--danger-bg);  color: var(--danger-text);  }
+.badge-locked  { background: var(--warning-bg); color: var(--warning-text); }
 
-/* ── ACTION BUTTONS ──────────────────────────────────────── */
+/* ── ACTION BUTTONS — ghost pill style ───────────────────── */
 .act-btn {
-    font-size: 11px; padding: 3px 9px; border-radius: 5px; cursor: pointer;
-    border: 0.5px solid var(--border); background: none; color: var(--brown1);
-    font-family: 'DM Sans', sans-serif; margin-right: 4px;
-    transition: all 0.15s; text-decoration: none; display: inline-block;
+    font-size: 0.7rem; font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    border: 1px solid var(--border-card);
+    background: none; color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
+    margin-right: 4px; cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none; display: inline-block;
+    text-transform: uppercase; letter-spacing: 0.5px;
 }
-.act-btn:hover          { background: var(--warm1); }
-.act-btn.unlock         { color: var(--success); border-color: #c0dd97; }
-.act-btn.unlock:hover   { background: #EAF3DE; }
-.act-btn.lock           { color: var(--warning); border-color: #fac775; }
-.act-btn.lock:hover     { background: #FFF3E0; }
-.act-btn.del            { color: var(--danger); border-color: #f7c1c1; }
-.act-btn.del:hover      { background: #FCEBEB; }
+.act-btn:hover         { border-color: var(--text-muted); color: var(--text-dark); }
+.act-btn.unlock        { color: var(--success-text); border-color: #86EFAC; }
+.act-btn.unlock:hover  { background: var(--success-bg); }
+.act-btn.lock          { color: #92400E; border-color: #FCD34D; }
+.act-btn.lock:hover    { background: var(--warning-bg); }
+.act-btn.del           { color: var(--danger-text); border-color: #FCA5A5; }
+.act-btn.del:hover     { background: var(--danger-bg); }
 
 /* ── PAGINATION ──────────────────────────────────────────── */
 .pagination { display: flex; gap: 6px; margin-top: 16px; align-items: center; }
 .pag-btn {
-    padding: 6px 12px; border: 0.5px solid var(--border); border-radius: 6px;
-    background: var(--white); font-size: 13px; cursor: pointer;
-    text-decoration: none; color: var(--brown2); transition: all 0.15s;
+    padding: 7px 14px;
+    border: 1px solid var(--border-card);
+    border-radius: 9999px;
+    background: var(--white);
+    font-size: 0.82rem; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    color: var(--text-body); transition: all 0.15s;
 }
-.pag-btn:hover  { background: var(--warm1); }
-.pag-btn.active { background: var(--accent); color: var(--white); border-color: var(--accent); }
-.pag-info { font-size: 12px; color: var(--muted); margin-left: 6px; }
+.pag-btn:hover  { border-color: var(--coral); color: var(--coral); }
+.pag-btn.active { background: var(--coral); color: var(--white); border-color: var(--coral); font-weight: 700; }
+.pag-info { font-size: 0.78rem; color: var(--text-muted); margin-left: 6px; }
 
-/* ── PROFILE ─────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   PROFILE / MEMBER DETAIL CARD
+   White card exactly like the login card
+══════════════════════════════════════════════════════════ */
 .profile-wrap { max-width: 440px; }
 .profile-card {
-    background: var(--white); border: 0.5px solid var(--border);
-    border-radius: 12px; padding: 24px; margin-bottom: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 16px;
 }
+/* Avatar circle */
 .profile-avt {
-    width: 64px; height: 64px; border-radius: 50%;
-    background: var(--warm3); display: flex; align-items: center;
-    justify-content: center; font-family: 'Playfair Display', serif;
-    font-size: 22px; color: var(--brown3); margin-bottom: 16px;
+    width: 68px; height: 68px; border-radius: 50%;
+    background: var(--coral);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 800;
+    color: var(--white); margin-bottom: 20px;
 }
 .profile-row {
-    display: flex; justify-content: space-between;
-    padding: 9px 0; border-bottom: 0.5px solid var(--warm1); font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 11px 0; border-bottom: 1px solid var(--border-card);
+    font-size: 0.85rem;
 }
 .profile-row:last-child { border: none; }
-.profile-lbl { color: var(--muted); }
-.profile-val { font-weight: 500; color: var(--brown2); }
+.profile-lbl { color: var(--text-muted); font-weight: 500; }
+.profile-val { font-weight: 700; color: var(--text-dark); }
 
-/* ── EMPTY STATE ─────────────────────────────────────────── */
-.empty-state { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
-
-/* ── MODAL ───────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   MODAL — login-card style overlay
+══════════════════════════════════════════════════════════ */
 .modal-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4); z-index: 200;
+    background: rgba(0,0,0,0.35); z-index: 200;
     align-items: center; justify-content: center;
 }
 .modal-overlay.open { display: flex; }
 .modal-box {
-    background: var(--white); border-radius: 14px;
-    border: 0.5px solid var(--border); padding: 24px; width: 360px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 16px;
+    padding: 32px; width: 380px;
 }
+/* Modal title = same bold Inter as LOGIN heading */
 .modal-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px; color: var(--brown2); margin-bottom: 18px;
+    font-size: 1.4rem; font-weight: 800;
+    color: var(--text-dark); margin-bottom: 22px;
+    letter-spacing: -0.5px;
 }
-.form-row { margin-bottom: 14px; }
+/* Form rows inside modal = login input style */
+.form-row { margin-bottom: 16px; }
 .form-row label {
-    display: block; font-size: 12px; color: var(--muted);
-    margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.3px;
+    display: block; font-size: 0.72rem; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 0.8px; margin-bottom: 6px;
 }
 .form-row input,
 .form-row select {
-    width: 100%; padding: 9px 12px;
-    border: 0.5px solid var(--border); border-radius: 8px;
-    font-size: 13px; font-family: 'DM Sans', sans-serif;
-    color: var(--text); background: var(--cream);
+    width: 100%; padding: 10px 14px;
+    border: 1px solid var(--border-input);
+    border-radius: 9px;
+    font-size: 0.9rem; font-family: 'Inter', sans-serif;
+    color: var(--text-dark); background: var(--bg-input);
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
 }
 .form-row input:focus,
-.form-row select:focus { outline: none; border-color: var(--warm3); }
+.form-row select:focus {
+    border-color: var(--coral-soft);
+    box-shadow: 0 0 0 3px rgba(243,158,158,0.15);
+}
 .modal-actions {
-    display: flex; gap: 8px;
-    justify-content: flex-end; margin-top: 18px;
+    display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px;
 }
 
-/* ── ALERTS ──────────────────────────────────────────────── */
-.alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
-.alert-success { background: #EAF3DE; color: var(--success); border: 0.5px solid #c0dd97; }
-.alert-error   { background: #FCEBEB; color: var(--danger);  border: 0.5px solid #f7c1c1; }
+/* ═══════════════════════════════════════════════════════════
+   ALERTS
+══════════════════════════════════════════════════════════ */
+.alert {
+    padding: 12px 16px; border-radius: 12px;
+    font-size: 0.85rem; font-weight: 500; margin-bottom: 20px;
+}
+.alert-success { background: var(--success-bg); color: var(--success-text); }
+.alert-error   { background: var(--danger-bg);  color: var(--danger-text);  }
 
-/* ── FOOTER ──────────────────────────────────────────────── */
-.footer {
-    background: var(--brown3); color: var(--muted);
-    text-align: center; font-size: 11px; padding: 10px;
-    letter-spacing: 0.3px;
+/* ═══════════════════════════════════════════════════════════
+   EMPTY STATE — muted text like "Login as Admin" line
+══════════════════════════════════════════════════════════ */
+.empty-state {
+    text-align: center; padding: 50px 40px;
+    color: var(--text-muted); font-size: 0.9rem; font-weight: 400;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION HEADING (admin page titles)
+   Matches LOGIN heading: heavy Inter, dark, tight tracking
+══════════════════════════════════════════════════════════ */
+.section-header { margin-bottom: 28px; }
+.admin-section-title {
+    font-size: 1.6rem; font-weight: 800;
+    color: var(--text-dark); letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+.admin-section-sub { font-size: 0.82rem; color: var(--text-muted); }
+/* Coral line — login button color accent */
+.section-header .line {
+    width: 40px; height: 3px;
+    background: var(--coral);
+    border-radius: 9999px;
+    margin-top: 10px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STAT CARDS (alias for section-container pattern)
+══════════════════════════════════════════════════════════ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FEATURE CARD (profile / member detail)
+══════════════════════════════════════════════════════════ */
+.feature-card-wrap { display: flex; justify-content: center; }
+.feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 16px;
+    padding: 40px 36px;
+    text-align: center;
+    max-width: 440px; width: 100%;
+}
+.member-avatar-wrap { margin-bottom: 20px; }
+.member-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--coral);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 800; color: var(--white);
+}
+.member-name {
+    font-size: 1.1rem; font-weight: 800;
+    color: var(--text-dark); letter-spacing: -0.3px; margin-bottom: 4px;
+}
+.member-role {
+    font-size: 0.78rem; color: var(--text-muted);
+    font-weight: 500; margin-bottom: 28px;
+}
+.profile-rows { text-align: left; margin-bottom: 28px; }
+.feature-card-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* ═══════════════════════════════════════════════════════════
+   STOCK GRID (product cards)
+══════════════════════════════════════════════════════════ */
+.stock-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+.stock-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 16px;
+    padding: 20px;
+    transition: box-shadow 0.2s;
+}
+.stock-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+.stock-img-wrapper {
+    aspect-ratio: 1/1;
+    border-radius: 10px;
+    margin-bottom: 14px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    border: 1px solid var(--border-card);
+    background: var(--bg-page);
+}
+.stock-img-wrapper.stock-ok     { background: var(--success-bg); border-color: #86EFAC; }
+.stock-img-wrapper.stock-warn   { background: var(--warning-bg); border-color: #FCD34D; }
+.stock-img-wrapper.stock-danger { background: var(--danger-bg);  border-color: #FCA5A5; }
+.stock-qty-big {
+    font-size: 2.2rem; font-weight: 800;
+    color: var(--text-dark); line-height: 1;
+}
+.stock-img-wrapper.stock-ok     .stock-qty-big { color: var(--success-text); }
+.stock-img-wrapper.stock-warn   .stock-qty-big { color: #92400E; }
+.stock-img-wrapper.stock-danger .stock-qty-big { color: var(--danger-text); }
+.stock-qty-label {
+    font-size: 0.65rem; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+}
+.stock-info { text-align: center; }
+.stock-name { font-size: 0.9rem; font-weight: 700; color: var(--text-dark); margin-bottom: 2px; }
+.stock-cat  { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
+.stock-price { font-size: 1rem; font-weight: 800; color: var(--coral); margin-bottom: 8px; }
+.stock-badge { display: block; margin: 0 auto; width: fit-content; }
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════════════════ */
+.footer, .site-footer {
+    background: var(--white);
+    border-top: 1px solid var(--border-card);
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 16px;
+    font-weight: 400;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stock-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .sidebar { display: none; }
+    .content { padding: 24px 5%; }
+}
+@media (max-width: 520px) {
+    .stats { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .stock-grid { grid-template-columns: 1fr; }
+    .feature-card { padding: 28px 20px; }
 }
