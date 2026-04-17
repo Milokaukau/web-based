@@ -41,15 +41,48 @@ $(document).ready(function(){
         reader.readAsDataURL(file);
     });
 
-    // SHOW / HIDE PASSWORD
-   // SHOW / HIDE PASSWORD
 // SHOW / HIDE PASSWORD
 $('.toggle-password').on('click', function(){
-    var $input = $(this).closest('.password-group').find('input');
+    var targetId = $(this).data('target');
+    var $input = $('#' + targetId);
     var isHidden = $input.attr('type') === 'password';
     $input.attr('type', isHidden ? 'text' : 'password');
     $(this).text(isHidden ? '⌣' : '👁');
 });
+
+    // MALAYSIAN PHONE VALIDATION
+    $('input[name="phone"]').on('input', function () {
+        var val = $(this).val().trim();
+        var myPhoneRegex = /^(\+?60|0)[0-9]{1,2}[\s\-]?[0-9]{7,8}$/;
+        var $error = $(this).siblings('.error-msg');
+
+        if (val === '') {
+            $(this).removeClass('input-error');
+            $error.remove();
+        } else if (!myPhoneRegex.test(val)) {
+            $(this).addClass('input-error');
+            if ($error.length === 0) {
+                $(this).after('<span class="error-msg">Invalid Malaysian phone number. Example: 012-3456789 or +60123456789.</span>');
+            }
+        } else {
+            $(this).removeClass('input-error');
+            $error.remove();
+        }
+    });
+
+    $('#form-profile').on('submit', function (e) {
+        var phone = $('input[name="phone"]').val().trim();
+        var myPhoneRegex = /^(\+?60|0)[0-9]{1,2}[\s\-]?[0-9]{7,8}$/;
+        if (phone !== '' && !myPhoneRegex.test(phone)) {
+            e.preventDefault();
+            var $input = $('input[name="phone"]');
+            $input.addClass('input-error');
+            if ($input.siblings('.error-msg').length === 0) {
+                $input.after('<span class="error-msg">Invalid Malaysian phone number. Example: 012-3456789 or +60123456789.</span>');
+            }
+            $input[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
 
     // LOGIN FORM TO PREVENT DOUBLE-SUBMIT
     $('#login-form').on('submit', function(){

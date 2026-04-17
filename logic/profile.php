@@ -29,9 +29,8 @@ if (isset($_POST['update_profile'])){
 
     if ($phone === '')
         $errors['phone'] = 'Phone number is required.';
-    // BUG FIX: was {7-15} which is invalid regex — must be {7,15}
-    elseif (!preg_match('/^[0-9+\-\s]{7,15}$/', $phone))
-        $errors['phone'] = 'Invalid phone number format.';
+    elseif (!preg_match('/^(\+?60|0)[0-9]{1,2}[\s\-]?[0-9]{7,8}$/', $phone))
+        $errors['phone'] = 'Invalid Malaysian phone number. Example: 012-3456789 or +60123456789.';
 
     // make sure email is not already taken by another member
     if (empty($errors['email'])){
@@ -53,8 +52,6 @@ if (isset($_POST['update_profile'])){
 if (isset($_POST['update_password'])){
     $current  = $_POST['current_password']  ?? '';
     $new_pass = $_POST['new_password']       ?? '';
-    // BUG FIX: form input was name="confirm" but logic read $_POST['confirm_password']
-    // Fixed by renaming the form input to confirm_password (see pages/profile.php)
     $confirm  = $_POST['confirm_password']   ?? '';
 
     if ($current === '')
@@ -66,6 +63,8 @@ if (isset($_POST['update_password'])){
         $errors['new_password'] = 'New password is required.';
     elseif (strlen($new_pass) < 8)
         $errors['new_password'] = 'Password must be at least 8 characters.';
+    elseif (password_verify($new_pass, $member->password))
+        $errors['new_password'] = 'New password must be different from current password.';
 
     if ($confirm === '')
         $errors['confirm_password'] = 'Please confirm your new password.';

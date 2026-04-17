@@ -32,14 +32,20 @@ $photo_url = !empty($member->photo)
         </div>
     </div>
 
+    <?php
+        $active_tab = 'tab-info';
+        if (isset($_POST['update_password']) && !empty($errors)) $active_tab = 'tab-password';
+        if (isset($_POST['update_photo'])    && !empty($errors)) $active_tab = 'tab-photo';
+    ?>
+
     <div class="tab-nav">
-        <button class="tab-btn active" data-tab="tab-info">Profile Info</button>
-        <button class="tab-btn" data-tab="tab-password">Change Password</button>
-        <button class="tab-btn" data-tab="tab-photo">Profile Photo</button>
+        <button class="tab-btn <?= $active_tab === 'tab-info'     ? 'active' : '' ?>" data-tab="tab-info">Profile Info</button>
+        <button class="tab-btn <?= $active_tab === 'tab-password' ? 'active' : '' ?>" data-tab="tab-password">Change Password</button>
+        <button class="tab-btn <?= $active_tab === 'tab-photo'    ? 'active' : '' ?>" data-tab="tab-photo">Profile Photo</button>
     </div>
 
     <!-- TAB: PROFILE INFO -->
-    <div class="tab-content active" id="tab-info">
+    <div class="tab-content <?= $active_tab === 'tab-info' ? 'active' : '' ?>" id="tab-info">
         <form id="form-profile" method="POST" novalidate>
             <input type="hidden" name="update_profile" value="1">
 
@@ -80,6 +86,7 @@ $photo_url = !empty($member->photo)
                 <div class="form-group">
                     <label>Phone</label>
                     <input type="text" name="phone"
+                        placeholder="e.g. 012-3456789"
                         value="<?= htmlspecialchars($member->phone) ?>"
                         class="<?= isset($errors['phone']) ? 'input-error' : '' ?>">
                     <?php if (!empty($errors['phone'])): ?>
@@ -93,14 +100,19 @@ $photo_url = !empty($member->photo)
     </div>
 
     <!-- TAB: CHANGE PASSWORD -->
-    <div class="tab-content" id="tab-password">
+    <div class="tab-content <?= $active_tab === 'tab-password' ? 'active' : '' ?>" id="tab-password">
         <form id="form-password" method="POST" novalidate>
             <input type="hidden" name="update_password" value="1">
 
             <div class="form-group">
                 <label>Current Password</label>
-                <input type="password" name="current_password"
-                    class="<?= isset($errors['current_password']) ? 'input-error' : '' ?>">
+                <div class="password-wrapper">
+                    <input type="password" name="current_password"
+                        class="<?= isset($errors['current_password']) ? 'input-error' : '' ?>">
+                    <button type="button" class="toggle-password" data-target="current_password" aria-label="Toggle password visibility">
+                        <span class="eye-icon">👁</span>
+                    </button>
+                    </div>
                 <?php if (!empty($errors['current_password'])): ?>
                     <span class="error-msg"><?= htmlspecialchars($errors['current_password']) ?></span>
                 <?php endif; ?>
@@ -108,8 +120,13 @@ $photo_url = !empty($member->photo)
 
             <div class="form-group">
                 <label>New Password</label>
-                <input type="password" name="new_password"
-                    class="<?= isset($errors['new_password']) ? 'input-error' : '' ?>">
+                <div class="password-wrapper">
+                    <input type="password" name="new_password"
+                        class="<?= isset($errors['new_password']) ? 'input-error' : '' ?>">
+                    <button type="button" class="toggle-password" data-target="new_password" aria-label="Toggle password visibility">
+                        <span class="eye-icon">👁</span>
+                    </button>
+                </div>
                 <?php if (!empty($errors['new_password'])): ?>
                     <span class="error-msg"><?= htmlspecialchars($errors['new_password']) ?></span>
                 <?php endif; ?>
@@ -117,10 +134,13 @@ $photo_url = !empty($member->photo)
 
             <div class="form-group">
                 <label>Confirm New Password</label>
-                <!-- BUG FIX: was name="confirm" but logic read $_POST['confirm_password'] -->
-                <input type="password" name="confirm_password"
-                    class="<?= isset($errors['confirm_password']) ? 'input-error' : '' ?>">
-                <!-- BUG FIX: was checking $errors['new_password'] instead of $errors['confirm_password'] -->
+                <div class="password-wrapper">
+                    <input type="password" name="confirm_password" id="confirm_password"
+                        class="<?= isset($errors['confirm_password']) ? 'input-error' : '' ?>">
+                    <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Toggle password visibility">
+                        <span class="eye-icon">👁</span>
+                    </button>
+                </div>
                 <?php if (!empty($errors['confirm_password'])): ?>
                     <span class="error-msg"><?= htmlspecialchars($errors['confirm_password']) ?></span>
                 <?php endif; ?>
@@ -131,7 +151,7 @@ $photo_url = !empty($member->photo)
     </div>
 
     <!-- TAB: PROFILE PHOTO -->
-    <div class="tab-content" id="tab-photo">
+    <div class="tab-content <?= $active_tab === 'tab-photo' ? 'active' : '' ?>" id="tab-photo">
         <form id="form-photo" method="POST" enctype="multipart/form-data" novalidate>
             <input type="hidden" name="update_photo" value="1">
 

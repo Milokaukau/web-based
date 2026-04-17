@@ -71,6 +71,11 @@ function uploadPhoto($file, $upload_dir, &$errors){
         return null;
     }
 
+    //create upload directory if not exists
+    if (!is_dir($upload_dir)){
+        mkdir($upload_dir, 0755, true);
+    }
+
     $ext        = pathinfo($file['name'], PATHINFO_EXTENSION);
     $filename   = uniqid('photo_', true) . '.' . $ext;
     $dest       = $upload_dir . $filename;
