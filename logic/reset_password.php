@@ -1,6 +1,7 @@
 <?php
 $project_root  = $_SERVER['DOCUMENT_ROOT'] . "/";
 require_once $project_root . "database/auth.php";
+require_once $project_root . "database/profile.php";
 require_once $project_root . "logic/auth_helper.php";
 
 $errors     = [];

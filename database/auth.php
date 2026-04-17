@@ -3,12 +3,6 @@ require_once "db.php";
 
 // MEMBER AUTHORIZATION
 
-function getMemberById($id){
-    $stmt = db()->prepare("SELECT * FROM tb_member WHERE id = ?");
-    $stmt->execute([$id]);
-    return $stmt->fetch();
-}
-
 function getMemberByEmail($email){
     $stmt = db()->prepare("SELECT * FROM tb_member WHERE email = ?");
     $stmt->execute([$email]);
