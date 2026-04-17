@@ -66,7 +66,7 @@ if (is_post()) {
 // ----------------------------------------------------------------------------
 
 $colors     = get_colors(db());
-$categories = array_column(get_categories(db()), 'name', 'id');
+$cat_options = get_categories(db());
 
 $_title = 'Product | Insert';
 include '../components/header.php';
@@ -110,7 +110,7 @@ include '../components/header.php';
                         <tr>
                             <th><label for="category_id">Category</label></th>
                             <td>
-                                <?= html_select('category_id', $categories) ?>
+                                <?= html_select('category_id', $cat_options) ?>
                                 <?= err('category_id') ?>
                             </td>
                         </tr>

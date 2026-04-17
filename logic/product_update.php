@@ -2,6 +2,14 @@
 include '../database/product_base.php';
 include '../database/product_query.php';
 
+function photo_src(string $photo): string {
+    if (!$photo) return '';
+    if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/photos/' . $photo)) {
+        return '/photos/' . $photo;
+    }
+    return '/images/' . $photo;
+}
+
 // ----------------------------------------------------------------------------
 
 if (is_get()) {
@@ -15,7 +23,6 @@ if (is_get()) {
     extract((array)$p);
     $_SESSION['photo'] = $p->photo;
 
-   
     foreach ((array)$p as $k => $v) {
         $GLOBALS[$k] = $v;
     }
@@ -23,6 +30,9 @@ if (is_get()) {
 
 if (is_post()) {
     $id               = req('id');
+    
+    $p                = get_product_by_id(db(), $id);
+
     $color_id         = req('color_id');
     $category_id      = req('category_id');
     $name             = req('name');
@@ -73,6 +83,8 @@ if (is_post()) {
             if ($photo && file_exists("../photos/$photo")) unlink("../photos/$photo");
             $photo = save_photo($f, '../photos');
         }
+        
+        $is_active = ((int)$stock <= 0) ? 0 : 1;
 
         update_product(db(), $color_id, $category_id, $name, $description,
                        $weight_g, $height_cm, $base_diameter_cm, $material,
@@ -86,7 +98,7 @@ if (is_post()) {
 // ----------------------------------------------------------------------------
 
 $colors     = get_colors(db());
-$categories = array_column(get_categories(db()), 'name', 'id');
+$cat_options = get_categories(db());
 
 $_title = 'Product | Update';
 include '../components/header.php';
@@ -137,7 +149,7 @@ include '../components/header.php';
                         <tr>
                             <th><label for="category_id">Category</label></th>
                             <td>
-                                <?= html_select('category_id', $categories) ?>
+                                <?= html_select('category_id', $cat_options) ?>
                                 <?= err('category_id') ?>
                             </td>
                         </tr>
@@ -203,8 +215,8 @@ include '../components/header.php';
                             <th><label for="photo">Photo</label></th>
                             <td>
                                 <div class="upload-wrap">
-                                    <img src="/web-based/photos/<?= htmlspecialchars($photo) ?>"
-                                         alt="Product photo" id="preview">
+                                    <img src="<?= photo_src($p->photo) ?>"
+                                            alt="Product photo" id="preview">
                                     <label class="upload-label">
                                         &#128247; Choose image
                                         <?= html_file('photo', 'image/*', 'hidden') ?>
@@ -222,7 +234,7 @@ include '../components/header.php';
                             <a class="btn-restore" href="../logic/product_restore.php?id=<?= $id ?>"
                             onclick="return confirm('Restore this product?')">Restore</a>
                         <?php endif; ?>
-                        <button class="btn-reset"  type="reset">Reset</button>
+                        <button class="btn-reset" type="reset">Reset</button>
                     </div>
                 </form>
             </div>

@@ -7,6 +7,6 @@ if (is_get()) {
     $stm = db()->prepare('UPDATE tb_product SET is_active = 1 WHERE id = ?');
     $stm->execute([$id]);
 
-    temp('info', 'Record restored');
-    redirect('../pages/product_maintenance.php');
+    temp('info', 'Record restored. Please update the stock.');
+    redirect('../logic/product_update.php?id=' . $id);
 }

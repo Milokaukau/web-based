@@ -962,6 +962,13 @@ tr.row-disabled .btn-restore {
 .photo-card-actions .btn-sm.btn-del     { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
 .photo-card-actions .btn-sm.btn-del:hover { background: #fecaca; }
 
+.photo-card.card-disabled {
+    opacity: 0.45;
+}
+.photo-card.card-disabled .photo-card-info {
+    background-color: #f3f4f6;
+}
+
 /* ── Footer ── */
 .admin-footer {
     background: #fff;

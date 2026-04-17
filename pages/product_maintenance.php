@@ -2,9 +2,17 @@
 include '../database/product_base.php';
 include '../database/product_query.php';
 
+function photo_src(string $photo): string {
+    if (!$photo) return '';
+    if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/photos/' . $photo)) {
+        return '/photos/' . $photo;
+    }
+    return '/images/' . $photo;
+}
+
 $arr        = get_all_products(db());
 $active_arr = array_filter($arr, fn($p) => (int)$p->is_active === 1 && (int)$p->stock > 0);
-$oos_arr    = array_filter($arr, fn($p) => (int)$p->is_active === 0);
+$oos_arr    = array_filter($arr, fn($p) => (int)$p->is_active === 0 || (int)$p->stock === 0);
 $active_arr = array_values($active_arr);
 $oos_arr    = array_values($oos_arr);
 
@@ -87,7 +95,7 @@ include '../components/header.php';
                             <td>
                                 <?php if ($p->photo): ?>
                                     <img class="product-thumb"
-                                        src="/photos/<?= htmlspecialchars($p->photo) ?>"
+                                        src="<?= photo_src($p->photo) ?>"
                                         alt="<?= htmlspecialchars($p->name) ?>">
                                 <?php else: ?>
                                     <span class="no-photo">No Photo</span>
@@ -124,7 +132,7 @@ include '../components/header.php';
                             <td>
                                 <?php if ($p->photo): ?>
                                     <img class="product-thumb"
-                                        src="/photos/<?= htmlspecialchars($p->photo) ?>"
+                                        src="<?= photo_src($p->photo) ?>"
                                         alt="<?= htmlspecialchars($p->name) ?>">
                                 <?php else: ?>
                                     <span class="no-photo">No Photo</span>
@@ -176,7 +184,7 @@ include '../components/header.php';
 
                     <div class="photo-card-img">
                         <?php if ($p->photo): ?>
-                            <img src="/photos/<?= htmlspecialchars($p->photo) ?>" alt="<?= htmlspecialchars($p->name) ?>">
+                            <img src="<?= photo_src($p->photo) ?>" alt="<?= htmlspecialchars($p->name) ?>">
                         <?php else: ?>
                             <span class="no-photo">No Photo</span>
                         <?php endif; ?>
@@ -210,7 +218,7 @@ include '../components/header.php';
                 <?php endforeach; ?>
 
                 <?php foreach ($oos_arr as $p): ?>
-                <div class="photo-card"
+                <div class="photo-card card-disabled"
                     data-group="oos"
                     data-id="<?= $p->id ?>"
                     data-colorid="<?= htmlspecialchars($p->color_id) ?>"
@@ -225,7 +233,7 @@ include '../components/header.php';
 
                     <div class="photo-card-img">
                         <?php if ($p->photo): ?>
-                            <img src="/photos/<?= htmlspecialchars($p->photo) ?>" alt="<?= htmlspecialchars($p->name) ?>">
+                            <img src="<?= photo_src($p->photo) ?>" alt="<?= htmlspecialchars($p->name) ?>">
                         <?php else: ?>
                             <span class="no-photo">No Photo</span>
                         <?php endif; ?>

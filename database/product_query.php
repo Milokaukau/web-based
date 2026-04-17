@@ -15,7 +15,7 @@ function get_all_products($db) {
 function get_product_by_id($db, $id) {
     $stm = $db->prepare('SELECT * FROM tb_product WHERE id = ?');
     $stm->execute([$id]);
-    return $stm->fetch();
+    return $stm->fetch(PDO::FETCH_OBJ);  
 }
 
 function insert_product($db, $color_id, $category_id, $name, $description,
@@ -35,16 +35,18 @@ function insert_product($db, $color_id, $category_id, $name, $description,
 function update_product($db, $color_id, $category_id, $name, $description,
                         $weight_g, $height_cm, $base_diameter_cm, $material,
                         $price, $stock, $photo, $id) {
+    $is_active = ((int)$stock <= 0) ? 0 : 1;
+
     $stm = $db->prepare('
         UPDATE tb_product
         SET color_id = ?, category_id = ?, name = ?, description = ?,
             weight_g = ?, height_cm = ?, base_diameter_cm = ?, material = ?,
-            price = ?, stock = ?, photo = ?
+            price = ?, stock = ?, photo = ?, is_active = ?
         WHERE id = ?
     ');
     $stm->execute([$color_id, $category_id, $name, $description,
                    $weight_g, $height_cm, $base_diameter_cm, $material,
-                   $price, $stock, $photo, $id]);
+                   $price, $stock, $photo, $is_active, $id]);
 }
 
 function get_colors($db) {
@@ -56,3 +58,4 @@ function get_categories($db) {
     return $db->query('SELECT id, name FROM tb_category ORDER BY name')
               ->fetchAll(PDO::FETCH_KEY_PAIR);
 }
+
