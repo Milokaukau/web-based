@@ -315,6 +315,11 @@ body{
     color: #888;
     margin-top: 2px;
 }
+.page-header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
 
 /* ── Buttons ── */
 .btn-add {
@@ -401,6 +406,25 @@ body{
 
 .btn-restore:hover {
     background-color: #2f5bc4;
+}
+
+.btn-oos {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    padding: 7px 14px;
+    border: 1px solid #aaa;
+    border-radius: 7px;
+    background: #f0f0f0;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.15s;
+}
+.btn-oos.active {
+    background: #e74c3c;
+    color: #fff;
+    border-color: #c0392b;
 }
 
 .search-wrap {
@@ -525,6 +549,9 @@ tbody td {
     flex-wrap: wrap;
     gap: .5rem;
 }
+.pagination-wrap[hidden] {
+    display: none !important;
+}
 
 #pagination-info {
     font-size: .85rem;
@@ -585,6 +612,49 @@ tbody td {
     color: #fff;
 }
 
+.pagination-group {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+}
+
+/* ── Photo Pagination ── */
+#photo-pagination-info {
+    font-size: .85rem;
+    color: #666;
+}
+
+#photo-pagination {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+}
+
+#photo-pagination button {
+    min-width: 2rem;
+    padding: .3rem .6rem;
+    border: 1px solid #d1d5db;
+    background: #fff;
+    border-radius: .375rem;
+    cursor: pointer;
+    font-size: .85rem;
+    transition: background .15s;
+}
+
+#photo-pagination button:hover:not(:disabled) {
+    background: #f3f4f6;
+}
+
+#photo-pagination button.active {
+    background: #4f46e5;
+    color: #fff;
+    border-color: #4f46e5;
+}
+
+#photo-pagination button:disabled {
+    opacity: .4;
+    cursor: default;
+}
 
 /* ── Product thumbnail ── */
 .product-thumb {
@@ -762,6 +832,135 @@ tr.row-disabled .btn-restore {
     color: #fff;
     border-color: #16a34a;
 }
+
+/* ── Photo View Toggle Button ── */
+.btn-view-toggle {
+    padding: 8px 16px;
+    border: 1px solid #6c63ff;
+    background: #fff;
+    color: #6c63ff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s, color 0.2s;
+}
+.btn-view-toggle.active {
+    background: #6c63ff;
+    color: #fff;
+}
+
+/* ── Photo Grid ── */
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 16px 0;
+}
+.photo-grid[hidden] {
+    display: none !important;
+}
+
+/* ── Photo Card ── */
+.photo-card {
+    position: relative;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+.photo-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+/* Image area — takes ~65% of card height */
+.photo-card-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.photo-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.photo-card-img .no-photo {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* Bottom info strip */
+.photo-card-info {
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: #fff;
+}
+.photo-card-info .pc-id   { font-size: 11px; color: #999; }
+.photo-card-info .pc-cat  { font-size: 11px; color: #999; }
+.photo-card-info .pc-name { font-size: 13px; font-weight: 600; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.photo-card-info .pc-stock{ font-size: 12px; color: #555; }
+
+/* Hover overlay */
+.photo-card-hover {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.93);
+    backdrop-filter: blur(3px);
+    padding: 14px 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    overflow-y: auto;
+}
+.photo-card:hover .photo-card-hover {
+    opacity: 1;
+}
+.photo-card-hover p {
+    margin: 0;
+    font-size: 12px;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+}
+.photo-card-hover p span {
+    color: #888;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+/* Action buttons in hover — bigger & obvious */
+.photo-card-actions {
+    margin-top: auto;
+    padding-top: 8px;
+    display: flex;
+    gap: 8px;
+}
+.photo-card-actions .btn-sm {
+    flex: 1;
+    text-align: center;
+    padding: 7px 0;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.photo-card-actions .btn-sm:hover       { background: #e0e0e0; }
+.photo-card-actions .btn-sm.btn-del     { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+.photo-card-actions .btn-sm.btn-del:hover { background: #fecaca; }
 
 /* ── Footer ── */
 .admin-footer {

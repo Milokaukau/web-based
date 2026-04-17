@@ -18,15 +18,20 @@ function initTableSort() {
             th.classList.add(sortDir === 1 ? 'asc' : 'desc');
 
             const tbody = table.querySelector('tbody');
-            Array.from(tbody.querySelectorAll('tr'))
-                .sort((a, b) => {
-                    const aVal = a.cells[col].textContent.trim();
-                    const bVal = b.cells[col].textContent.trim();
-                    return isNum
-                        ? (parseFloat(aVal) - parseFloat(bVal)) * sortDir
-                        : aVal.localeCompare(bVal) * sortDir;
-                })
-                .forEach(r => tbody.appendChild(r));
+
+            const activeRows  = Array.from(tbody.querySelectorAll('tr[data-group="active"]'));
+            const deletedRows = Array.from(tbody.querySelectorAll('tr[data-group="deleted"]'));
+
+            const sortFn = (a, b) => {
+                const aVal = a.cells[col].textContent.trim();
+                const bVal = b.cells[col].textContent.trim();
+                return isNum
+                    ? (parseFloat(aVal) - parseFloat(bVal)) * sortDir
+                    : aVal.localeCompare(bVal) * sortDir;
+            };
+
+            activeRows.sort(sortFn).forEach(r => tbody.appendChild(r));
+            deletedRows.sort(sortFn).forEach(r => tbody.appendChild(r));
 
             applyPagination();
         });
@@ -55,92 +60,83 @@ function initPhotoPreview(defaultSrc = '/images/photo.jpg') {
 
 // ── Pagination ──────────────────────────────────────────────
 const PAGE_SIZE = 10;
-let currentPage = 1;  
+let currentActivePage  = 1;
+let currentDeletedPage = 1;
 
-function renderPagination(visibleActive, visibleDeleted) {
-    const totalItems   = visibleActive.length + visibleDeleted.length;
-    const totalPages   = Math.ceil(totalItems / PAGE_SIZE) || 1;
+function renderPagination(visibleActive) {
+    const totalActivePages = Math.ceil(visibleActive.length / PAGE_SIZE) || 1;
 
-    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentActivePage > totalActivePages) currentActivePage = totalActivePages;
 
     const container = document.getElementById('pagination');
     if (!container) return;
     container.innerHTML = '';
 
-    // ‹ Prev
-    const prev = document.createElement('button');
-    prev.textContent = '‹';
-    prev.disabled = currentPage === 1;
-    prev.onclick = () => { currentPage--; applyPagination(); };
-    container.appendChild(prev);
+    const prevA = document.createElement('button');
+    prevA.textContent = '‹';
+    prevA.disabled = currentActivePage === 1;
+    prevA.onclick = () => { currentActivePage--; applyPagination(); };
+    container.appendChild(prevA);
 
-   
-// Active 页码（蓝色）
-    const activePages = Math.ceil(visibleActive.length / PAGE_SIZE);
-    for (let i = 1; i <= activePages; i++) {
+    for (let i = 1; i <= totalActivePages; i++) {
         const btn = document.createElement('button');
         btn.textContent = i;
-        if (i === currentPage) btn.classList.add('active');
-        btn.onclick = (function(page) { return () => { currentPage = page; applyPagination(); }; })(i);
+        if (i === currentActivePage) btn.classList.add('active');
+        btn.onclick = (function(p) { return () => { currentActivePage = p; applyPagination(); }; })(i);
         container.appendChild(btn);
     }
 
-    // 分隔线（只要两边都有数据就显示）
-    if (visibleActive.length > 0 && visibleDeleted.length > 0) {
-        const divider = document.createElement('span');
-        divider.textContent = '|';
-        divider.className = 'pagination-divider';
-        container.appendChild(divider);
-    }
+    const nextA = document.createElement('button');
+    nextA.textContent = '›';
+    nextA.disabled = currentActivePage === totalActivePages;
+    nextA.onclick = () => { currentActivePage++; applyPagination(); };
+    container.appendChild(nextA);
 
-    // Deleted 页码（红色），页码接续 active
-    const deletedPages = Math.ceil(visibleDeleted.length / PAGE_SIZE);
-    for (let i = 1; i <= deletedPages; i++) {
-        const globalPage = activePages + i;
-        const btn = document.createElement('button');
-        btn.textContent = globalPage;
-        btn.classList.add('btn-deleted');
-        if (globalPage === currentPage) btn.classList.add('active');
-        btn.onclick = (function(page) { return () => { currentPage = page; applyPagination(); }; })(globalPage);
-        container.appendChild(btn);
-    }
-
-    // › Next
-    const next = document.createElement('button');
-    next.textContent = '›';
-    next.disabled = currentPage === totalPages;
-    next.onclick = () => { currentPage++; applyPagination(); };
-    container.appendChild(next);
-
-    // Info
     const info = document.getElementById('pagination-info');
     if (info) {
-        const start = totalItems === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
-        const end   = Math.min(currentPage * PAGE_SIZE, totalItems);
-        info.textContent = `Showing ${start}–${end} of ${totalItems} record(s) (${visibleActive.length} active, ${visibleDeleted.length} deleted/out of stock)`;
+        const aStart = visibleActive.length === 0 ? 0 : (currentActivePage - 1) * PAGE_SIZE + 1;
+        const aEnd   = Math.min(currentActivePage * PAGE_SIZE, visibleActive.length);
+        info.textContent = `${aStart}–${aEnd} of ${visibleActive.length} record(s)`;
     }
 }
 
 function applyPagination() {
-    const allRows = Array.from(document.querySelectorAll('#product-tbody tr'));
+    const oosVisible = !document.getElementById('deleted-tbody').hidden;
 
-    const visibleActive  = allRows.filter(tr => tr.dataset.group === 'active'  && tr.dataset.filtered !== 'true');
-    const visibleDeleted = allRows.filter(tr => tr.dataset.group === 'deleted' && tr.dataset.filtered !== 'true');
+    const activeRows   = Array.from(document.querySelectorAll('#active-tbody tr'));
+    const deletedRows  = Array.from(document.querySelectorAll('#deleted-tbody tr'));
 
-    const allVisible = [...visibleActive, ...visibleDeleted];
+    const visibleActive  = activeRows.filter(tr  => tr.dataset.filtered !== 'true');
+    const visibleDeleted = deletedRows.filter(tr => tr.dataset.filtered !== 'true');
 
-    allRows.forEach(tr => { tr.style.display = 'none'; });
+    if (oosVisible) {
+        activeRows.forEach(tr => tr.style.display = 'none');
 
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const end   = currentPage * PAGE_SIZE;
-    allVisible.forEach((tr, idx) => {
-        tr.style.display = (idx >= start && idx < end) ? '' : 'none';
-    });
+        deletedRows.forEach(tr => tr.style.display = 'none');
+        visibleDeleted.forEach((tr, idx) => {
+            const start = (currentDeletedPage - 1) * PAGE_SIZE;
+            const end   =  currentDeletedPage      * PAGE_SIZE;
+            tr.style.display = (idx >= start && idx < end) ? '' : 'none';
+        });
 
-    renderPagination(visibleActive, visibleDeleted);
+        renderPagination(visibleDeleted);   
 
-    const sub = document.querySelector('.page-header .sub');
-    if (sub) sub.textContent = allVisible.length + ' record(s) found';
+        const sub = document.querySelector('.page-header .sub');
+        if (sub) sub.textContent = visibleDeleted.length + ' record(s) found';
+
+    } else {
+        activeRows.forEach(tr => tr.style.display = 'none');
+        visibleActive.forEach((tr, idx) => {
+            const start = (currentActivePage - 1) * PAGE_SIZE;
+            const end   =  currentActivePage      * PAGE_SIZE;
+            tr.style.display = (idx >= start && idx < end) ? '' : 'none';
+        });
+
+        renderPagination(visibleActive);
+
+        const sub = document.querySelector('.page-header .sub');
+        if (sub) sub.textContent = visibleActive.length + ' record(s) found';
+    }
 }
 
 // ── Filters ─────────────────────────────────────────────────
@@ -149,10 +145,10 @@ function applyFilters() {
     const catVal   =  document.getElementById('filter-category')?.value  || '';
     const minVal   =  document.getElementById('filter-price-min')?.value;
     const maxVal   =  document.getElementById('filter-price-max')?.value;
-    const minPrice = (minVal !== '' && minVal != null) ? parseFloat(minVal) : null;
-    const maxPrice = (maxVal !== '' && maxVal != null) ? parseFloat(maxVal) : null;
+    const minPrice = minVal !== '' ? parseFloat(minVal) : null;
+    const maxPrice = maxVal !== '' ? parseFloat(maxVal) : null;
 
-    document.querySelectorAll('#product-tbody tr').forEach(row => {
+    document.querySelectorAll('#active-tbody tr, #deleted-tbody tr').forEach(row => {
         const name     = row.cells[4]?.textContent.toLowerCase()  || '';
         const desc     = row.cells[5]?.textContent.toLowerCase()  || '';
         const material = row.cells[9]?.textContent.toLowerCase()  || '';
@@ -168,8 +164,16 @@ function applyFilters() {
         row.dataset.filtered = (matchSearch && matchCat && matchMin && matchMax) ? 'false' : 'true';
     });
 
-    currentPage = 1;
+    currentActivePage  = 1;
+    currentDeletedPage = 1;
     applyPagination();
+
+    // photo mode
+    currentPhotoPage = 1;
+    const photoGrid = document.getElementById('photo-grid');
+    if (photoGrid && !photoGrid.hidden) {
+        applyPhotoPagination();
+    }
 }
 
 function initFilters() {
@@ -187,8 +191,184 @@ function initFilters() {
     });
 }
 
+// ── OOS Toggle ───────────────────────────────────────────────
+function initOosToggle() {
+    const btn         = document.getElementById('toggle-oos');
+    const deletedTbody = document.getElementById('deleted-tbody');
+    const activeTbody  = document.getElementById('active-tbody');
+    if (!btn || !deletedTbody) return;
+
+    let showing = false;
+
+    btn.addEventListener('click', () => {
+        showing = !showing;
+        deletedTbody.hidden = !showing;
+        if (activeTbody) activeTbody.hidden = showing;
+        btn.classList.toggle('active', showing);
+        applyPagination();
+    });
+}
+
+// ── Photo View State ─────────────────────────────────────────
+let currentPhotoPage = 1;
+const PHOTO_PAGE_SIZE = 10;
+let photoOosShowing = false;
+
+function getPhotoCards() {
+    const q        = (document.getElementById('product-search')?.value || '').toLowerCase().trim();
+    const catVal   =  document.getElementById('filter-category')?.value  || '';
+    const minVal   =  document.getElementById('filter-price-min')?.value;
+    const maxVal   =  document.getElementById('filter-price-max')?.value;
+    const minPrice = minVal !== '' ? parseFloat(minVal) : null;
+    const maxPrice = maxVal !== '' ? parseFloat(maxVal) : null;
+
+    const allCards = Array.from(document.querySelectorAll('#photo-grid .photo-card'));
+
+    return allCards.filter(card => {
+        const group    = card.dataset.group;  // 'active' or 'oos'
+        const name     = (card.dataset.name     || '').toLowerCase();
+        const material = (card.dataset.material || '').toLowerCase();
+        const id       = (card.dataset.id       || '').toLowerCase();
+        const catId    =  card.dataset.catid    || '';
+        const price    = parseFloat(card.dataset.price || '0');
+
+        if (!photoOosShowing && group === 'oos')    return false;
+        if ( photoOosShowing && group === 'active') return false;
+
+        const matchSearch = !q      || name.includes(q) || material.includes(q) || id.includes(q);
+        const matchCat    = !catVal || catId === catVal;
+        const matchMin    = minPrice === null || price >= minPrice;
+        const matchMax    = maxPrice === null || price <= maxPrice;
+
+        return matchSearch && matchCat && matchMin && matchMax;
+    });
+}
+
+function applyPhotoPagination() {
+    const allCards = Array.from(document.querySelectorAll('#photo-grid .photo-card'));
+    const visible  = getPhotoCards();
+
+    const totalPages = Math.ceil(visible.length / PHOTO_PAGE_SIZE) || 1;
+    if (currentPhotoPage > totalPages) currentPhotoPage = totalPages;
+
+    const start = (currentPhotoPage - 1) * PHOTO_PAGE_SIZE;
+    const end   =  currentPhotoPage      * PHOTO_PAGE_SIZE;
+
+    allCards.forEach(card => card.style.display = 'none');
+    visible.forEach((card, idx) => {
+        card.style.display = (idx >= start && idx < end) ? '' : 'none';
+    });
+
+    renderPhotoPagination(visible.length, totalPages);
+
+    const sub = document.querySelector('.page-header .sub');
+    if (sub) sub.textContent = visible.length + ' record(s) found';
+}
+
+function renderPhotoPagination(total, totalPages) {
+    const container = document.getElementById('photo-pagination');
+    const info      = document.getElementById('photo-pagination-info');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const prev = document.createElement('button');
+    prev.textContent = '‹';
+    prev.disabled = currentPhotoPage === 1;
+    prev.onclick = () => { currentPhotoPage--; applyPhotoPagination(); };
+    container.appendChild(prev);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        if (i === currentPhotoPage) btn.classList.add('active');
+        btn.onclick = (function(p) { return () => { currentPhotoPage = p; applyPhotoPagination(); }; })(i);
+        container.appendChild(btn);
+    }
+
+    const next = document.createElement('button');
+    next.textContent = '›';
+    next.disabled = currentPhotoPage === totalPages;
+    next.onclick = () => { currentPhotoPage++; applyPhotoPagination(); };
+    container.appendChild(next);
+
+    if (info) {
+        const s = total === 0 ? 0 : (currentPhotoPage - 1) * PHOTO_PAGE_SIZE + 1;
+        const e = Math.min(currentPhotoPage * PHOTO_PAGE_SIZE, total);
+        info.textContent = `${s}–${e} of ${total} record(s)`;
+    }
+}
+
+// ── View Toggle (Table ↔ Photo) ──────────────────────────────
+function initViewToggle() {
+    const btn       = document.getElementById('toggle-view');
+    const tblWrap   = document.querySelector('.tbl-wrap');
+    const pagWrap   = document.getElementById('table-pagination-wrap'); // ← 直接用 id
+    const photoGrid = document.getElementById('photo-grid');
+    const photoPag  = document.getElementById('photo-pagination-wrap');
+    if (!btn || !photoGrid) return;
+
+    photoGrid.hidden = true;
+    if (photoPag) photoPag.hidden = true;
+    tblWrap.hidden  = false;
+    pagWrap.hidden  = false;
+
+    let photoMode = false;
+
+    btn.addEventListener('click', () => {
+        photoMode = !photoMode;
+        btn.classList.toggle('active', photoMode);
+        btn.textContent = photoMode ? '☰ Table View' : '⊞ Photo View';
+
+        tblWrap.hidden   = photoMode;
+        pagWrap.hidden   = photoMode;
+        photoGrid.hidden = !photoMode;
+        if (photoPag) photoPag.hidden = !photoMode;
+
+        if (photoMode) {
+            currentPhotoPage = 1;
+            applyPhotoPagination();
+        } else {
+            applyPagination(); 
+        }
+    });
+}
+
+// ── Photo OOS Toggle ─────────────────────────────────────────
+function initPhotoOosToggle() {
+    const btn = document.getElementById('toggle-oos');
+    if (!btn) return;
+
+    const deletedTbody = document.getElementById('deleted-tbody');
+    const activeTbody  = document.getElementById('active-tbody');
+    const photoGrid    = document.getElementById('photo-grid');
+    const pagWrap = document.getElementById('table-pagination-wrap');
+
+    btn.addEventListener('click', () => {
+        photoOosShowing = !photoOosShowing;
+
+        // table mode
+        if (deletedTbody) deletedTbody.hidden = !photoOosShowing;
+        if (activeTbody)  activeTbody.hidden  =  photoOosShowing;
+        btn.classList.toggle('active', photoOosShowing);
+
+        // photo mode 
+        if (photoGrid && !photoGrid.hidden) {
+            currentPhotoPage = 1;
+            applyPhotoPagination();
+        } else {
+            // table mode pagination
+            currentActivePage  = 1;
+            currentDeletedPage = 1;
+            applyPagination();
+        }
+    });
+}
+
 // ── Init ─────────────────────────────────────────────────────
 initTableSort();
 initPhotoPreview();
 initFilters();
+initPhotoOosToggle();   
+initViewToggle();       
 applyFilters();
