@@ -41,14 +41,33 @@ $(document).ready(function(){
         reader.readAsDataURL(file);
     });
 
-// SHOW / HIDE PASSWORD
-$('.toggle-password').on('click', function(){
-    var targetId = $(this).data('target');
-    var $input = $('#' + targetId);
-    var isHidden = $input.attr('type') === 'password';
-    $input.attr('type', isHidden ? 'text' : 'password');
-    $(this).text(isHidden ? '⌣' : '👁');
-});
+    // PROFILE PHOTO LIGHTBOX
+    $('.photo-lightbox-trigger').on('click', function () {
+        var src = $(this).attr('src');
+        $('#photo-lightbox-img').attr('src', src);
+        $('#photo-lightbox').addClass('open');
+    });
+
+    $('#photo-lightbox, #photo-lightbox-close').on('click', function () {
+        $('#photo-lightbox').removeClass('open');
+    });
+
+    $('#photo-lightbox-img').on('click', function (e) {
+        e.stopPropagation(); // clicking the image itself won't close it
+    });
+
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape') $('#photo-lightbox').removeClass('open');
+    });
+
+    // SHOW / HIDE PASSWORD
+    $('.toggle-password').on('click', function(){
+        var targetId = $(this).data('target');
+        var $input = $('#' + targetId);
+        var isHidden = $input.attr('type') === 'password';
+        $input.attr('type', isHidden ? 'text' : 'password');
+        $(this).text(isHidden ? '⌣' : '👁');
+    });
 
     // MALAYSIAN PHONE VALIDATION
     $('input[name="phone"]').on('input', function () {

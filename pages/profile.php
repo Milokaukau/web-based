@@ -25,7 +25,7 @@ $photo_url = !empty($member->photo)
     <?php endif; ?>
 
     <div class="profile-header">
-        <img src="<?= $photo_url ?>" alt="Profile Photo" class="profile-avatar" id="avatar-preview">
+        <img src="<?= $photo_url ?>" alt="Profile Photo" class="profile-avatar photo-lightbox-trigger" id="avatar-preview">
         <div>
             <h2><?= htmlspecialchars($member->name) ?></h2>
             <p class="text-muted"><?= htmlspecialchars($member->email) ?></p>
@@ -107,7 +107,7 @@ $photo_url = !empty($member->photo)
             <div class="form-group">
                 <label>Current Password</label>
                 <div class="password-wrapper">
-                    <input type="password" name="current_password"
+                    <input type="password" name="current_password" id="current_password"
                         class="<?= isset($errors['current_password']) ? 'input-error' : '' ?>">
                     <button type="button" class="toggle-password" data-target="current_password" aria-label="Toggle password visibility">
                         <span class="eye-icon">👁</span>
@@ -121,7 +121,7 @@ $photo_url = !empty($member->photo)
             <div class="form-group">
                 <label>New Password</label>
                 <div class="password-wrapper">
-                    <input type="password" name="new_password"
+                    <input type="password" name="new_password" id="new_password"
                         class="<?= isset($errors['new_password']) ? 'input-error' : '' ?>">
                     <button type="button" class="toggle-password" data-target="new_password" aria-label="Toggle password visibility">
                         <span class="eye-icon">👁</span>
@@ -156,7 +156,7 @@ $photo_url = !empty($member->photo)
             <input type="hidden" name="update_photo" value="1">
 
             <div class="photo-upload-area">
-                <img src="<?= $photo_url ?>" alt="Current Photo" class="photo-preview" id="photo-preview">
+                <img src="<?= $photo_url ?>" alt="Current Photo" class="photo-preview photo-lightbox-trigger" id="photo-preview">
                 <div class="form-group">
                     <label for="photo">Choose New Photo</label>
                     <input type="file" id="photo" name="photo" accept="image/*">
@@ -166,11 +166,14 @@ $photo_url = !empty($member->photo)
                     <small class="text-muted">JPG, PNG, GIF, WEBP. Max 2MB.</small>
                 </div>
             </div>
-
             <button type="submit" class="btn btn-primary">Upload Photo</button>
         </form>
     </div>
-
+    <!-- PHOTO LIGHTBOX -->
+            <div id="photo-lightbox">
+                <button id="photo-lightbox-close" title="Close">&times;</button>
+                <img id="photo-lightbox-img" src="" alt="Profile Photo">
+            </div>
 </div>
 
 <?php include $project_root . 'components/footer.php'; ?>

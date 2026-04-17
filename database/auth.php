@@ -72,6 +72,42 @@ function resetMemberPassword($member_id, $hashed_password){
     $stmt->execute([$hashed_password, $member_id]);
 }
 
+// REMEMBER ME TOKENS
+
+function saveRememberToken($member_id, $token_hash, $expires_at) {
+    // remove old tokens for this member first
+    $stmt = db()->prepare("DELETE FROM tb_remember_tokens WHERE member_id = ?");
+    $stmt->execute([$member_id]);
+
+    $stmt = db()->prepare("
+        INSERT INTO tb_remember_tokens (member_id, token_hash, expires_at)
+        VALUES (?, ?, ?)
+    ");
+    $stmt->execute([$member_id, $token_hash, $expires_at]);
+}
+
+function getRememberToken($token_hash) {
+    $now = date('Y-m-d H:i:s');
+    $stmt = db()->prepare("
+        SELECT rt.*, m.id AS member_id
+        FROM tb_remember_tokens rt
+        JOIN tb_member m ON m.id = rt.member_id
+        WHERE rt.token_hash = ? AND rt.expires_at > ?
+    ");
+    $stmt->execute([$token_hash, $now]);
+    return $stmt->fetch();
+}
+
+function deleteRememberToken($token_hash) {
+    $stmt = db()->prepare("DELETE FROM tb_remember_tokens WHERE token_hash = ?");
+    $stmt->execute([$token_hash]);
+}
+
+function deleteAllRememberTokensForMember($member_id) {
+    $stmt = db()->prepare("DELETE FROM tb_remember_tokens WHERE member_id = ?");
+    $stmt->execute([$member_id]);
+}
+
 // ADMIN AUTHORIZATION
 
 function getAdminByEmail($email){
