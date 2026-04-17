@@ -6,7 +6,7 @@ require_once "db.php";
 function updateMemberProfile($id, $name, $email, $gender, $phone){
     $stmt = db()->prepare("
     UPDATE tb_member
-    SET fullname = ?, email = ?, gender = ?, phone = ?
+    SET name = ?, email = ?, gender = ?, phone = ?
     WHERE id = ?
     ");
     $stmt->execute([$name, $email, $gender, $phone, $id]);

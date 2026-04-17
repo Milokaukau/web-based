@@ -32,7 +32,7 @@ function isAdmin(){
 }
 
 function redirectWith($url, $type, $message){
-    $_SESSION['flash'] = ['type', 'message' => $message];
+    $_SESSION['flash'] = ['type' => $type, 'message' => $message];
     header("Location: $url");
     exit;
 }

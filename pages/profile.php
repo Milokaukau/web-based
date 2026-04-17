@@ -3,9 +3,9 @@ $project_root = $_SERVER['DOCUMENT_ROOT'] . "/";
 require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
-requireMember(); //non member not allowed
+requireMember(); // non-member not allowed
 
-require $project_root . "logic/profile.php"; 
+require $project_root . "logic/profile.php";
 
 $_title = 'Your Profile';
 include $project_root . "components/header.php";
@@ -17,19 +17,18 @@ $photo_url = !empty($member->photo)
 
 <div class="profile-container">
 
-
     <?php if (!empty($_SESSION['flash'])): ?>
-        <div class="alert alert-<?=  $_SESSION['flash']['type'] ?>">
+        <div class="alert alert-<?= htmlspecialchars($_SESSION['flash']['type']) ?>">
             <?= htmlspecialchars($_SESSION['flash']['message']) ?>
         </div>
         <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
 
     <div class="profile-header">
-        <img src="<?=  $photo_url ?>" alt="Profile Photo" class="profile-avatar" id="avatar-preview">
+        <img src="<?= $photo_url ?>" alt="Profile Photo" class="profile-avatar" id="avatar-preview">
         <div>
             <h2><?= htmlspecialchars($member->name) ?></h2>
-            <p class="text-muted">@<?= htmlspecialchars($member->email) ?></p>
+            <p class="text-muted"><?= htmlspecialchars($member->email) ?></p>
         </div>
     </div>
 
@@ -39,6 +38,7 @@ $photo_url = !empty($member->photo)
         <button class="tab-btn" data-tab="tab-photo">Profile Photo</button>
     </div>
 
+    <!-- TAB: PROFILE INFO -->
     <div class="tab-content active" id="tab-info">
         <form id="form-profile" method="POST" novalidate>
             <input type="hidden" name="update_profile" value="1">
@@ -46,9 +46,9 @@ $photo_url = !empty($member->photo)
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" name="name"
-                    value="<?=  htmlspecialchars($member->name) ?>"
+                    value="<?= htmlspecialchars($member->name) ?>"
                     class="<?= isset($errors['name']) ? 'input-error' : '' ?>">
-                <?php if (!empty($errors['name'])):?>
+                <?php if (!empty($errors['name'])): ?>
                     <span class="error-msg"><?= htmlspecialchars($errors['name']) ?></span>
                 <?php endif; ?>
             </div>
@@ -56,9 +56,9 @@ $photo_url = !empty($member->photo)
             <div class="form-group">
                 <label>Email</label>
                 <input type="email" name="email"
-                    value="<?=  htmlspecialchars($member->email) ?>"
+                    value="<?= htmlspecialchars($member->email) ?>"
                     class="<?= isset($errors['email']) ? 'input-error' : '' ?>">
-                <?php if (!empty($errors['email'])):?>
+                <?php if (!empty($errors['email'])): ?>
                     <span class="error-msg"><?= htmlspecialchars($errors['email']) ?></span>
                 <?php endif; ?>
             </div>
@@ -68,11 +68,11 @@ $photo_url = !empty($member->photo)
                     <label>Gender</label>
                     <select name="gender" class="<?= isset($errors['gender']) ? 'input-error' : '' ?>">
                         <option value="">-- Select --</option>
-                        <option value="male"    <?= $member->gender === 'male'  ? 'selected' : '' ?>>Male</option>
-                        <option value="female"    <?= $member->gender === 'female'  ? 'selected' : '' ?>>Female</option>
-                        <option value="other"    <?= $member->gender === 'other'  ? 'selected' : '' ?>>Other</option>
+                        <option value="male"   <?= $member->gender === 'male'   ? 'selected' : '' ?>>Male</option>
+                        <option value="female" <?= $member->gender === 'female' ? 'selected' : '' ?>>Female</option>
+                        <option value="other"  <?= $member->gender === 'other'  ? 'selected' : '' ?>>Other</option>
                     </select>
-                    <?php if (!empty($errors['gender'])):?>
+                    <?php if (!empty($errors['gender'])): ?>
                         <span class="error-msg"><?= htmlspecialchars($errors['gender']) ?></span>
                     <?php endif; ?>
                 </div>
@@ -80,26 +80,28 @@ $photo_url = !empty($member->photo)
                 <div class="form-group">
                     <label>Phone</label>
                     <input type="text" name="phone"
-                        value="<?=  htmlspecialchars($member->phone) ?>"
+                        value="<?= htmlspecialchars($member->phone) ?>"
                         class="<?= isset($errors['phone']) ? 'input-error' : '' ?>">
-                    <?php if (!empty($errors['phone'])):?>
+                    <?php if (!empty($errors['phone'])): ?>
                         <span class="error-msg"><?= htmlspecialchars($errors['phone']) ?></span>
                     <?php endif; ?>
                 </div>
-             </div>
-                 <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
     </div>
 
+    <!-- TAB: CHANGE PASSWORD -->
     <div class="tab-content" id="tab-password">
         <form id="form-password" method="POST" novalidate>
             <input type="hidden" name="update_password" value="1">
-            
+
             <div class="form-group">
                 <label>Current Password</label>
                 <input type="password" name="current_password"
                     class="<?= isset($errors['current_password']) ? 'input-error' : '' ?>">
-                <?php if (!empty($errors['current_password'])):?>
+                <?php if (!empty($errors['current_password'])): ?>
                     <span class="error-msg"><?= htmlspecialchars($errors['current_password']) ?></span>
                 <?php endif; ?>
             </div>
@@ -108,17 +110,19 @@ $photo_url = !empty($member->photo)
                 <label>New Password</label>
                 <input type="password" name="new_password"
                     class="<?= isset($errors['new_password']) ? 'input-error' : '' ?>">
-                <?php if (!empty($errors['new_password'])):?>
-                     <span class="error-msg"><?= htmlspecialchars($errors['new_password']) ?></span>
+                <?php if (!empty($errors['new_password'])): ?>
+                    <span class="error-msg"><?= htmlspecialchars($errors['new_password']) ?></span>
                 <?php endif; ?>
             </div>
 
             <div class="form-group">
                 <label>Confirm New Password</label>
-                <input type="password" name="confirm"
+                <!-- BUG FIX: was name="confirm" but logic read $_POST['confirm_password'] -->
+                <input type="password" name="confirm_password"
                     class="<?= isset($errors['confirm_password']) ? 'input-error' : '' ?>">
-                <?php if (!empty($errors['new_password'])):?>
-                     <span class="error-msg"><?= htmlspecialchars($errors['confirm_password']) ?></span>
+                <!-- BUG FIX: was checking $errors['new_password'] instead of $errors['confirm_password'] -->
+                <?php if (!empty($errors['confirm_password'])): ?>
+                    <span class="error-msg"><?= htmlspecialchars($errors['confirm_password']) ?></span>
                 <?php endif; ?>
             </div>
 
@@ -126,25 +130,27 @@ $photo_url = !empty($member->photo)
         </form>
     </div>
 
-        <!-- PROFILE PHOTO -->
-        <div class="tab-content" id="tab-photo">
-            <form id="form-photo" method="POST" enctype="multipart/form-data" novalidate>
-                <input type="hidden" name="update_photo" value="1">
+    <!-- TAB: PROFILE PHOTO -->
+    <div class="tab-content" id="tab-photo">
+        <form id="form-photo" method="POST" enctype="multipart/form-data" novalidate>
+            <input type="hidden" name="update_photo" value="1">
 
-                <div class="photo-upload-area">
-                    <img src="<?= $photo_url ?>" alt="Current Photo" class="photo-preview" id="photo-preview">
-                    <div class="form-group">
-                        <label for="photo">Choose New Photo</label>
-                        <input type="file" id="photo" name="photo" accept="image/*">
-                        <?php if (!empty($errors['photo'])):?>
+            <div class="photo-upload-area">
+                <img src="<?= $photo_url ?>" alt="Current Photo" class="photo-preview" id="photo-preview">
+                <div class="form-group">
+                    <label for="photo">Choose New Photo</label>
+                    <input type="file" id="photo" name="photo" accept="image/*">
+                    <?php if (!empty($errors['photo'])): ?>
                         <span class="error-msg"><?= htmlspecialchars($errors['photo']) ?></span>
-                        <?php endif; ?>
-                        <small class="text-muted">JPG, PNG, GIF, WEBP. Max 2MB.</small>
-                    </div>
+                    <?php endif; ?>
+                    <small class="text-muted">JPG, PNG, GIF, WEBP. Max 2MB.</small>
                 </div>
-                <button type="submit" class="btn btn-primary">Upload Photo</button>
-            </form>
-        </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Upload Photo</button>
+        </form>
+    </div>
+
 </div>
 
 <?php include $project_root . 'components/footer.php'; ?>

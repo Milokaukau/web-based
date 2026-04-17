@@ -42,12 +42,14 @@ $(document).ready(function(){
     });
 
     // SHOW / HIDE PASSWORD
-    $('.toggle-password').on('click', function(){
-        var $input = $('#password');
-        var isHidden = $input.attr('type') === 'password';
-        $input.attr('type', isHidden ? 'text' : 'password');
-        $(this).text(isHidden ? '⌣' : '👁');
-    });
+   // SHOW / HIDE PASSWORD
+// SHOW / HIDE PASSWORD
+$('.toggle-password').on('click', function(){
+    var $input = $(this).closest('.password-group').find('input');
+    var isHidden = $input.attr('type') === 'password';
+    $input.attr('type', isHidden ? 'text' : 'password');
+    $(this).text(isHidden ? '⌣' : '👁');
+});
 
     // LOGIN FORM TO PREVENT DOUBLE-SUBMIT
     $('#login-form').on('submit', function(){

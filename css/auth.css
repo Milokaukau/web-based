@@ -302,3 +302,56 @@
         align-items: center;
     }
 }
+
+/* "Try again" link on forgot-password success screen */
+.try-again-link {
+    color: #2563eb;
+    cursor: pointer;
+}
+
+.try-again-link:hover {
+    text-decoration: underline;
+}
+
+/*forgot password description text*/
+.forgot-desc{
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+/*reset link display box*/
+.reset-link-box{
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 20px;
+    word-break: break-all;
+}
+
+.reset-link-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.reset-link-url {
+    display: block;
+    font-size: 0.85rem;
+    color: #2563eb;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+.reset-link-url:hover {
+    text-decoration: underline;
+}
+
+.reset-link-note {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0;
+}
