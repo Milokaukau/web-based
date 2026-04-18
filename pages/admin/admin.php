@@ -9,6 +9,7 @@ $project_root = $_SERVER['DOCUMENT_ROOT'] . "/";
 require_once $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
+
 // ── Database layers (split by concern) ────────────────────────────────────
 require_once $project_root . "database/admin.php";
 require_once $project_root . "database/member.php";
@@ -138,7 +139,7 @@ $highAttempts = getHighAttempts();
 
 <!-- ── TOPBAR ─────────────────────────────────────────────────────────────── -->
 <div class="topbar">
-    <div class="topbar-brand">NO<span>AI</span>R</div>
+    <div class="topbar-brand">NOAIR</div>
     <div class="topbar-right">
         <span class="topbar-clock" id="clock"></span>
         <div class="topbar-user">

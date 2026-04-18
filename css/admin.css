@@ -230,22 +230,17 @@ select.filter-sel:focus {
     box-shadow: 0 0 0 3px rgba(243,158,158,0.15);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   BUTTONS
-   Primary = full coral pill — exactly the LOGIN button
-   Outline = ghost pill like the logout/link style
-══════════════════════════════════════════════════════════ */
 .btn-primary {
     display: inline-block;
     padding: 10px 24px;
-    background: var(--coral);
+    background: var(--coral-dark);
     color: var(--white);
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
     border: none;
-    border-radius: 9999px;          /* full pill — matches LOGIN button */
+    border-radius: 9999px;          
     cursor: pointer;
     font-family: 'Inter', sans-serif;
     transition: background 0.2s;
