@@ -18,8 +18,10 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
         $cartCount += $item['qty'] ?? 0; // Added null coalesce to prevent 'undefined index'
     }
 }
-
-$categories = getAllCategories() ?: []; // Ensure it's at least an empty array
+// Fetch categories for the shop dropdown
+$project_root = $_SERVER['DOCUMENT_ROOT']."/";
+require_once $project_root . "database/category.php";
+$categories = getAllCategories();
 ?>
 
 <!DOCTYPE html>
@@ -87,10 +89,7 @@ $categories = getAllCategories() ?: []; // Ensure it's at least an empty array
                         CART 🛒 <span class="cart-count"><?= $cartCount > 0 ? $cartCount : "" ?></span>
                     </a>
 
-                <?php elseif(isAdmin()): ?>
-                    <a href="/pages/admin/dashboard.php">DASHBOARD</a>
-                    <span>|</span>
-                    <a href="/pages/logout.php">LOGOUT</a>
+                
 
                 <?php else: ?>
                     <a href="/pages/login.php">PROFILE</a>
