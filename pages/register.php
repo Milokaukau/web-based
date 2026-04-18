@@ -74,18 +74,24 @@ include $project_root . 'components/header.php';
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="password">Password</label>
+                <label for="password">Password</label>
+                <div class="password-group">
                     <input type="password" id="password" name="password"
                             class="<?= isset($errors['password']) ? 'input-error' : '' ?>">
-                    <?php if (!empty($errors['password'])): ?>
-                        <span class="error-msg"><?= htmlspecialchars($errors['password']) ?></span>
-                    <?php endif; ?>
+                    <button type="button" class="toggle-password" title="Show/Hide password">👁</button>
                 </div>
+                <?php if (!empty($errors['password'])): ?>
+                    <span class="error-msg"><?= htmlspecialchars($errors['password']) ?></span>
+                <?php endif; ?>
+            </div>
 
-                <div class="form-group">
-                    <label for="password2">Confirm Password</label>
+            <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <div class="password-group">
                     <input type="password" id="password2" name="password2"
                             class="<?= isset($errors['password2']) ? 'input-error' : '' ?>">
+                    <button type="button" class="toggle-password" title="Show/Hide password">👁</button>
+                </div>
                     <?php if (!empty($errors['password2'])): ?>
                         <span class="error-msg"><?= htmlspecialchars($errors['password2']) ?></span>
                     <?php endif; ?>

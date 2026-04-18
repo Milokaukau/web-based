@@ -45,7 +45,7 @@ include $project_root . 'components/header.php';
             <div class="form-group password-group">
                 <input type="password" id="password" name="password" placeholder="Password"
                     class="<?= isset($errors['password']) ? 'input-error' : '' ?>">
-                <button type="button" class="toggle-password" id="toggle-password" title="Show/hide password">👁</button>
+                <button type="button" class="toggle-password" data-target="password" title="Show/hide password">👁</button>
                 <?php if (!empty($errors['password'])): ?>
                     <span class="error-msg"><?= htmlspecialchars($errors['password']) ?></span>
                 <?php endif; ?>
@@ -53,6 +53,14 @@ include $project_root . 'components/header.php';
 
             <div class="forgot-link">
                 <a href="/pages/forgot_password.php">Forgot Password</a>
+            </div>
+
+            <div class="form-group remember-me">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="remember_me" value="1"
+                        <?= !empty($_POST['remember_me']) ? 'checked' : '' ?>>
+                    Remember me for 30 days
+                </label>
             </div>
 
             <button type="submit" class="btn btn-primary btn-full">Login</button>
