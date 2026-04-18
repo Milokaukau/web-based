@@ -70,6 +70,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     // if correct, log in and reset locked attempts
                     resetMemberLoginAttempts($userId);
                     loginMember($user);
+
+                    // Remember Me
+                    if (!empty($_POST['remember_me'])) {
+                        setRememberMeCookie($userId);
+                    }
+
                     header("Location: /pages/home.php");
                     exit;
                 }
