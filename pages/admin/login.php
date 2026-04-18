@@ -4,7 +4,7 @@ require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
 if(isAdmin()){
-    header("Location: /pages/admin/dashboard.php");
+    header("Location: /pages/admin/admin.php");
     exit;
 }
 
@@ -50,7 +50,7 @@ include $project_root . 'components/header.php';
                 <?php endif; ?>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-full">Login as Admin</button>
+            <button type="submit" class="btn btn-primary">Login as Admin</button>
         </form>
 
         <p class="auth-footer"><a href="/pages/login.php">← Member Login</a></p>

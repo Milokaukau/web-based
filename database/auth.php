@@ -1,4 +1,6 @@
 <?php
+$project_root = $_SERVER['DOCUMENT_ROOT'] . "/";
+require_once $project_root . "config.php";
 require_once "db.php";
 
 // MEMBER AUTHORIZATION
