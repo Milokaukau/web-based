@@ -302,3 +302,273 @@
         align-items: center;
     }
 }
+
+/* "Try again" link on forgot-password success screen */
+.try-again-link {
+    color: #2563eb;
+    cursor: pointer;
+}
+
+.try-again-link:hover {
+    text-decoration: underline;
+}
+
+/*forgot password description text*/
+.forgot-desc{
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+/*reset link display box*/
+.reset-link-box{
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 20px;
+    word-break: break-all;
+}
+
+.reset-link-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.reset-link-url {
+    display: block;
+    font-size: 0.85rem;
+    color: #2563eb;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+.reset-link-url:hover {
+    text-decoration: underline;
+}
+
+.reset-link-note {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0;
+}
+/* Remember Me checkbox */
+.remember-me {
+    margin-top: -0.25rem;
+    margin-bottom: 0.75rem;
+}
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted, #666);
+    cursor: pointer;
+    user-select: none;
+}
+.checkbox-label input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--primary, #4f46e5);
+    cursor: pointer;
+}
+
+/* photo lightbox*/
+.photo-lightbox-trigger {
+    cursor: zoom-in;
+    transition: opacity 0.2s;
+}
+
+.photo-lightbox-trigger:hover {
+    opacity: 0.85;
+}
+
+#photo-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.75);
+    align-items: center;
+    justify-content: center;
+}
+
+#photo-lightbox.open {
+    display: flex;
+}
+
+#photo-lightbox-img {
+    max-width: 90vw;
+    max-height: 85vh;
+    border-radius: 8px;
+    object-fit: contain;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    animation: lightbox-zoom-in 0.2s ease;
+}
+
+@keyframes lightbox-zoom-in {
+    from { transform: scale(0.88); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+
+#photo-lightbox-close {
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    letter-spacing: 0;
+}
+
+#photo-lightbox-close:hover {
+    opacity: 1;
+}
+/* =====================
+   WEBCAM CAPTURE
+   ===================== */
+
+/* Button row under the photo tab */
+.photo-action-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-webcam {
+    background-color: #f3f4f6;
+    color: #333;
+    border: 1px solid #d1d5db;
+    padding: 15px 30px;
+    border-radius: 4px;
+}
+
+.btn-webcam:hover {
+    background-color: #e5e7eb;
+}
+
+.btn-secondary {
+    background-color: #f3f4f6;
+    color: #333;
+    border: 1px solid #d1d5db;
+    padding: 15px 30px;
+}
+
+.btn-secondary:hover {
+    background-color: #e5e7eb;
+}
+
+/* Modal overlay */
+.webcam-modal {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.webcam-modal.open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.webcam-modal-inner {
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.webcam-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.webcam-modal-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.webcam-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #888;
+    padding: 0 4px;
+}
+
+.webcam-close-btn:hover {
+    color: #1a1a1a;
+}
+
+.webcam-body {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#webcam-video,
+#webcam-snapshot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 6px;
+}
+
+.webcam-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.webcam-error {
+    color: #dc2626;
+    font-size: 0.85rem;
+    text-align: center;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .webcam-modal-inner {
+        padding: 20px 16px;
+    }
+    .photo-action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
