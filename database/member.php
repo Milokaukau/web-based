@@ -6,12 +6,6 @@ function getAllMembers(){
     return $stmt->fetchAll();
 }
 
-function getMemberById($id){
-    $stmt = db()->prepare("SELECT * FROM tb_member WHERE id=?");
-    $stmt->execute([$id]);
-    return $stmt->fetch();
-}
-
 function getMembersData(string $search, string $status, int $page_num, int $per_page = 10): array {
     $pdo    = db();
     $offset = ($page_num - 1) * $per_page;
