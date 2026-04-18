@@ -2,7 +2,7 @@ $(document).ready(function(){
 
     /* PROFILE TABS */
 
-    $('tab-btn').on('click', function(){
+    $('.tab-btn').on('click', function(){
         var target = $(this).data('tab');
 
         // UPDATE BUTTONS
@@ -35,22 +35,189 @@ $(document).ready(function(){
 
         var reader = new FileReader();
         reader.onload = function (e) {
-            $('#photo-preview').attr('src, e.target.result');
+            $('#photo-preview').attr('src', e.target.result);
             $('#avatar-preview').attr('src', e.target.result);
         };
         reader.readAsDataURL(file);
     });
 
+    // PROFILE PHOTO LIGHTBOX
+    $('.photo-lightbox-trigger').on('click', function () {
+        var src = $(this).attr('src');
+        $('#photo-lightbox-img').attr('src', src);
+        $('#photo-lightbox').addClass('open');
+    });
+
+    $('#photo-lightbox, #photo-lightbox-close').on('click', function () {
+        $('#photo-lightbox').removeClass('open');
+    });
+
+    $('#photo-lightbox-img').on('click', function (e) {
+        e.stopPropagation(); // clicking the image itself won't close it
+    });
+
+    $(document).on('keydown', function (e) {
+        if (e.key === 'Escape') $('#photo-lightbox').removeClass('open');
+    });
+
     // SHOW / HIDE PASSWORD
     $('.toggle-password').on('click', function(){
-        var $input = $('#password');
+        var targetId = $(this).data('target');
+        var $input = targetId
+            ? $('#' + targetId)
+            : $(this).closest('.form-group, .password-wrapper, .password-group').find('input[type="password"], input[type="text"]').first();
         var isHidden = $input.attr('type') === 'password';
         $input.attr('type', isHidden ? 'text' : 'password');
-        $(this).text(isHidden ? '⌣' : '👁');
+        var newIcon = isHidden ? '⌣' : '👁';
+        if ($(this).find('.eye-icon').length) {
+            $(this).find('.eye-icon').text(newIcon);
+        } else {
+            $(this).text(newIcon);
+        }
+    });
+
+    // MALAYSIAN PHONE VALIDATION
+    $('input[name="phone"]').on('input', function () {
+        var val = $(this).val().trim();
+        var myPhoneRegex = /^(\+?60|0)[0-9]{1,2}[\s\-]?[0-9]{7,8}$/;
+        var $error = $(this).siblings('.error-msg');
+
+        if (val === '') {
+            $(this).removeClass('input-error');
+            $error.remove();
+        } else if (!myPhoneRegex.test(val)) {
+            $(this).addClass('input-error');
+            if ($error.length === 0) {
+                $(this).after('<span class="error-msg">Invalid Malaysian phone number. Example: 012-3456789 or +60123456789.</span>');
+            }
+        } else {
+            $(this).removeClass('input-error');
+            $error.remove();
+        }
+    });
+
+    $('#form-profile').on('submit', function (e) {
+        var phone = $('input[name="phone"]').val().trim();
+        var myPhoneRegex = /^(\+?60|0)[0-9]{1,2}[\s\-]?[0-9]{7,8}$/;
+        if (phone !== '' && !myPhoneRegex.test(phone)) {
+            e.preventDefault();
+            var $input = $('input[name="phone"]');
+            $input.addClass('input-error');
+            if ($input.siblings('.error-msg').length === 0) {
+                $input.after('<span class="error-msg">Invalid Malaysian phone number. Example: 012-3456789 or +60123456789.</span>');
+            }
+            $input[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     });
 
     // LOGIN FORM TO PREVENT DOUBLE-SUBMIT
     $('#login-form').on('submit', function(){
         $(this).find('button[type="submit"]').prop('disabled', true).text('Signing in...');
     });
+
+    /* =====================
+       WEBCAM CAPTURE
+       ===================== */
+
+    var webcamStream = null;
+
+    function openWebcam() {
+        $('#webcam-modal').addClass('open');
+        $('#webcam-error-msg').hide().text('');
+        $('#webcam-snapshot').hide();
+        $('#webcam-video').show();
+        $('#webcam-capture-btn').show();
+        $('#webcam-retake-btn, #webcam-use-btn').hide();
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showWebcamError('Your browser does not support camera access.');
+            return;
+        }
+
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+            .then(function(stream) {
+                webcamStream = stream;
+                var video = document.getElementById('webcam-video');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                var msg = 'Could not access camera.';
+                if (err.name === 'NotAllowedError') msg = 'Camera permission denied. Please allow access and try again.';
+                else if (err.name === 'NotFoundError') msg = 'No camera found on this device.';
+                showWebcamError(msg);
+            });
+    }
+
+    function stopWebcam() {
+        if (webcamStream) {
+            webcamStream.getTracks().forEach(function(t) { t.stop(); });
+            webcamStream = null;
+        }
+    }
+
+    function closeWebcamModal() {
+        stopWebcam();
+        $('#webcam-video').hide();
+        $('#webcam-snapshot').hide().attr('src', '');
+        $('#webcam-modal').removeClass('open');
+    }
+
+    function showWebcamError(msg) {
+        $('#webcam-capture-btn').hide();
+        $('#webcam-error-msg').text(msg).show();
+    }
+
+    // Open modal
+    $('#open-webcam-btn').on('click', function() {
+        openWebcam();
+    });
+
+    // Close modal
+    $('#webcam-close-btn, #webcam-modal').on('click', function(e) {
+        if (e.target === this) closeWebcamModal();
+    });
+
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $('#webcam-modal').hasClass('open')) closeWebcamModal();
+    });
+
+    // Capture snapshot
+    $('#webcam-capture-btn').on('click', function() {
+        var video = document.getElementById('webcam-video');
+        var canvas = document.getElementById('webcam-canvas');
+        canvas.width  = video.videoWidth  || 640;
+        canvas.height = video.videoHeight || 480;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        $('#webcam-snapshot').attr('src', dataUrl).show();
+        $('#webcam-video').hide();
+        $('#webcam-capture-btn').hide();
+        $('#webcam-retake-btn, #webcam-use-btn').show();
+    });
+
+    // Retake
+    $('#webcam-retake-btn').on('click', function() {
+        $('#webcam-snapshot').hide().attr('src', '');
+        $('#webcam-video').show();
+        $('#webcam-capture-btn').show();
+        $('#webcam-retake-btn, #webcam-use-btn').hide();
+    });
+
+    // Use photo
+    $('#webcam-use-btn').on('click', function() {
+        var dataUrl = $('#webcam-snapshot').attr('src');
+        if (!dataUrl) return;
+
+        // Put preview in the profile photo spots
+        $('#photo-preview').attr('src', dataUrl);
+        $('#avatar-preview').attr('src', dataUrl);
+
+        // Store base64 in hidden input; clear file input so PHP uses webcam data instead
+        $('#webcam-photo-data').val(dataUrl);
+        $('#photo').val('');
+
+        closeWebcamModal();
+    });
+
 });

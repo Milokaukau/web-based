@@ -28,3 +28,9 @@ function getVariantsByCategory($category_id) {
     $stmt->execute([$category_id]);
     return $stmt->fetchAll();
 }
+
+function getFirstProductByCategory($categoryId){
+        $stmt = db()->prepare("SELECT id FROM tb_product WHERE category_id = ? LIMIT 1");
+        $stmt->execute([$categoryId]);
+        return $stmt->fetch();
+}
