@@ -63,10 +63,17 @@ $(document).ready(function(){
     // SHOW / HIDE PASSWORD
     $('.toggle-password').on('click', function(){
         var targetId = $(this).data('target');
-        var $input = $('#' + targetId);
+        var $input = targetId
+            ? $('#' + targetId)
+            : $(this).closest('.form-group, .password-wrapper, .password-group').find('input[type="password"], input[type="text"]').first();
         var isHidden = $input.attr('type') === 'password';
         $input.attr('type', isHidden ? 'text' : 'password');
-        $(this).text(isHidden ? '⌣' : '👁');
+        var newIcon = isHidden ? '⌣' : '👁';
+        if ($(this).find('.eye-icon').length) {
+            $(this).find('.eye-icon').text(newIcon);
+        } else {
+            $(this).text(newIcon);
+        }
     });
 
     // MALAYSIAN PHONE VALIDATION
@@ -107,4 +114,110 @@ $(document).ready(function(){
     $('#login-form').on('submit', function(){
         $(this).find('button[type="submit"]').prop('disabled', true).text('Signing in...');
     });
+
+    /* =====================
+       WEBCAM CAPTURE
+       ===================== */
+
+    var webcamStream = null;
+
+    function openWebcam() {
+        $('#webcam-modal').addClass('open');
+        $('#webcam-error-msg').hide().text('');
+        $('#webcam-snapshot').hide();
+        $('#webcam-video').show();
+        $('#webcam-capture-btn').show();
+        $('#webcam-retake-btn, #webcam-use-btn').hide();
+
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showWebcamError('Your browser does not support camera access.');
+            return;
+        }
+
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+            .then(function(stream) {
+                webcamStream = stream;
+                var video = document.getElementById('webcam-video');
+                video.srcObject = stream;
+            })
+            .catch(function(err) {
+                var msg = 'Could not access camera.';
+                if (err.name === 'NotAllowedError') msg = 'Camera permission denied. Please allow access and try again.';
+                else if (err.name === 'NotFoundError') msg = 'No camera found on this device.';
+                showWebcamError(msg);
+            });
+    }
+
+    function stopWebcam() {
+        if (webcamStream) {
+            webcamStream.getTracks().forEach(function(t) { t.stop(); });
+            webcamStream = null;
+        }
+    }
+
+    function closeWebcamModal() {
+        stopWebcam();
+        $('#webcam-video').hide();
+        $('#webcam-snapshot').hide().attr('src', '');
+        $('#webcam-modal').removeClass('open');
+    }
+
+    function showWebcamError(msg) {
+        $('#webcam-capture-btn').hide();
+        $('#webcam-error-msg').text(msg).show();
+    }
+
+    // Open modal
+    $('#open-webcam-btn').on('click', function() {
+        openWebcam();
+    });
+
+    // Close modal
+    $('#webcam-close-btn, #webcam-modal').on('click', function(e) {
+        if (e.target === this) closeWebcamModal();
+    });
+
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape' && $('#webcam-modal').hasClass('open')) closeWebcamModal();
+    });
+
+    // Capture snapshot
+    $('#webcam-capture-btn').on('click', function() {
+        var video = document.getElementById('webcam-video');
+        var canvas = document.getElementById('webcam-canvas');
+        canvas.width  = video.videoWidth  || 640;
+        canvas.height = video.videoHeight || 480;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        $('#webcam-snapshot').attr('src', dataUrl).show();
+        $('#webcam-video').hide();
+        $('#webcam-capture-btn').hide();
+        $('#webcam-retake-btn, #webcam-use-btn').show();
+    });
+
+    // Retake
+    $('#webcam-retake-btn').on('click', function() {
+        $('#webcam-snapshot').hide().attr('src', '');
+        $('#webcam-video').show();
+        $('#webcam-capture-btn').show();
+        $('#webcam-retake-btn, #webcam-use-btn').hide();
+    });
+
+    // Use photo
+    $('#webcam-use-btn').on('click', function() {
+        var dataUrl = $('#webcam-snapshot').attr('src');
+        if (!dataUrl) return;
+
+        // Put preview in the profile photo spots
+        $('#photo-preview').attr('src', dataUrl);
+        $('#avatar-preview').attr('src', dataUrl);
+
+        // Store base64 in hidden input; clear file input so PHP uses webcam data instead
+        $('#webcam-photo-data').val(dataUrl);
+        $('#photo').val('');
+
+        closeWebcamModal();
+    });
+
 });

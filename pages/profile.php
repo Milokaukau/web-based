@@ -166,8 +166,34 @@ $photo_url = !empty($member->photo)
                     <small class="text-muted">JPG, PNG, GIF, WEBP. Max 2MB.</small>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Upload Photo</button>
+            <!-- Hidden input to hold webcam-captured photo as base64 -->
+            <input type="hidden" id="webcam-photo-data" name="webcam_photo">
+            <div class="photo-action-buttons">
+                <button type="submit" class="btn btn-primary">Upload Photo</button>
+                <button type="button" class="btn btn-webcam" id="open-webcam-btn">📷 Use Webcam</button>
+            </div>
         </form>
+    </div>
+
+    <!-- WEBCAM MODAL -->
+    <div id="webcam-modal" class="webcam-modal" aria-modal="true" role="dialog" aria-label="Webcam Capture">
+        <div class="webcam-modal-inner">
+            <div class="webcam-modal-header">
+                <h3>Take a Photo</h3>
+                <button type="button" id="webcam-close-btn" class="webcam-close-btn" title="Close">&times;</button>
+            </div>
+            <div class="webcam-body">
+                <video id="webcam-video" autoplay playsinline style="display:none;"></video>
+                <canvas id="webcam-canvas" style="display:none;"></canvas>
+                <img id="webcam-snapshot" src="" alt="Snapshot Preview" style="display:none;">
+            </div>
+            <div class="webcam-controls">
+                <button type="button" id="webcam-capture-btn" class="btn btn-primary">📸 Capture</button>
+                <button type="button" id="webcam-retake-btn" class="btn btn-secondary" style="display:none;">↩ Retake</button>
+                <button type="button" id="webcam-use-btn" class="btn btn-primary" style="display:none;">✔ Use This Photo</button>
+            </div>
+            <p id="webcam-error-msg" class="webcam-error" style="display:none;"></p>
+        </div>
     </div>
     <!-- PHOTO LIGHTBOX -->
             <div id="photo-lightbox">

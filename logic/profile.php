@@ -79,19 +79,51 @@ if (isset($_POST['update_password'])){
 
 // handle photo upload
 if (isset($_POST['update_photo'])){
-    if (empty($_FILES['photo']['name'])){
-        $errors['photo'] = 'Please select a photo to upload.';
-    } else {
-        $upload_dir = $project_root . 'uploads/members/';
-        $filename   = uploadPhoto($_FILES['photo'], $upload_dir, $errors);
+    $upload_dir   = $project_root . 'uploads/members/';
+    $webcam_data  = trim($_POST['webcam_photo'] ?? '');
+    $has_file     = !empty($_FILES['photo']['name']);
+
+    // --- WEBCAM PATH: base64 data URI submitted ---
+    if (!$has_file && $webcam_data !== '') {
+        // Validate format: data:image/jpeg;base64,...
+        if (!preg_match('/^data:image\/(jpeg|png|gif|webp);base64,/', $webcam_data, $matches)) {
+            $errors['photo'] = 'Invalid webcam image data.';
+        } else {
+            $ext        = $matches[1] === 'jpeg' ? 'jpg' : $matches[1];
+            $raw_base64 = preg_replace('/^data:image\/[a-z]+;base64,/', '', $webcam_data);
+            $img_data   = base64_decode($raw_base64);
+
+            if ($img_data === false || strlen($img_data) === 0) {
+                $errors['photo'] = 'Failed to decode webcam image.';
+            } elseif (strlen($img_data) > 2 * 1024 * 1024) {
+                $errors['photo'] = 'Webcam photo exceeds 2MB limit.';
+            } else {
+                $filename = 'photo_' . uniqid() . '.' . $ext;
+                if (file_put_contents($upload_dir . $filename, $img_data) !== false) {
+                    if (!empty($member->photo) && file_exists($upload_dir . $member->photo)) {
+                        unlink($upload_dir . $member->photo);
+                    }
+                    updateMemberPhoto($_SESSION['member_id'], $filename);
+                    redirectWith('/pages/profile.php', 'success', 'Photo updated successfully.');
+                } else {
+                    $errors['photo'] = 'Failed to save webcam photo. Check folder permissions.';
+                }
+            }
+        }
+
+    // --- FILE UPLOAD PATH ---
+    } elseif ($has_file) {
+        $filename = uploadPhoto($_FILES['photo'], $upload_dir, $errors);
 
         if ($filename){
-            // delete old photo if it exists
             if (!empty($member->photo) && file_exists($upload_dir . $member->photo)){
                 unlink($upload_dir . $member->photo);
             }
             updateMemberPhoto($_SESSION['member_id'], $filename);
             redirectWith('/pages/profile.php', 'success', 'Photo updated successfully.');
         }
+
+    } else {
+        $errors['photo'] = 'Please select a photo or take one with your webcam.';
     }
 }
