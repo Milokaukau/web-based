@@ -5,11 +5,10 @@ require_once $project_root . "logic/auth_helper.php";
 require_once $project_root . "database/admin.php"; 
 require_once $project_root . "logic/admin/admin_list.php";
 
-// Auth guard (optional but recommended to enforce admin-only access)
-if (!isAdmin()) {
-    header("Location: /pages/admin/login.php");
-    exit;
-}
+// Auth guards
+requireAdmin();       
+requireSuperAdmin();    
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,36 +37,7 @@ if (!isAdmin()) {
 <div class="layout">
 
     <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="sidebar-section">Main</div>
-        <a class="nav-link" href="/pages/admin/admin.php?page=members">
-            <span class="nav-icon">&#128101;</span> Members
-        </a>
-        <a class="nav-link" href="/pages/admin/admin.php?page=orders">
-            <span class="nav-icon">&#128230;</span> Orders
-        </a>
-        <a class="nav-link" href="/pages/admin/admin.php?page=stock">
-            <span class="nav-icon">&#128202;</span> Stock
-        </a>
-
-        <div class="sidebar-section">Management</div>
-        <!-- Set this link as active -->
-        <a class="nav-link active" href="/pages/admin/admin_list.php">
-            <span class="nav-icon">&#128110;</span> Admins
-        </a>
-        <a class="nav-link" href="/pages/admin/category_list.php">
-            <span class="nav-icon">&#128193;</span> Categories
-        </a>
-
-        <div class="sidebar-section">Analytics</div>
-        <a class="nav-link" href="/pages/admin/admin.php?page=charts">
-            <span class="nav-icon">&#128202;</span> Data Charts
-        </a>
-        <div class="sidebar-section">Account</div>
-        <a class="nav-link" href="/pages/admin/admin.php?page=profile">
-            <span class="nav-icon">&#9881;</span> Admin Profile
-        </a>
-    </div>
+    <?php include $project_root . "components/admin_sidebar.php"; ?>
 
     <!-- CONTENT -->
     <div class="content">
@@ -84,24 +54,24 @@ if (!isAdmin()) {
             <?php unset($_SESSION['flash']); ?>
         <?php endif; ?>
 
-        <section class="section-container">
+            <section class="section-container">
             
             <!-- Section Header (replaces the h1 flex container) -->
-            <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
-                <div>
-                    <h1 class="admin-section-title">Admin Maintenance</h1>
-                    <p class="admin-section-sub">Manage all registered NOAIR administrative accounts</p>
-                    <div class="line"></div>
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <h1 class="admin-section-title">Admin Maintenance</h1>
+                        <p class="admin-section-sub">Manage all registered NOAIR administrative accounts</p>
+                        <div class="line"></div>
+                    </div>
+                    <a href="/pages/admin/admin_add.php" class="btn-primary" style="margin-bottom: 20px;">+ Add New Admin</a>
                 </div>
-                <a href="/pages/admin/admin_add.php" class="btn-primary" style="margin-bottom: 20px;">+ Add New Admin</a>
-            </div>
 
             <!-- Table Container -->
-            <div class="table-wrap" style="overflow: visible;">
-                <?php if (empty($admins)): ?>
-                    <div class="empty-state"><p>No admins found.</p></div>
-                <?php else: ?>
-                    <table>
+                <div class="table-wrap" style="overflow: visible;">
+                    <?php if (empty($admins)): ?>
+                        <div class="empty-state"><p>No admins found.</p></div>
+                    <?php else: ?>
+                        <table>
                         <thead>
                             <tr>
                                 <th style="width: 5%;">ID</th>
@@ -188,11 +158,11 @@ if (!isAdmin()) {
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
-                    </table>
-                <?php endif; ?>
-            </div>
+                        </table>
+                    <?php endif; ?>
+                </div>
 
-        </section>
+            </section>
     </div><!-- /content -->
 </div><!-- /layout -->
 

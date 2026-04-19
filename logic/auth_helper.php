@@ -128,7 +128,8 @@ function requireAdmin() {
 
 function requireSuperAdmin(){
     if(!isSuperAdmin()){
-        redirectWith('/pages/admin/index.php', 'error', 'Unauthorised access. Superadmin privileges required.');
+        header("Location: /pages/not_found.php");
+        exit;
     }
 }
 

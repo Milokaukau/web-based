@@ -154,35 +154,7 @@ $highAttempts = getHighAttempts();
 <div class="layout">
 
     <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="sidebar-section">Main</div>
-        <a class="nav-link <?= $active_page === 'members'      ? 'active' : '' ?>" href="?page=members">
-            <span class="nav-icon">&#128101;</span> Members
-        </a>
-        <a class="nav-link" href="/pages/admin/order_listing.php">
-            <span class="nav-icon">&#128230;</span> Orders
-        </a>
-        <a class="nav-link <?= $active_page === 'stock'        ? 'active' : '' ?>" href="?page=stock">
-            <span class="nav-icon">&#128202;</span> Stock
-        </a>
-
-        <div class="sidebar-section">Management</div>
-        <a class="nav-link" href="/pages/admin/admin_list.php">
-            <span class="nav-icon">&#128110;</span> Admins
-        </a>
-        <a class="nav-link" href="/pages/admin/category_list.php">
-            <span class="nav-icon">&#128193;</span> Categories
-        </a>
-
-        <div class="sidebar-section">Analytics</div>
-        <a class="nav-link <?= $active_page === 'charts'       ? 'active' : '' ?>" href="?page=charts">
-            <span class="nav-icon">&#128202;</span> Data Charts
-        </a>
-        <div class="sidebar-section">Account</div>
-        <a class="nav-link <?= $active_page === 'profile'      ? 'active' : '' ?>" href="?page=profile">
-            <span class="nav-icon">&#9881;</span> Admin Profile
-        </a>
-    </div>
+    <?php include $project_root . "components/admin_sidebar.php"; ?>
 
     <!-- CONTENT -->
     <div class="content">
