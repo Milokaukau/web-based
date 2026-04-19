@@ -6,20 +6,20 @@ require_once $project_root . "database/member.php";
 $arr = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['status'])) {
-    $order_id = $_POST['order_id'];
-    $status = $_POST['status'];
-    
-    updateOrderStatus($order_id, $status);
-    
-    header("Location: order_listing.php");
+    updateOrderStatus($_POST['order_id'], $_POST['status']);
+    // Since we now update status from two different pages, return 'success'
+    echo "success";
     exit;
 }
 
 $members = getAllMembers();
+$filters = [];
 
-if (isset($_GET['member_id']) && is_numeric($_GET['member_id'])) {
-    $arr = getOrderListByMemberId($_GET['member_id']);
-} else {
-    $arr = getOrderList();
-}
+if (!empty($_GET['member_id']) && is_numeric($_GET['member_id'])) $filters['member_id'] = $_GET['member_id'];
+if (!empty($_GET['order_status']))     $filters['order_status']   = $_GET['order_status'];
+if (!empty($_GET['payment_method']))   $filters['payment_method'] = $_GET['payment_method'];
+if (!empty($_GET['date_from']))        $filters['date_from']      = $_GET['date_from'];
+if (!empty($_GET['date_to']))          $filters['date_to']        = $_GET['date_to'];
+
+$arr = getFilteredOrderList($filters);
 ?>

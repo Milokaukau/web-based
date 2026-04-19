@@ -15,3 +15,193 @@
   transition: box-shadow 0.3s ease;
   cursor: pointer;
 }
+
+/* ── TOOLBAR REFACTOR ────────────────────────────────────────────── */
+.order-listing-toolbar {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid var(--border-card);
+}
+
+.filter-form {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ── CUSTOM DROPDOWN (Matches select.filter-sel) ─────────────────── */
+.custom-member-select {
+  position: relative;
+  width: 250px;
+  font-size: 0.85rem;
+}
+
+.custom-member-select .custom-trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  /* Mimicking select.filter-sel */
+  padding: 10px 14px;
+  border: 1px solid var(--border-input);
+  border-radius: 9px;
+  background: var(--bg-input);
+  color: var(--text-dark);
+  font-family: "Inter", sans-serif;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+
+.custom-member-select .custom-trigger:hover,
+.custom-member-select.open .custom-trigger {
+  border-color: var(--coral-soft);
+  box-shadow: 0 0 0 3px rgba(243, 158, 158, 0.15);
+}
+
+.custom-trigger .arrow {
+  font-size: 0.5rem;
+  color: #666;
+  margin-left: 10px;
+}
+
+/* ── INNER CUSTOM OPTIONS & SEARCH INPUT ─────────────────────────── */
+.custom-options {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid var(--border-card);
+  border-radius: 9px;
+  z-index: 100;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.custom-options.open {
+  display: block;
+}
+
+.custom-search-container {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-card);
+  z-index: 2;
+}
+
+/* Style the inner search box */
+.custom-search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-input);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-family: "Inter", sans-serif;
+  outline: none;
+  background: var(--bg-page);
+  transition: all 0.2s;
+}
+
+.custom-search-input:focus {
+  border-color: var(--coral-soft);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(243, 158, 158, 0.15);
+}
+
+.custom-options .opt-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #f9f9f9;
+  transition: background 0.15s ease;
+}
+
+.custom-options .opt-item:last-child {
+  border-bottom: none;
+}
+
+.custom-options .opt-item:hover {
+  background: var(--bg-page);
+  color: var(--coral-dark);
+}
+
+.opt-item-id {
+  color: var(--text-muted);
+  font-family: monospace;
+  margin-right: 6px;
+  display: inline-block;
+  min-width: 25px; /* Aligns the ID numbers seamlessly */
+}
+
+/* ── DATE FILTER GROUPS ──────────────────────────────────────────── */
+.date-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.date-input {
+  width: 135px;
+}
+
+.date-separator {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.btn-clear-filters {
+  padding: 6px 16px;
+  font-size: 0.8rem;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Custom styling for the date inputs to match your standard filter-sel style */
+.date-input {
+  width: 140px;
+  padding: 9px 12px;
+  border: 1px solid var(--border-input);
+  border-radius: 9px;
+  background: var(--bg-input);
+  font-size: 0.85rem;
+  font-family: "Inter", sans-serif;
+  color: var(--text-dark);
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.date-input:focus,
+.date-input:hover {
+  border-color: var(--coral-soft);
+  box-shadow: 0 0 0 3px rgba(243, 158, 158, 0.15);
+}
+
+/* Adjust the internal browser UI parts for a cleaner look */
+.date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* If a date placeholder isn't filled, make text lighter */
+.date-input:placeholder-shown,
+.date-input[value=""] {
+  color: var(--text-muted);
+}

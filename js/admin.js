@@ -32,14 +32,16 @@ const currentPath = window.location.pathname;
 const currentPageParam = new URLSearchParams(location.search).get("page");
 
 document.querySelectorAll(".nav-link").forEach((link) => {
+  // First, clear the active classes that PHP or old loads might have set
   link.classList.remove("active");
   const linkUrl = new URL(link.href, window.location.origin);
 
-  if (currentPath.includes("admin.php")) {
+  // FIXED: Changed from .includes("admin.php") to .endsWith("/admin.php")
+  if (currentPath.endsWith("/admin.php")) {
     // If on the unified admin.php router, match the page query parameter
     const targetParam = currentPageParam || "members";
     if (
-      linkUrl.pathname.includes("admin.php") &&
+      linkUrl.pathname.endsWith("/admin.php") &&
       linkUrl.searchParams.get("page") === targetParam
     ) {
       link.classList.add("active");
@@ -60,6 +62,13 @@ document.querySelectorAll(".nav-link").forEach((link) => {
       (currentPath.includes("category_add.php") ||
         currentPath.includes("category_items.php")) &&
       linkUrl.pathname.includes("category_list.php")
+    ) {
+      link.classList.add("active");
+    }
+    // Make sure order details highlights the orders tab
+    else if (
+      currentPath.includes("order_details_admin.php") &&
+      linkUrl.pathname.includes("order_listing.php")
     ) {
       link.classList.add("active");
     }

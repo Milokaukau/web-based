@@ -205,38 +205,30 @@ function getOrderItems($order_id) {
 }
 
 function getOrderById($order_id, $member_id = null) {
-    // If member_id is null, bypass the check so admins can view the order
     if ($member_id === null) {
         $stmt = db()->prepare("
             SELECT 
-                o.id AS order_id, 
-                o.amount, 
-                o.member_id,
-                o.status AS order_status, 
-                o.created_at, 
-                p.status AS payment_status, 
-                p.method AS payment_method
+                o.id AS order_id, o.amount, o.member_id,
+                m.name AS member_name, m.email AS member_email,
+                o.status AS order_status, o.created_at, 
+                p.status AS payment_status, p.method AS payment_method
             FROM tb_order o
             LEFT JOIN tb_payment p ON o.id = p.order_id
-            WHERE o.id = ?
+            LEFT JOIN tb_member m ON o.member_id = m.id
+            WHERE o.id = ? ORDER BY p.id DESC LIMIT 1
         ");
         $stmt->execute([$order_id]);
     } else {
         $stmt = db()->prepare("
             SELECT 
-                o.id AS order_id, 
-                o.amount, 
-                o.status AS order_status, 
-                o.created_at, 
-                p.status AS payment_status, 
-                p.method AS payment_method
+                o.id AS order_id, o.amount, o.status AS order_status, o.created_at, 
+                p.status AS payment_status, p.method AS payment_method
             FROM tb_order o
             LEFT JOIN tb_payment p ON o.id = p.order_id
-            WHERE o.id = ? AND o.member_id = ?
+            WHERE o.id = ? AND o.member_id = ? ORDER BY p.id DESC LIMIT 1
         ");
         $stmt->execute([$order_id, $member_id]);
     }
-    
     return $stmt->fetch(PDO::FETCH_OBJ); 
 }
 
@@ -270,3 +262,41 @@ function cancelAndRefundOrder($order_id) {
         throw $e; // Throw back to logic file to handle the error if needed
     }
 }
+
+function getFilteredOrderList($filters = []) {
+    $baseQuery = getOrderListQuery();
+    $whereClauses = [];
+    $params = [];
+    
+    if (!empty($filters['member_id'])) {
+        $whereClauses[] = "o.member_id = ?";
+        $params[] = $filters['member_id'];
+    }
+    if (!empty($filters['order_status'])) {
+        $whereClauses[] = "o.status = ?";
+        $params[] = $filters['order_status'];
+    }
+    if (!empty($filters['payment_method'])) {
+        $whereClauses[] = "(SELECT method FROM tb_payment WHERE order_id = o.id ORDER BY id DESC LIMIT 1) = ?";
+        $params[] = $filters['payment_method'];
+    }
+    // Updated date range filtering
+    if (!empty($filters['date_from'])) {
+        $whereClauses[] = "DATE(o.created_at) >= ?";
+        $params[] = $filters['date_from'];
+    }
+    if (!empty($filters['date_to'])) {
+        $whereClauses[] = "DATE(o.created_at) <= ?";
+        $params[] = $filters['date_to'];
+    }
+    
+    if (!empty($whereClauses)) {
+        $baseQuery .= " WHERE " . implode(" AND ", $whereClauses);
+    }
+    
+    $baseQuery .= " ORDER BY o.id DESC";
+    $stmt = db()->prepare($baseQuery);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+

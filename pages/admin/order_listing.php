@@ -26,7 +26,7 @@ $order_status_labels = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOAIR — Order Management</title>
+    <title>NOAIR — Order Maintenance</title>
     <link rel="stylesheet" href="/css/admin.css">
     <link rel="stylesheet" href="/css/components/order_listing.css">
 </head>
@@ -54,31 +54,65 @@ $order_status_labels = [
         <section class="section-container">
             <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
                 <div>
-                    <h1 class="admin-section-title">Order Management</h1>
+                    <h1 class="admin-section-title">Order Maintenance</h1>
                     <p class="admin-section-sub">View and update customer order statuses</p>
                     <div class="line"></div>
                 </div>
             </div>
 
             <!-- Toolbar / Filter -->
-            <div class="toolbar" style="margin-bottom: 24px;">
-                <form method="GET" style="display: flex; gap: 10px; width: 100%; align-items: center;">
-                    <select name="member_id" class="filter-sel member-filter" onchange="this.form.submit()">                        <option value="">All Members...</option>
-                        <?php foreach ($members as $member): ?>
-                            <option value="<?= $member->id ?>" <?= (isset($_GET['member_id']) && $_GET['member_id'] == $member->id) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($member->name) ?>
-                            </option>
+            <div class="toolbar order-listing-toolbar">
+                <form method="GET" class="filter-form">
+                    
+                    <!-- 1. Searchable Custom Member Dropdown with ID -->
+                    <div id="custom-member-select" class="custom-member-select">
+                        <div class="custom-trigger">
+                            <span id="selected-member">All Members</span>
+                            <span class="arrow">▼</span>
+                        </div>
+                        <div class="custom-options">
+                            <div class="custom-search-container">
+                                <input type="text" id="member-search" class="custom-search-input" placeholder="Search ID or name...">
+                            </div>
+                            <div class="opt-item" data-val="">All Members</div>
+                            <?php foreach ($members as $member): ?>
+                                <div class="opt-item" data-val="<?= $member->id ?>">
+                                    <span class="opt-item-id">#<?= htmlspecialchars($member->id) ?></span>
+                                    <?= htmlspecialchars($member->name) ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <input type="hidden" name="member_id" id="hidden-member-val" value="<?= htmlspecialchars($_GET['member_id'] ?? '') ?>">
+                    </div>
+
+                    <!-- 2. Order Status Filter -->
+                    <select name="order_status" class="filter-sel" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        <?php foreach ($order_status_labels as $val => $label): ?>
+                            <option value="<?= $val ?>" <?= (isset($_GET['order_status']) && $_GET['order_status'] === $val) ? 'selected' : '' ?>><?= $label ?></option>
                         <?php endforeach; ?>
                     </select>
 
-                    <noscript><button type="submit" class="btn-primary" style="padding: 8px 16px;">Filter</button></noscript>
+                    <!-- 3. Payment Method Filter -->
+                    <select name="payment_method" class="filter-sel" onchange="this.form.submit()">
+                        <option value="">All Payments</option>
+                        <option value="e_wallet" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'e_wallet') ? 'selected' : '' ?>>E-Wallet</option>
+                        <option value="online_banking" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'online_banking') ? 'selected' : '' ?>>Online Banking</option>
+                        <option value="credit_card" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'credit_card') ? 'selected' : '' ?>>Credit Card</option>
+                    </select>
 
-                    <?php if (isset($_GET['member_id'])): ?>
-                        <a href="order_listing.php" class="btn-outline" style="padding: 6px 16px; font-size: 0.8rem;">Clear Filter</a>
+                    <!-- 4. Date Range Filter -->
+                    <div class="date-filter-group">
+                        <input type="date" name="date_from" class="filter-sel date-input" value="<?= htmlspecialchars($_GET['date_from'] ?? '') ?>" onchange="this.form.submit()">
+                        <span class="date-separator">to</span>
+                        <input type="date" name="date_to" class="filter-sel date-input" value="<?= htmlspecialchars($_GET['date_to'] ?? '') ?>" onchange="this.form.submit()">
+                    </div>
+
+                    <?php if (!empty($_GET['member_id']) || !empty($_GET['order_status']) || !empty($_GET['payment_method']) || !empty($_GET['date_from']) || !empty($_GET['date_to'])): ?>
+                        <a href="order_listing.php" class="btn-outline btn-clear-filters">Clear Filters</a>
                     <?php endif; ?>
                 </form>
             </div>
-
             <!-- Table -->
             <div class="table-wrap">
                 <table>
@@ -147,34 +181,6 @@ $order_status_labels = [
 
 <?php include $project_root . "components/footer.php"; ?>
 <script src="/js/admin.js"></script>
-<script>
-document.querySelectorAll('.status-dropdown').forEach(function(dropdown) {
-    dropdown.addEventListener('change', function() {
-        const orderId = this.dataset.orderId;
-        const newStatus = this.value;
-        const originalShadow = this.style.boxShadow;
-        
-        // 1. Immediately apply the pink radius visual effect using your coral theme
-        this.style.boxShadow = "0 0 0 3px rgba(243, 158, 158, 1)"; 
-
-        // 2. Submit the data using Fetch API behind the scenes (No page reload)
-        const formData = new FormData();
-        formData.append('order_id', orderId);
-        formData.append('status', newStatus);
-
-        fetch('order_listing.php', {
-            method: 'POST',
-            body: formData
-        }).then(response => {
-            setTimeout(() => {
-                this.style.boxShadow = originalShadow;
-            }, 500);
-        }).catch(err => {
-            alert('Failed to update order status.');
-            this.style.boxShadow = originalShadow;
-        });
-    });
-});
-</script>
+<script src="/js/order_listing.js"></script>
 </body>
 </html>
