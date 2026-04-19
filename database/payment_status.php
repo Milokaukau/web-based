@@ -22,7 +22,7 @@ function processSuccessfulPayment($member_id, $amount_total, $pm, $cart) {
         $member_id, 
         $amount_total, 
         $method_to_save, 
-        'paid', 
+        'success', 
         $cart, 
         $address, 
         $city, 
