@@ -4,6 +4,7 @@ if (!isset($_SESSION['wishlist'])) {
 }
 
 require_once $_SERVER['DOCUMENT_ROOT'] . "/database/product.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/database/wishlist.php";
 $isLoggedIn = isset($_SESSION['role']) && $_SESSION['role'] === 'member';
 $user_id = $_SESSION['member_id'] ?? null;
 
@@ -27,8 +28,7 @@ if (isset($_GET['action'])) {
                 
                 // --- DB SYNC (Add) ---
                 if ($isLoggedIn) {
-                    $stmt = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id) VALUES (?, ?)");
-                    $stmt->execute([$user_id, $id]);
+                    addToWishlist($user_id, $id);
                 }
             }
         } elseif ($_GET['action'] == 'remove') {
@@ -37,16 +37,14 @@ if (isset($_GET['action'])) {
                 
                 // --- DB SYNC (Remove) ---
                 if ($isLoggedIn) {
-                    $stmt = db()->prepare("DELETE FROM tb_wishlist WHERE member_id = ? AND product_id = ?");
-                    $stmt->execute([$user_id, $id]);
+                    removeFromWishlist($user_id, $id);
                 }
             } else {
                 // Fallback for old items
                 if (($key = array_search($id, $_SESSION['wishlist'])) !== false) {
                     unset($_SESSION['wishlist'][$key]);
                     if ($isLoggedIn) {
-                        $stmt = db()->prepare("DELETE FROM tb_wishlist WHERE member_id = ? AND product_id = ?");
-                        $stmt->execute([$user_id, $id]);
+                        removeFromWishlist($user_id, $id);
                     }
                 }
             }
@@ -59,9 +57,7 @@ if (isset($_GET['action'])) {
 // --- DB SYNC (On Initial Load) ---
 if ($isLoggedIn && empty($_SESSION['wishlist_synced'])) {
     // 1. Fetch current DB items
-    $stmt = db()->prepare("SELECT product_id FROM tb_wishlist WHERE member_id = ?");
-    $stmt->execute([$user_id]);
-    $db_items_raw = $stmt->fetchAll();
+    $db_items_raw = getWishlistByMemberId($user_id);
     
     $db_keys = [];
     foreach ($db_items_raw as $item) {
@@ -83,8 +79,7 @@ if ($isLoggedIn && empty($_SESSION['wishlist_synced'])) {
             $pid = $parts[0];
             $cid = $parts[1] ?? 1;
             
-            $ins = db()->prepare("INSERT INTO tb_wishlist (member_id, product_id) VALUES (?, ?)");
-            $ins->execute([$user_id, $pid]);
+            addToWishlist($user_id, $pid);
         }
     }
 
