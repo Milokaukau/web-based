@@ -76,30 +76,91 @@ function submitSingleActivate(catId) {
   form.submit();
 }
 
-function submitBatchDeactivate() {
+function submitBatchActivate() {
   const checkboxes = document.querySelectorAll(".row-checkbox:checked");
-  let hasProducts = false;
-  let totalProducts = 0; // NEW: Track total products across all selected categories
+  if (checkboxes.length === 0) return;
 
+  let inactiveCount = 0;
+
+  // Disable already-active checkboxes so the form ignores them
   checkboxes.forEach((cb) => {
-    let count = parseInt(cb.dataset.productCount);
-    if (count > 0) {
-      hasProducts = true;
-      totalProducts += count; // Add to total
+    const statusText = cb
+      .closest("tr")
+      .querySelector(".badge")
+      .textContent.trim()
+      .toLowerCase();
+    if (statusText === "active") {
+      cb.disabled = true;
+    } else {
+      inactiveCount++;
     }
   });
 
-  let msg = "Are you sure you want to deactivate the selected categories?";
-  if (hasProducts) {
-    msg =
-      'Deactivating these categories will move all their products to "Uncategorized". Are you sure? Want to move them to another category first?';
+  if (inactiveCount === 0) {
+    alert("All selected categories are already active.");
+    checkboxes.forEach((cb) => (cb.disabled = false)); // Re-enable for future clicks
+    return;
   }
 
-  if (!confirm(msg)) return;
+  if (
+    !confirm(
+      `Are you sure you want to activate the ${inactiveCount} inactive categories?`,
+    )
+  ) {
+    checkboxes.forEach((cb) => (cb.disabled = false));
+    return;
+  }
+
+  const form = document.getElementById("batchForm");
+  document.getElementById("batchActionType").value = "batch_activate";
+  form.submit();
+}
+
+function submitBatchDeactivate() {
+  const checkboxes = document.querySelectorAll(".row-checkbox:checked");
+  let hasProducts = false;
+  let totalProducts = 0;
+  let activeCount = 0;
+
+  checkboxes.forEach((cb) => {
+    const statusText = cb
+      .closest("tr")
+      .querySelector(".badge")
+      .textContent.trim()
+      .toLowerCase();
+
+    // Disable already-inactive checkboxes so the form ignores them
+    if (statusText === "inactive") {
+      cb.disabled = true;
+    } else {
+      activeCount++;
+      let count = parseInt(cb.dataset.productCount) || 0;
+      if (count > 0) {
+        hasProducts = true;
+        totalProducts += count;
+      }
+    }
+  });
+
+  if (activeCount === 0) {
+    alert("All selected categories are already inactive.");
+    checkboxes.forEach((cb) => (cb.disabled = false));
+    return;
+  }
+
+  let msg = `Are you sure you want to deactivate the ${activeCount} active categories?`;
+  if (hasProducts) {
+    msg = `Deactivating these ${activeCount} categories will move all their products to "Uncategorized". Are you sure? Want to move them to another category first?`;
+  }
+
+  if (!confirm(msg)) {
+    checkboxes.forEach((cb) => (cb.disabled = false));
+    return;
+  }
 
   const form = document.getElementById("batchForm");
 
-  // NEW: Attach the total products moved
+  // Attach the total products moved
   const countInput = document.createElement("input");
   countInput.type = "hidden";
   countInput.name = "total_products_moved";

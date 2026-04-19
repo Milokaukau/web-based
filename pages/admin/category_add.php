@@ -6,85 +6,121 @@ require_once $project_root . "logic/auth_helper.php";
 require_once $project_root . "database/category.php"; 
 require_once $project_root . "logic/admin/category_add.php";
 
-$_title = 'Add New Category';
-include $project_root . "components/header.php";
+if (!isAdmin()) {
+    header("Location: /pages/admin/login.php");
+    exit;
+}
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOAIR — Add New Category</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
 
-<div class="container" style="max-width: 900px; margin: 40px auto; padding: 20px;">
-    
-    <div style="margin-bottom: 20px;">
-        <a href="/pages/admin/category_list.php" style="color: #666; text-decoration: none; font-size: 0.9rem;">&larr; Back to Categories</a>
+<div class="topbar">
+    <div class="topbar-brand">NOAIR</div>
+    <div class="topbar-right">
+        <span class="topbar-clock" id="clock"></span>
+        <div class="topbar-user">
+            <div class="avatar-sm">AD</div>
+            <span class="topbar-name"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></span>
+        </div>
+        <a href="/pages/logout.php" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-section">Main</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=members"><span class="nav-icon">&#128101;</span> Members</a>
+        <a class="nav-link" href="/pages/admin/admin.php?page=orders"><span class="nav-icon">&#128230;</span> Orders</a>
+        <a class="nav-link" href="/pages/admin/admin.php?page=stock"><span class="nav-icon">&#128202;</span> Stock</a>
+
+        <div class="sidebar-section">Management</div>
+        <a class="nav-link" href="/pages/admin/admin_list.php"><span class="nav-icon">&#128110;</span> Admins</a>
+        <!-- Set this link as active -->
+        <a class="nav-link active" href="/pages/admin/category_list.php"><span class="nav-icon">&#128193;</span> Categories</a>
+
+        <div class="sidebar-section">Analytics</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=charts"><span class="nav-icon">&#128202;</span> Data Charts</a>
+        <div class="sidebar-section">Account</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=profile"><span class="nav-icon">&#9881;</span> Admin Profile</a>
     </div>
 
-    <div style="background: #fff; border: 1px solid var(--border-ultra-light, #eee); border-radius: 8px; padding: 30px;">
-        <h1 style="text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px;">Add New Category</h1>
-
-        <form action="" method="POST">
+    <!-- CONTENT -->
+    <div class="content">
+        <section class="section-container" style="max-width: 800px; margin: 0 auto;">
             
-            <div style="margin-bottom: 30px;">
-                <label for="name" style="display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Category Name</label>
-                <input type="text" id="name" name="name" value="<?= htmlspecialchars($name ?? '') ?>" 
-                       style="width: 100%; max-width: 500px; padding: 10px 15px; border: 1px solid <?= !empty($errors['name']) ? '#dc3545' : '#ccc' ?>; border-radius: 4px; font-family: inherit; font-size: 1rem;">
-                
-                <?php if (!empty($errors['name'])): ?>
-                    <div style="color: #dc3545; font-size: 0.85rem; margin-top: 5px;">
-                        <?= htmlspecialchars($errors['name']) ?>
-                    </div>
-                <?php endif; ?>
+            <div class="section-header">
+                <a href="/pages/admin/category_list.php" class="btn-outline" style="margin-bottom: 20px; padding: 6px 14px; font-size: 0.8rem;">← Back</a>
+                <h1 class="admin-section-title">Add New Category</h1>
+                <p class="admin-section-sub">Create a new product grouping</p>
+                <div class="line"></div>
             </div>
 
-            <div style="margin-bottom: 30px;">
-                <h3 style="font-size: 1rem; margin-bottom: 15px; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px;">Add products under this category (Optional)</h3>
-                
-                <?php if (empty($uncategorized_products)): ?>
-                    <p style="color: #666; font-size: 0.9rem; padding: 15px; background: #fafafa; border-radius: 4px; border: 1px dashed #ccc;">No uncategorized products available.</p>
-                <?php else: ?>
-                    <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; max-height: 400px; overflow-y: auto;">
-                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                            <thead style="background-color: #f8f9fa; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 0 #eee;">
-                                <tr>
-                                    <th style="padding: 12px 15px; width: 5%;">
-                                        <input type="checkbox" onclick="toggleAllCheckboxes(this)" style="cursor: pointer; width: 16px; height: 16px;">
-                                    </th>
-                                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 10%;">ID</th>
-                                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 45%;">Product Name</th>
-                                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 20%;">Color</th>
-                                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 20%;">Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($uncategorized_products as $product): ?>
-                                    <tr style="border-bottom: 1px solid #eee;">
-                                        <td style="padding: 12px 15px;">
-                                            <input type="checkbox" class="row-checkbox" name="selected_products[]" value="<?= $product['id'] ?>" style="cursor: pointer; width: 16px; height: 16px;">
-                                        </td>
-                                        <td style="padding: 12px 15px; color: #555;">
-                                            <?= htmlspecialchars($product['id']) ?>
-                                        </td>
-                                        <td style="padding: 12px 15px; font-weight: 500;">
-                                            <?= htmlspecialchars($product['name']) ?>
-                                        </td>
-                                        <td style="padding: 12px 15px; color: #555;">
-                                            <?= htmlspecialchars($product['color_name'] ?? 'No Color') ?>
-                                        </td>
-                                        <td style="padding: 12px 15px; color: #555;">
-                                            $<?= number_format($product['price'], 2) ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+            <div style="background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 24px;">
+                <form action="" method="POST">
+                    
+                    <div class="form-row" style="margin-bottom: 32px;">
+                        <label for="name" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Category Name</label>
+                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($name ?? '') ?>" 
+                               style="width: 100%; max-width: 500px; padding: 10px 14px; border: 1px solid var(--border-input); border-radius: 9px; background: var(--bg-input);">
+                        
+                        <?php if (!empty($errors['name'])): ?>
+                            <div style="color: var(--danger-text); font-size: 0.8rem; margin-top: 5px;">
+                                <?= htmlspecialchars($errors['name']) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                <?php endif; ?>
+
+                    <div style="margin-bottom: 32px;">
+                        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--text-dark); text-transform: uppercase; border-bottom: 2px solid var(--border-card); padding-bottom: 8px; margin-bottom: 16px;">Add Products Under This Category (Optional)</h3>
+                        
+                        <?php if (empty($uncategorized_products)): ?>
+                            <div class="empty-state" style="padding: 24px; background: var(--bg-page); border: 1px dashed var(--border-input); border-radius: 9px;">
+                                No uncategorized products available.
+                            </div>
+                        <?php else: ?>
+                            <div class="table-wrap" style="max-height: 400px; overflow-y: auto; overflow-x: visible; border-radius: 9px;">
+                                <table>
+                                    <thead style="position: sticky; top: 0; z-index: 10;">
+                                        <tr>
+                                            <th style="width: 5%;"><input type="checkbox" onclick="toggleAllCheckboxes(this)" style="cursor: pointer;"></th>
+                                            <th style="width: 10%;">ID</th>
+                                            <th style="width: 45%;">Product Name</th>
+                                            <th style="width: 20%;">Color</th>
+                                            <th style="width: 20%;">Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($uncategorized_products as $product): ?>
+                                            <tr>
+                                                <td><input type="checkbox" class="row-checkbox" name="selected_products[]" value="<?= $product['id'] ?>" style="cursor: pointer;"></td>
+                                                <td><?= htmlspecialchars($product['id']) ?></td>
+                                                <td style="font-weight: 600; color: var(--text-dark);"><?= htmlspecialchars($product['name']) ?></td>
+                                                <td style="color: var(--text-muted);"><?= htmlspecialchars($product['color_name'] ?? 'No Color') ?></td>
+                                                <td style="color: var(--text-muted);">RM <?= number_format($product['price'], 2) ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn-primary">Add Category</button>
+                    </div>
+                </form>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px;">
-                <a href="/pages/admin/category_list.php" class="btn" style="background: transparent; color: #555; border: 1px solid #ccc; padding: 10px 20px; text-decoration: none;">Cancel</a>
-                <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Add Category</button>
-            </div>
-        </form>
+        </section>
     </div>
-
 </div>
 
 <script>
@@ -95,3 +131,6 @@ function toggleAllCheckboxes(source) {
 </script>
 
 <?php include $project_root . "components/footer.php"; ?>
+<script src="/js/admin.js"></script>
+</body>
+</html>

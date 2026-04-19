@@ -48,6 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             : "$count_cats categories deactivated successfully.";
             
         redirectWith('/pages/admin/category_list.php', 'success', $msg);
+    } elseif ($action === 'batch_activate' && !empty($_POST['selected_categories'])) {
+        foreach ($_POST['selected_categories'] as $cat_id) {
+            setCategoryActiveStatus($cat_id, 1);
+        }
+        
+        $count_cats = count($_POST['selected_categories']);
+        redirectWith('/pages/admin/category_list.php', 'success', "$count_cats categories activated successfully.");
     }
 }
 

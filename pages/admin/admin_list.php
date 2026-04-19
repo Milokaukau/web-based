@@ -5,123 +5,199 @@ require_once $project_root . "logic/auth_helper.php";
 require_once $project_root . "database/admin.php"; 
 require_once $project_root . "logic/admin/admin_list.php";
 
-$_title = 'Admin Maintenance';
-include $project_root . "components/header.php";
+// Auth guard (optional but recommended to enforce admin-only access)
+if (!isAdmin()) {
+    header("Location: /pages/admin/login.php");
+    exit;
+}
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOAIR — Admin Maintenance</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
 
-<div class="container" style="max-width: 1000px; margin: 40px auto; padding: 20px;">
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="text-transform: uppercase; letter-spacing: 1px;">Admin Maintenance</h1>
-        <a href="/pages/admin/admin_add.php" class="btn btn-primary" style="padding: 10px 20px; text-decoration: none; display: inline-block;">+ Add New Admin</a>
-    </div>
-
-    <?php if (!empty($_SESSION['flash'])): ?>
-        <div class="alert alert-<?= htmlspecialchars($_SESSION['flash']['type']) ?>" style="margin-bottom: 20px; padding: 15px; border-radius: 4px; background-color: #d4edda; color: #155724;">
-            <?= htmlspecialchars($_SESSION['flash']['message']) ?>
+<!-- ── TOPBAR ─────────────────────────────────────────────────────────────── -->
+<div class="topbar">
+    <div class="topbar-brand">NOAIR</div>
+    <div class="topbar-right">
+        <span class="topbar-clock" id="clock"></span>
+        <div class="topbar-user">
+            <div class="avatar-sm">AD</div>
+            <span class="topbar-name"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></span>
         </div>
-        <?php unset($_SESSION['flash']); ?>
-    <?php endif; ?>
-
-    <div style="background: #fff; border: 1px solid var(--border-ultra-light, #eee); border-radius: 8px; overflow: hidden; padding-bottom: 100px;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead style="background-color: #fafafa; border-bottom: 2px solid #eee;">
-                <tr>
-                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 5%;">ID</th>
-                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 10%;">Photo</th>
-                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 25%;">Name</th>
-                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 25%;">Email</th>
-                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 15%;">Account Status</th>
-                    <th style="padding: 12px 15px; font-weight: 700; color: #555; width: 20%; text-align: right;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (empty($admins)): ?>
-                    <tr>
-                        <td colspan="6" style="padding: 30px; text-align: center; color: #888;">No admins found.</td>
-                    </tr>
-                <?php else: ?>
-                    <?php foreach ($admins as $admin): ?>
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 12px 15px; color: #555;">
-                                <?= htmlspecialchars($admin['id']) ?>
-                            </td>
-                            <td style="padding: 12px 15px;">
-                                <?php $photo_src = !empty($admin['photo']) ? '/uploads/admins/' . htmlspecialchars($admin['photo']) : '/assets/images/default-avatar.png'; ?>
-                                <img src="<?= $photo_src ?>" alt="Admin Photo" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1px solid #ccc;">
-                            </td>
-                            <td style="padding: 12px 15px; font-weight: 500;">
-                                <?= htmlspecialchars($admin['name']) ?>
-                                <?php if ($admin['is_superadmin'] == 1): ?>
-                                    <br><span style="background: #cce5ff; color: #004085; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; display: inline-block; margin-top: 4px;">SUPERADMIN</span>
-                                <?php endif; ?>
-                            </td>
-                            <td style="padding: 12px 15px; color: #555; font-size: 0.9rem;">
-                                <?= htmlspecialchars($admin['email']) ?>
-                            </td>
-                            <td style="padding: 12px 15px;">
-                                <?php if ($admin['is_active'] == 1): ?>
-                                    <span style="color: #28a745; font-weight: 600; font-size: 0.8rem;">● Active</span>
-                                <?php else: ?>
-                                    <span style="color: #dc3545; font-weight: 600; font-size: 0.8rem;">● Inactive</span>
-                                <?php endif; ?>
-                            </td>
-                            <td style="padding: 12px 15px;">
-                                <div style="display: flex; justify-content: flex-end; gap: 6px; align-items: center;">
-                                    
-                                    <a href="/pages/admin/admin_edit.php?id=<?= $admin['id'] ?>" class="btn" style="background: transparent; border: 1px solid #ccc; color: #333; padding: 4px 10px; font-size: 0.8rem; text-decoration: none; border-radius: 4px;">Edit</a>
-                                    
-                                    <?php if ($admin['id'] != $_SESSION['admin_id']): ?>
-                                        <div style="position: relative; display: inline-block;">
-                                            <button onclick="toggleDropdown(<?= $admin['id'] ?>)" class="btn dropdown-trigger" style="background: transparent; border: 1px solid #ccc; color: #333; padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer;">...</button>
-                                            
-                                            <div id="dropdown-<?= $admin['id'] ?>" class="admin-dropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 4px; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 180px; z-index: 100; overflow: hidden;">
-                                                
-                                                <?php 
-                                                // Determine if the Superadmin buttons should be disabled for this specific row
-                                                $is_inactive = ($admin['is_active'] == 0);
-                                                $disabled_attr = $is_inactive ? 'disabled' : '';
-                                                $disabled_style = $is_inactive ? 'opacity: 0.5; cursor: not-allowed;' : 'cursor: pointer;';
-                                                $disabled_title = $is_inactive ? 'title="Activate account first to change roles"' : '';
-                                                ?>
-
-                                                <?php if ($admin['is_superadmin'] == 0): ?>
-                                                    <form action="/logic/admin/admin_action.php" method="POST" style="margin: 0;">
-                                                        <input type="hidden" name="action" value="make_superadmin">
-                                                        <input type="hidden" name="admin_id" value="<?= $admin['id'] ?>">
-                                                        <button type="submit" <?= $disabled_attr ?> <?= $disabled_title ?> onclick="return confirm('Are you sure you want to promote this user to Superadmin?\n\nSuperadmins have full access to view, add, edit, and deactivate other admin accounts.');" style="width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid #eee; padding: 10px 15px; font-size: 0.85rem; <?= $disabled_style ?>">Make Superadmin</button>
-                                                    </form>
-                                                <?php else: ?>
-                                                    <form action="/logic/admin/admin_action.php" method="POST" style="margin: 0;">
-                                                        <input type="hidden" name="action" value="remove_superadmin">
-                                                        <input type="hidden" name="admin_id" value="<?= $admin['id'] ?>">
-                                                        <button type="submit" <?= $disabled_attr ?> <?= $disabled_title ?> onclick="return confirm('Are you sure you want to demote this user?\n\nThey will become a regular Admin and will lose access to manage other admin accounts.');" style="width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid #eee; padding: 10px 15px; font-size: 0.85rem; color: #856404; <?= $disabled_style ?>">Remove Superadmin</button>
-                                                    </form>
-                                                <?php endif; ?>
-                                                
-                                                <form action="/logic/admin/admin_action.php" method="POST" style="margin: 0;">
-                                                    <input type="hidden" name="admin_id" value="<?= $admin['id'] ?>">
-                                                    <?php if ($admin['is_active'] == 1): ?>
-                                                        <input type="hidden" name="action" value="suspend">
-                                                        <button type="submit" onclick="return confirm('Are you sure you want to DEACTIVATE this account?\n\nThe user will be instantly logged out and blocked from logging back into the system.');" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 15px; font-size: 0.85rem; cursor: pointer; color: #dc3545;">Deactivate Account</button>
-                                                    <?php else: ?>
-                                                        <input type="hidden" name="action" value="activate">
-                                                        <button type="submit" onclick="return confirm('Are you sure you want to ACTIVATE this account?\n\nThe user will regain full access to log into the admin portal.');" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 15px; font-size: 0.85rem; cursor: pointer; color: #28a745;">Activate Account</button>
-                                                    <?php endif; ?>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <a href="/pages/logout.php" class="logout-btn">Logout</a>
     </div>
-    <script src="/js/admin_list.js"></script>
-
 </div>
 
+<!-- ── LAYOUT ─────────────────────────────────────────────────────────────── -->
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-section">Main</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=members">
+            <span class="nav-icon">&#128101;</span> Members
+        </a>
+        <a class="nav-link" href="/pages/admin/admin.php?page=orders">
+            <span class="nav-icon">&#128230;</span> Orders
+        </a>
+        <a class="nav-link" href="/pages/admin/admin.php?page=stock">
+            <span class="nav-icon">&#128202;</span> Stock
+        </a>
+
+        <div class="sidebar-section">Management</div>
+        <!-- Set this link as active -->
+        <a class="nav-link active" href="/pages/admin/admin_list.php">
+            <span class="nav-icon">&#128110;</span> Admins
+        </a>
+        <a class="nav-link" href="/pages/admin/category_list.php">
+            <span class="nav-icon">&#128193;</span> Categories
+        </a>
+
+        <div class="sidebar-section">Analytics</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=charts">
+            <span class="nav-icon">&#128202;</span> Data Charts
+        </a>
+        <div class="sidebar-section">Account</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=profile">
+            <span class="nav-icon">&#9881;</span> Admin Profile
+        </a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- Flash message -->
+        <?php if (!empty($_SESSION['flash'])): ?>
+            <?php 
+                // Map the dynamic 'success' or 'error' to the alert classes in admin.css
+                $alertType = ($_SESSION['flash']['type'] === 'error') ? 'error' : 'success';
+            ?>
+            <div class="alert alert-<?= htmlspecialchars($alertType) ?>">
+                <?= htmlspecialchars($_SESSION['flash']['message']) ?>
+            </div>
+            <?php unset($_SESSION['flash']); ?>
+        <?php endif; ?>
+
+        <section class="section-container">
+            
+            <!-- Section Header (replaces the h1 flex container) -->
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h1 class="admin-section-title">Admin Maintenance</h1>
+                    <p class="admin-section-sub">Manage all registered NOAIR administrative accounts</p>
+                    <div class="line"></div>
+                </div>
+                <a href="/pages/admin/admin_add.php" class="btn-primary" style="margin-bottom: 20px;">+ Add New Admin</a>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-wrap" style="overflow: visible;">
+                <?php if (empty($admins)): ?>
+                    <div class="empty-state"><p>No admins found.</p></div>
+                <?php else: ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">ID</th>
+                                <th style="width: 10%;">Photo</th>
+                                <th style="width: 25%;">Name</th>
+                                <th style="width: 25%;">Email</th>
+                                <th style="width: 15%;">Account Status</th>
+                                <th style="width: 20%; text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($admins as $admin): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($admin['id']) ?></td>
+                                    <td>
+                                        <?php $photo_src = !empty($admin['photo']) ? '/uploads/admins/' . htmlspecialchars($admin['photo']) : '/assets/images/default-avatar.png'; ?>
+                                        <img src="<?= $photo_src ?>" alt="Admin Photo" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-card);">
+                                    </td>
+                                    <td>
+                                        <div style="font-weight: 600; color: var(--text-dark);">
+                                            <?= htmlspecialchars($admin['name']) ?>
+                                        </div>
+                                        <?php if ($admin['is_superadmin'] == 1): ?>
+                                            <span class="badge badge-locked" style="margin-top: 4px; padding: 2px 6px; font-size: 0.65rem;">SUPERADMIN</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td style="color: var(--text-muted);">
+                                        <?= htmlspecialchars($admin['email']) ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($admin['is_active'] == 1): ?>
+                                            <span class="badge badge-valid">Active</span>
+                                        <?php else: ?>
+                                            <span class="badge badge-invalid">Inactive</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; justify-content: flex-end; gap: 8px; align-items: center;">
+                                            <a href="/pages/admin/admin_edit.php?id=<?= $admin['id'] ?>" class="btn-outline" style="padding: 4px 12px; font-size: 0.75rem;">Edit</a>
+                                            
+                                            <?php if ($admin['id'] != $_SESSION['admin_id']): ?>
+                                                <div style="position: relative; display: inline-block;">
+                                                    <button onclick="toggleDropdown(<?= $admin['id'] ?>)" class="btn-outline dropdown-trigger" style="padding: 4px 12px; font-size: 0.75rem; border-color: var(--border-card); color: var(--text-muted); cursor: pointer;">...</button>
+                                                    
+                                                    <!-- Dropdown styling modernized -->
+                                                    <div id="dropdown-<?= $admin['id'] ?>" class="admin-dropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 6px; background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); min-width: 180px; z-index: 100; overflow: hidden; text-align: left;">
+                                                        
+                                                        <?php 
+                                                        $is_inactive = ($admin['is_active'] == 0);
+                                                        $disabled_attr = $is_inactive ? 'disabled' : '';
+                                                        $disabled_style = $is_inactive ? 'opacity: 0.5; cursor: not-allowed;' : 'cursor: pointer;';
+                                                        $disabled_title = $is_inactive ? 'title="Activate account first to change roles"' : '';
+                                                        ?>
+
+                                                        <?php if ($admin['is_superadmin'] == 0): ?>
+                                                            <form action="/logic/admin/admin_action.php" method="POST" style="margin: 0;">
+                                                                <input type="hidden" name="action" value="make_superadmin">
+                                                                <input type="hidden" name="admin_id" value="<?= $admin['id'] ?>">
+                                                                <button type="submit" <?= $disabled_attr ?> <?= $disabled_title ?> onclick="return confirm('Promote this user to Superadmin?');" style="width: 100%; text-align: left; background: transparent; border: none; border-bottom: 1px solid var(--border-card); padding: 10px 16px; font-size: 0.8rem; font-family: 'Inter', sans-serif; color: var(--text-body); transition: background 0.15s; <?= $disabled_style ?>" onmouseover="this.style.background='var(--bg-page)'" onmouseout="this.style.background='transparent'">Make Superadmin</button>
+                                                            </form>
+                                                        <?php else: ?>
+                                                            <form action="/logic/admin/admin_action.php" method="POST" style="margin: 0;">
+                                                                <input type="hidden" name="action" value="remove_superadmin">
+                                                                <input type="hidden" name="admin_id" value="<?= $admin['id'] ?>">
+                                                                <button type="submit" <?= $disabled_attr ?> <?= $disabled_title ?> onclick="return confirm('Demote this user to regular Admin?');" style="width: 100%; text-align: left; background: transparent; border: none; border-bottom: 1px solid var(--border-card); padding: 10px 16px; font-size: 0.8rem; font-family: 'Inter', sans-serif; color: var(--warning-text); transition: background 0.15s; <?= $disabled_style ?>" onmouseover="this.style.background='var(--bg-page)'" onmouseout="this.style.background='transparent'">Remove Superadmin</button>
+                                                            </form>
+                                                        <?php endif; ?>
+                                                        
+                                                        <form action="/logic/admin/admin_action.php" method="POST" style="margin: 0;">
+                                                            <input type="hidden" name="admin_id" value="<?= $admin['id'] ?>">
+                                                            <?php if ($admin['is_active'] == 1): ?>
+                                                                <input type="hidden" name="action" value="suspend">
+                                                                <button type="submit" onclick="return confirm('DEACTIVATE this account?');" style="width: 100%; text-align: left; background: transparent; border: none; padding: 10px 16px; font-size: 0.8rem; font-family: 'Inter', sans-serif; cursor: pointer; color: var(--danger-text); transition: background 0.15s;" onmouseover="this.style.background='var(--bg-page)'" onmouseout="this.style.background='transparent'">Deactivate Account</button>
+                                                            <?php else: ?>
+                                                                <input type="hidden" name="action" value="activate">
+                                                                <button type="submit" onclick="return confirm('ACTIVATE this account?');" style="width: 100%; text-align: left; background: transparent; border: none; padding: 10px 16px; font-size: 0.8rem; font-family: 'Inter', sans-serif; cursor: pointer; color: var(--success-text); transition: background 0.15s;" onmouseover="this.style.background='var(--bg-page)'" onmouseout="this.style.background='transparent'">Activate Account</button>
+                                                            <?php endif; ?>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+
+        </section>
+    </div><!-- /content -->
+</div><!-- /layout -->
+
 <?php include $project_root . "components/footer.php"; ?>
+<script src="/js/admin_list.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

@@ -5,54 +5,105 @@ require_once $project_root . "logic/auth_helper.php";
 require_once $project_root . "database/admin.php"; 
 require_once $project_root . "logic/admin/admin_add.php";
 
-$_title = 'Add New Admin';
-include $project_root . "components/header.php";
+if (!isAdmin()) {
+    header("Location: /pages/admin/login.php");
+    exit;
+}
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOAIR — Add New Admin</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
 
-<div class="container" style="max-width: 600px; margin: 40px auto; padding: 20px;">
-    
-    <div style="margin-bottom: 20px;">
-        <a href="/pages/admin/admin_list.php" style="color: #666; text-decoration: none; font-size: 0.9rem;">&larr; Back to Admin List</a>
+<div class="topbar">
+    <div class="topbar-brand">NOAIR</div>
+    <div class="topbar-right">
+        <span class="topbar-clock" id="clock"></span>
+        <div class="topbar-user">
+            <div class="avatar-sm">AD</div>
+            <span class="topbar-name"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></span>
+        </div>
+        <a href="/pages/logout.php" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-section">Main</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=members"><span class="nav-icon">&#128101;</span> Members</a>
+        <a class="nav-link" href="/pages/admin/admin.php?page=orders"><span class="nav-icon">&#128230;</span> Orders</a>
+        <a class="nav-link" href="/pages/admin/admin.php?page=stock"><span class="nav-icon">&#128202;</span> Stock</a>
+
+        <div class="sidebar-section">Management</div>
+        <a class="nav-link active" href="/pages/admin/admin_list.php"><span class="nav-icon">&#128110;</span> Admins</a>
+        <a class="nav-link" href="/pages/admin/category_list.php"><span class="nav-icon">&#128193;</span> Categories</a>
+
+        <div class="sidebar-section">Analytics</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=charts"><span class="nav-icon">&#128202;</span> Data Charts</a>
+        <div class="sidebar-section">Account</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=profile"><span class="nav-icon">&#9881;</span> Admin Profile</a>
     </div>
 
-    <div style="background: #fff; border: 1px solid var(--border-ultra-light, #eee); border-radius: 8px; padding: 30px;">
-        <h1 style="text-transform: uppercase; letter-spacing: 1px; margin-bottom: 25px;">Add New Admin</h1>
-
-        <form action="" method="POST">
-            <div style="margin-bottom: 20px;">
-                <label for="name" style="display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Full Name</label>
-                <input type="text" id="name" name="name" value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" style="width: 100%; padding: 10px 15px; border: 1px solid <?= !empty($errors['name']) ? '#dc3545' : '#ccc' ?>; border-radius: 4px; font-family: inherit; font-size: 1rem;">
-                <?php if (!empty($errors['name'])) echo "<div style='color: #dc3545; font-size: 0.85rem; margin-top: 5px;'>" . htmlspecialchars($errors['name']) . "</div>"; ?>
+    <!-- CONTENT -->
+    <div class="content">
+        <section class="section-container" style="max-width: 600px; margin: 0 auto;">
+            
+            <div class="section-header">
+                <a href="/pages/admin/admin_list.php" class="btn-outline" style="margin-bottom: 20px; padding: 6px 14px; font-size: 0.8rem;">← Back</a>
+                <h1 class="admin-section-title">Add New Admin</h1>
+                <p class="admin-section-sub">Create a new administrative account</p>
+                <div class="line"></div>
             </div>
 
-            <div style="margin-bottom: 20px;">
-                <label for="email" style="display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Email Address</label>
-                <input type="email" id="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" style="width: 100%; padding: 10px 15px; border: 1px solid <?= !empty($errors['email']) ? '#dc3545' : '#ccc' ?>; border-radius: 4px; font-family: inherit; font-size: 1rem;">
-                <?php if (!empty($errors['email'])) echo "<div style='color: #dc3545; font-size: 0.85rem; margin-top: 5px;'>" . htmlspecialchars($errors['email']) . "</div>"; ?>
-            </div>
+            <div style="background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 16px; padding: 24px;">
+                <form action="" method="POST">
+                    
+                    <div class="form-row">
+                        <label for="name" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Full Name</label>
+                        <input type="text" id="name" name="name" value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" 
+                               style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-input); border-radius: 9px; background: var(--bg-input);">
+                        <?php if (!empty($errors['name'])) echo "<div style='color: var(--danger-text); font-size: 0.8rem; margin-top: 5px;'>" . htmlspecialchars($errors['name']) . "</div>"; ?>
+                    </div>
 
-            <div style="margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 4px; border: 1px solid #e9ecef;">
-                <label style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; cursor: pointer; margin: 0;">
-                    <input type="checkbox" name="is_superadmin" value="1" <?= isset($_POST['is_superadmin']) ? 'checked' : '' ?> style="width: 18px; height: 18px; cursor: pointer;">
-                    Make this user a Superadmin
-                </label>
-                <div style="font-size: 0.8rem; color: #666; margin-top: 5px; margin-left: 28px;">Superadmins have full access to view, add, edit, and deactivate other admin accounts.</div>
-            </div>
+                    <div class="form-row">
+                        <label for="email" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Email Address</label>
+                        <input type="email" id="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" 
+                               style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-input); border-radius: 9px; background: var(--bg-input);">
+                        <?php if (!empty($errors['email'])) echo "<div style='color: var(--danger-text); font-size: 0.8rem; margin-top: 5px;'>" . htmlspecialchars($errors['email']) . "</div>"; ?>
+                    </div>
 
-            <div style="margin-bottom: 30px;">
-                <label for="password" style="display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; text-transform: uppercase;">Temporary Password</label>
-                <input type="password" id="password" name="password" style="width: 100%; padding: 10px 15px; border: 1px solid <?= !empty($errors['password']) ? '#dc3545' : '#ccc' ?>; border-radius: 4px; font-family: inherit; font-size: 1rem;">
-                <div style="font-size: 0.8rem; color: #888; margin-top: 5px;">Must be at least 6 characters.</div>
-                <?php if (!empty($errors['password'])) echo "<div style='color: #dc3545; font-size: 0.85rem; margin-top: 5px;'>" . htmlspecialchars($errors['password']) . "</div>"; ?>
-            </div>
+                    <div class="form-row" style="background: var(--bg-page); padding: 16px; border-radius: 9px; border: 1px solid var(--border-card);">
+                        <label style="display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 0.8rem; color: var(--text-dark); cursor: pointer; margin: 0;">
+                            <input type="checkbox" name="is_superadmin" value="1" <?= isset($_POST['is_superadmin']) ? 'checked' : '' ?> style="width: 16px; height: 16px; cursor: pointer;">
+                            Make this user a Superadmin
+                        </label>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; margin-left: 26px;">Superadmins have full access to view, add, edit, and deactivate other admin accounts.</div>
+                    </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <a href="/pages/admin/admin_list.php" class="btn" style="background: transparent; color: #555; border: 1px solid #ccc; padding: 10px 20px; text-decoration: none;">Cancel</a>
-                <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Create Admin</button>
+                    <div class="form-row">
+                        <label for="password" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Temporary Password</label>
+                        <input type="password" id="password" name="password" 
+                               style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-input); border-radius: 9px; background: var(--bg-input);">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Must be at least 6 characters.</div>
+                        <?php if (!empty($errors['password'])) echo "<div style='color: var(--danger-text); font-size: 0.8rem; margin-top: 5px;'>" . htmlspecialchars($errors['password']) . "</div>"; ?>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn-primary">Create Admin</button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </section>
     </div>
-
 </div>
 
 <?php include $project_root . "components/footer.php"; ?>
+<script src="/js/admin.js"></script>
+</body>
+</html>

@@ -5,111 +5,158 @@ require_once $project_root . "logic/auth_helper.php";
 require_once $project_root . "database/category.php"; 
 require_once $project_root . "logic/admin/category_list.php";
 
-$_title = 'Category Maintenance';
-include $project_root . "components/header.php";
-// echo "<pre>";
-// var_dump($categories);
-// echo "</pre>";
+if (!isAdmin()) {
+    header("Location: /pages/admin/login.php");
+    exit;
+}
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOAIR — Category Maintenance</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
 
-<div class="container" style="max-width: 900px; margin: 40px auto; padding: 20px; padding-bottom: 100px;">
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="text-transform: uppercase; letter-spacing: 1px;">Category Maintenance</h1>
-        <a href="/pages/admin/category_add.php" class="btn btn-primary" style="padding: 10px 20px; text-decoration: none; display: inline-block;">+ Add New Category</a>
+<div class="topbar">
+    <div class="topbar-brand">NOAIR</div>
+    <div class="topbar-right">
+        <span class="topbar-clock" id="clock"></span>
+        <div class="topbar-user">
+            <div class="avatar-sm">AD</div>
+            <span class="topbar-name"><?= htmlspecialchars($_SESSION['admin_name'] ?? 'Admin') ?></span>
+        </div>
+        <a href="/pages/logout.php" class="logout-btn">Logout</a>
     </div>
-
-    <?php if (!empty($_SESSION['flash'])): ?>
-        <div class="alert alert-<?= htmlspecialchars($_SESSION['flash']['type']) ?>" style="margin-bottom: 20px; padding: 15px; border-radius: 4px; background-color: <?= $_SESSION['flash']['type'] === 'error' ? '#f8d7da' : '#d4edda' ?>; color: <?= $_SESSION['flash']['type'] === 'error' ? '#721c24' : '#155724' ?>;">
-            <?= htmlspecialchars($_SESSION['flash']['message']) ?>
-        </div>
-        <?php unset($_SESSION['flash']); ?>
-    <?php endif; ?>
-
-    <form id="batchForm" action="" method="POST">
-        <input type="hidden" name="action" id="batchActionType" value="">
-
-        <div style="background: #fff; border: 1px solid var(--border-ultra-light, #eee); border-radius: 8px;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead style="background-color: #fafafa; border-bottom: 2px solid #eee;">
-                    <tr>
-                        <th style="padding: 15px; width: 5%; border-top-left-radius: 8px;">
-                            <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes(this)" style="cursor: pointer; width: 16px; height: 16px;">
-                        </th>
-                        <th style="padding: 15px 20px; font-weight: 700; color: #555; width: 10%;">ID</th>
-                        <th style="padding: 15px 20px; font-weight: 700; color: #555; width: 35%;">Category Name</th>
-                        <th style="padding: 15px 20px; font-weight: 700; color: #555; width: 15%;">Items Count</th>
-                        <th style="padding: 15px 20px; font-weight: 700; color: #555; width: 10%;">Status</th>
-                        <th style="padding: 15px 20px; font-weight: 700; color: #555; width: 25%; text-align: right; border-top-right-radius: 8px;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($admin_categories)): ?>
-                        <tr>
-                            <td colspan="6" style="padding: 30px; text-align: center; color: #888;">No categories found.</td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($admin_categories as $category): ?>
-                            <tr style="border-bottom: 1px solid #eee;">
-                                <td style="padding: 15px;">
-                                    <?php if ($category['id'] != 0): ?>
-                                        <input type="checkbox" class="row-checkbox" name="selected_categories[]" value="<?= $category['id'] ?>" data-product-count="<?= $category['product_count'] ?>" onchange="updateBatchUI()" style="cursor: pointer; width: 16px; height: 16px;">
-                                    <?php endif; ?>
-                                </td>
-                                <td style="padding: 15px 20px; color: #555;">
-                                    <?= htmlspecialchars($category['id']) ?>
-                                </td>
-                                <td style="padding: 15px 20px; font-weight: 500;">
-                                    <?= htmlspecialchars($category['name']) ?>
-                                </td>
-                                
-                                <td style="padding: 15px 20px; font-weight: 500;">
-                                    <?= htmlspecialchars($category['product_count']) ?>
-                                </td>
-
-                                <td style="padding: 15px 20px;">
-                                    <?php if ($category['is_active'] == 1): ?>
-                                        <span style="background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Active</span>
-                                    <?php else: ?>
-                                        <span style="background: #f8d7da; color: #721c24; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Inactive</span>
-                                    <?php endif; ?>
-                                </td>
-
-                                <td style="padding: 15px 20px;">
-                                    <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                                        <?php if ($category['is_active'] != 0): ?>
-                                            <a href="/pages/admin/category_items.php?id=<?= htmlspecialchars($category['id']) ?>" class="btn" style="background: transparent; border: 1px solid #ccc; color: #333; padding: 6px 12px; text-decoration: none; white-space: nowrap; font-size: 0.85rem;">View Items</a>
-                                        <?php endif; ?>
-                                        <?php if ($category['id'] != 0): ?>
-                                            <?php if ($category['is_active'] == 1): ?>
-                                                <button type="button" onclick="submitSingleDeactivate(<?= $category['id'] ?>, <?= $category['product_count'] ?>)" class="btn" style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 6px 12px; white-space: nowrap; font-size: 0.85rem; cursor: pointer;">Deactivate</button>
-                                            <?php else: ?>
-                                                <button type="button" onclick="submitSingleActivate(<?= $category['id'] ?>)" class="btn" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 6px 12px; white-space: nowrap; font-size: 0.85rem; cursor: pointer;">Activate</button>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="batchActionBar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #fff; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); padding: 15px 40px; z-index: 1000; align-items: center; justify-content: space-between; border-top: 1px solid #ddd;">
-            <div style="font-weight: 700; color: #333; font-size: 1.1rem;">
-                <span id="selectedCountDisplay" style="background: #007bff; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.9rem; margin-right: 8px;">0</span> Categories Selected
-            </div>
-            
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <button type="button" onclick="submitBatchActivate()" class="btn" style="background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 8px 20px; font-size: 0.95rem; cursor: pointer; border-radius: 4px;">Activate Selected</button>
-                <button type="button" onclick="submitBatchDeactivate()" class="btn" style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 8px 20px; font-size: 0.95rem; cursor: pointer; border-radius: 4px;">Deactivate Selected</button>
-            </div>
-        </div>
-    </form>
-
 </div>
 
-<script src="/js/category_list.js"></script>
+<div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-section">Main</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=members"><span class="nav-icon">&#128101;</span> Members</a>
+        <a class="nav-link" href="/pages/admin/admin.php?page=orders"><span class="nav-icon">&#128230;</span> Orders</a>
+        <a class="nav-link" href="/pages/admin/admin.php?page=stock"><span class="nav-icon">&#128202;</span> Stock</a>
+
+        <div class="sidebar-section">Management</div>
+        <a class="nav-link" href="/pages/admin/admin_list.php"><span class="nav-icon">&#128110;</span> Admins</a>
+        <!-- Set this link as active -->
+        <a class="nav-link active" href="/pages/admin/category_list.php"><span class="nav-icon">&#128193;</span> Categories</a>
+
+        <div class="sidebar-section">Analytics</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=charts"><span class="nav-icon">&#128202;</span> Data Charts</a>
+        <div class="sidebar-section">Account</div>
+        <a class="nav-link" href="/pages/admin/admin.php?page=profile"><span class="nav-icon">&#9881;</span> Admin Profile</a>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <?php if (!empty($_SESSION['flash'])): ?>
+            <?php $alertType = ($_SESSION['flash']['type'] === 'error') ? 'error' : 'success'; ?>
+            <div class="alert alert-<?= htmlspecialchars($alertType) ?>">
+                <?= htmlspecialchars($_SESSION['flash']['message']) ?>
+            </div>
+            <?php unset($_SESSION['flash']); ?>
+        <?php endif; ?>
+
+        <section class="section-container">
+            <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h1 class="admin-section-title">Category Maintenance</h1>
+                    <p class="admin-section-sub">Manage product categories and bulk actions</p>
+                    <div class="line"></div>
+                </div>
+                <a href="/pages/admin/category_add.php" class="btn-primary" style="margin-bottom: 20px;">+ Add New Category</a>
+            </div>
+
+            <form id="batchForm" action="" method="POST">
+                <input type="hidden" name="action" id="batchActionType" value="">
+
+                <div class="table-wrap" style="overflow: visible;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">
+                                    <input type="checkbox" id="selectAll" onclick="toggleAllCheckboxes(this)" style="cursor: pointer;">
+                                </th>
+                                <th style="width: 10%;">ID</th>
+                                <th style="width: 35%;">Category Name</th>
+                                <th style="width: 15%;">Items Count</th>
+                                <th style="width: 10%;">Status</th>
+                                <th style="width: 25%; text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($admin_categories)): ?>
+                                <tr>
+                                    <td colspan="6"><div class="empty-state">No categories found.</div></td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($admin_categories as $category): ?>
+                                    <tr>
+                                        <td>
+                                            <?php if ($category['id'] != 0): ?>
+                                                <input type="checkbox" class="row-checkbox" name="selected_categories[]" value="<?= $category['id'] ?>" data-product-count="<?= $category['product_count'] ?>" onchange="updateBatchUI()" style="cursor: pointer;">
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?= htmlspecialchars($category['id']) ?></td>
+                                        <td style="font-weight: 600; color: var(--text-dark);">
+                                            <?= htmlspecialchars($category['name']) ?>
+                                        </td>
+                                        <td style="color: var(--text-muted);">
+                                            <?= htmlspecialchars($category['product_count']) ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($category['is_active'] == 1): ?>
+                                                <span class="badge badge-valid">Active</span>
+                                            <?php else: ?>
+                                                <span class="badge badge-invalid">Inactive</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                                                <?php if ($category['is_active'] != 0): ?>
+                                                    <a href="/pages/admin/category_items.php?id=<?= htmlspecialchars($category['id']) ?>" class="btn-outline" style="padding: 4px 12px; font-size: 0.75rem;">View Items</a>
+                                                <?php endif; ?>
+                                                
+                                                <?php if ($category['id'] != 0): ?>
+                                                    <?php if ($category['is_active'] == 1): ?>
+                                                        <button type="button" onclick="submitSingleDeactivate(<?= $category['id'] ?>, <?= $category['product_count'] ?>)" class="btn-outline" style="padding: 4px 12px; font-size: 0.75rem; border-color: #FCA5A5; color: var(--danger-text);">Deactivate</button>
+                                                    <?php else: ?>
+                                                        <button type="button" onclick="submitSingleActivate(<?= $category['id'] ?>)" class="btn-outline" style="padding: 4px 12px; font-size: 0.75rem; border-color: #86EFAC; color: var(--success-text);">Activate</button>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Floating Toolbar for batch actions -->
+                <div id="batchActionBar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); box-shadow: 0 -4px 16px rgba(0,0,0,0.06); padding: 16px 40px; z-index: 1000; align-items: center; justify-content: space-between; border-top: 1px solid var(--border-card);">
+                    <div style="font-weight: 700; color: var(--text-dark); font-size: 0.9rem;">
+                        <span id="selectedCountDisplay" class="badge badge-locked" style="padding: 4px 10px; font-size: 0.9rem; margin-right: 8px; border-radius: 9999px;">0</span> Categories Selected
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <button type="button" onclick="submitBatchActivate()" class="btn-outline" style="padding: 8px 20px; font-size: 0.85rem; border-color: #86EFAC; color: var(--success-text);">Activate Selected</button>
+                        <button type="button" onclick="submitBatchDeactivate()" class="btn-outline" style="padding: 8px 20px; font-size: 0.85rem; border-color: #FCA5A5; color: var(--danger-text);">Deactivate Selected</button>
+                    </div>
+                </div>
+            </form>
+
+        </section>
+    </div>
+</div>
 
 <?php include $project_root . "components/footer.php"; ?>
+<script src="/js/category_list.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

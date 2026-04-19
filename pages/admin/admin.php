@@ -165,6 +165,15 @@ $highAttempts = getHighAttempts();
         <a class="nav-link <?= $active_page === 'stock'        ? 'active' : '' ?>" href="?page=stock">
             <span class="nav-icon">&#128202;</span> Stock
         </a>
+
+        <div class="sidebar-section">Management</div>
+        <a class="nav-link" href="/pages/admin/admin_list.php">
+            <span class="nav-icon">&#128110;</span> Admins
+        </a>
+        <a class="nav-link" href="/pages/admin/category_list.php">
+            <span class="nav-icon">&#128193;</span> Categories
+        </a>
+
         <div class="sidebar-section">Analytics</div>
         <a class="nav-link <?= $active_page === 'charts'       ? 'active' : '' ?>" href="?page=charts">
             <span class="nav-icon">&#128202;</span> Data Charts
@@ -551,7 +560,7 @@ $highAttempts = getHighAttempts();
                         </div>
                         <div class="profile-row">
                             <span class="profile-lbl">Role</span>
-                            <span class="profile-val">Super Admin</span>
+                            <span class="profile-val"><?= htmlspecialchars($admin->is_superadmin ? 'Super Admin' : 'Regular Admin') ?></span>
                         </div>
                         <div class="profile-row">
                             <span class="profile-lbl">Status</span>
