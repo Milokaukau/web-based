@@ -14,7 +14,7 @@ require $project_root."components/header.php";
         
         <div class="product-gallery">
             <div class="main-image">
-                <img src="<?= $arr->photo ? '/uploads/' . $arr->photo : '/assets/placeholder.png' ?>" 
+                <img src="<?= $arr->photo ? '/images/' . $arr->photo : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($arr->name) ?>" 
                      alt="<?= htmlspecialchars($arr->name) ?>" id="mainProductImg">
             </div>
         </div>

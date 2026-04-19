@@ -12,6 +12,7 @@
 @import url("components/wishlist.css");
 @import url("components/shop.css");
 @import url("components/search.css");
+@import url("components/order.css");
 
 /* --- 2. GLOBAL VARIABLES --- */
 :root {
@@ -139,11 +140,13 @@ input:focus {
     display: flex;
     align-items: center;
 }
+
 .password-wrapper input[type="password"],
 .password-wrapper input[type="text"] {
     width: 100%;
     padding-right: 2.8rem;
 }
+
 .toggle-password {
     position: absolute;
     right: 0.6rem;
@@ -158,9 +161,11 @@ input:focus {
     align-items: center;
     transition: color 0.2s;
 }
+
 .toggle-password:hover {
     color: #333;
 }
+
 .toggle-password .eye-icon {
     pointer-events: none;
 }

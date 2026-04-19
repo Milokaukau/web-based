@@ -57,7 +57,7 @@ require $project_root."components/header.php";
                         <div style="flex: 2; display: flex; align-items: center; justify-content: flex-start; gap: 25px;">
                             <div style="width: 80px; height: 100px; display: flex; align-items: center; justify-content: center;">
                                 <a href="product.php?id=<?= $real_id ?>">
-                                    <img src="/uploads/<?= htmlspecialchars($item['photo'] ?? 'placeholder.jpg') ?>" alt="Product" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                    <img src="<?= !empty($item['photo']) ? '/images/' . htmlspecialchars($item['photo']) : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($item['name']) ?>" alt="Product" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                                 </a>
                             </div>
                             <div style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">

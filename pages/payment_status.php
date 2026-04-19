@@ -2,11 +2,11 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-$stripe_secret_key = "YOUR_STRIPE_SECRET_KEY";
+$stripe_secret_key = "sk_test_51TLwrrJ29uQhAS4VbDUHOBhzQ6o4csZjo3zPdGFWRBc4RovsmI9uoE3jVqbhrIDa0hmJFNrH5hKS0vYE73hRzhf200GG6Zna2G";
 \Stripe\Stripe::setApiKey($stripe_secret_key);
 
 $project_root = $_SERVER['DOCUMENT_ROOT']."/";
-require $project_root."config.php";
+require_once $project_root."config.php";
 // ---------------------------------------------------------------
 // Determine status from Stripe redirect params
 // ---------------------------------------------------------------
@@ -65,7 +65,7 @@ if ($status === 'success' && $session_id) {
 }
 
 $_title = $is_success ? "Order Confirmed" : ($status === 'cancel' ? "Payment Cancelled" : "Payment Failed");
-require $project_root."components/header.php";
+require_once $project_root."components/header.php";
 ?>
 
 <link rel="stylesheet" href="../css/style.css">
@@ -139,7 +139,7 @@ require $project_root."components/header.php";
 
             <div class="status-actions">
                 <a href="/index.php" class="btn-primary">Continue Shopping</a>
-                <a href="/orders.php" class="btn-secondary">View My Orders</a>
+                <a href="/pages/orders.php" class="btn-secondary">View My Orders</a>
             </div>
 
             <?php else: ?>

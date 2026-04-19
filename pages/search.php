@@ -29,7 +29,7 @@ require $project_root . "components/header.php";
                 <line x1="8" y1="11" x2="14" y2="11"/>
             </svg>
             <p>No products found for "<strong><?= htmlspecialchars($search_term) ?></strong>".</p>
-            <a href="shop.php" class="primary-btn-link">Browse All Products</a>
+            <a href="home.php" class="primary-btn-link">Back to Home</a>
         </div>
 
     <?php else: ?>
@@ -45,7 +45,7 @@ require $project_root . "components/header.php";
                 <a href="product.php?id=<?= $item->id ?>" class="search-product-card">
 
                     <?php if (!empty($item->photo)): ?>
-                        <img src="/uploads/<?= htmlspecialchars($item->photo) ?>"
+                        <img src="/images/<?= htmlspecialchars($item->photo) ?>"
                              alt="<?= htmlspecialchars($item->name) ?>"
                              class="card-img">
                     <?php else: ?>

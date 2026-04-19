@@ -106,7 +106,7 @@ require $project_root."components/header.php";
                                         <span class="product-tag tag-new">NEW</span>
                                     <?php endif; ?>
                                 </div>
-                                <img src="<?= !empty($row->photo) ? '/uploads/' . htmlspecialchars($row->photo) : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($row->name) ?>"
+                                <img src="<?= !empty($row->photo) ? '/images/' . htmlspecialchars($row->photo) : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($row->name) ?>"
                                      alt="<?= htmlspecialchars($row->name) ?>">
                             </div>
                             <div class="product-info-row">

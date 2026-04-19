@@ -23,7 +23,10 @@ function getOrderListByMember($member_id){
     $stmt = db()->prepare("
         SELECT 
             o.id AS order_id,
+            o.created_at,
+            p.id AS product_id,
             p.name AS product_name,
+            p.price AS unit_price,
             op.quantity,
             o.amount,
             m.name AS member_name,
@@ -34,6 +37,7 @@ function getOrderListByMember($member_id){
         JOIN tb_product p ON p.id = op.product_id
         JOIN tb_payment pm ON pm.order_id = o.id
         WHERE o.member_id = ? 
+        ORDER BY o.created_at DESC
     ");
     
     $stmt->execute([$member_id]);

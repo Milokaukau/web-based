@@ -65,9 +65,15 @@ $categories = getAllCategories() ?: []; // Ensure it's at least an empty array
 
             <div class="nav-links">
                 <?php if(isMember()): ?>
-                    <a href="/pages/profile.php">PROFILE</a>
+                    <div class="category-dropdown" style="display:inline-block;">
+                        <a href="/pages/profile.php" class="dropbtn">PROFILE <small>▼</small></a>
+                        <div class="dropdown-content" style="right: 0; left: auto;">
+                            <a href="/pages/profile.php">MY ACCOUNT</a>
+                            <a href="/pages/orders.php">MY ORDERS</a>
+                            <a href="/pages/logout.php" style="border-top: 1px solid #f8f8f8; color: #d9534f;">LOGOUT</a>
+                        </div>
+                    </div>
                     <span>|</span>
-                    <a href="/pages/logout.php">LOGOUT</a>
                     <a href="/pages/wishlist.php" class="wishlist-link">
                         WISHLIST <?= $wishlistCount > 0 ? "<span class='count-badge'>$wishlistCount</span>" : "" ?>
                     </a>

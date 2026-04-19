@@ -27,7 +27,7 @@ require $project_root."components/header.php";
                 <div class="product-card">
                     <a href="product.php?id=<?= $item->id ?>">
                         <div class="product-image">
-                            <img src="<?= $item->photo ? '/uploads/' . $item->photo : '/assets/placeholder.png' ?>" alt="<?= htmlspecialchars($item->name) ?>">
+                            <img src="<?= $item->photo ? '/images/' . $item->photo : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($item->name) ?>" alt="<?= htmlspecialchars($item->name) ?>">
                         </div>
                         <div class="product-info">
                             <h3><?= htmlspecialchars($item->name) ?></h3>
