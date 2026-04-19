@@ -42,15 +42,6 @@ function getAllAdmins() {
 }
 
 /**
- * Get a specific admin by ID.
- */
-function getAdminById($id) {
-    $stmt = db()->prepare("SELECT id, name, email, photo, is_superadmin, is_active FROM tb_admin WHERE id = ?");
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-/**
  * Update basic admin details (Name and Email).
  */
 function updateAdmin($id, $name, $email) {
