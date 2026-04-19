@@ -5,11 +5,11 @@ require_once $project_root . "database/member.php";
 
 $arr = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['payment_id'], $_POST['status'])) {
-    $payment_id = $_POST['payment_id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['status'])) {
+    $order_id = $_POST['order_id'];
     $status = $_POST['status'];
     
-    updateOrderStatus($payment_id, $status);
+    updateOrderStatus($order_id, $status);
     
     header("Location: order_listing.php");
     exit;

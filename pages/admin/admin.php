@@ -159,7 +159,7 @@ $highAttempts = getHighAttempts();
         <a class="nav-link <?= $active_page === 'members'      ? 'active' : '' ?>" href="?page=members">
             <span class="nav-icon">&#128101;</span> Members
         </a>
-        <a class="nav-link <?= $active_page === 'orders'       ? 'active' : '' ?>" href="?page=orders">
+        <a class="nav-link" href="/pages/admin/order_listing.php">
             <span class="nav-icon">&#128230;</span> Orders
         </a>
         <a class="nav-link <?= $active_page === 'stock'        ? 'active' : '' ?>" href="?page=stock">
@@ -376,92 +376,7 @@ $highAttempts = getHighAttempts();
                 <div class="empty-state"><p>Member not found.</p></div>
             <?php endif; ?>
         </section>
-
-
-        <!-- ═══════════════════════════════════════════════════════
-             ORDERS
-        ════════════════════════════════════════════════════════ -->
-        <?php elseif ($active_page === 'orders'): ?>
-
-        <?php
-            $orders        = getOrders();
-            $lowStockAlert = getLowStockProducts(10);
-        ?>
-
-        <section class="section-container">
-
-            <div class="section-header">
-                <h1 class="admin-section-title">Order Listing</h1>
-                <p class="admin-section-sub">All customer orders at a glance</p>
-                <div class="line"></div>
-            </div>
-
-            <!-- ── Low-Stock Alert Banner ───────────────────────────────── -->
-            <?php if (!empty($lowStockAlert)): ?>
-            <div class="alert alert-error" style="margin-bottom:20px;">
-                ⚠️ <strong><?= count($lowStockAlert) ?> product(s)</strong> are low in stock (≤10 units):
-                <?php foreach ($lowStockAlert as $lp): ?>
-                    <span style="margin-left:8px;">
-                        <strong><?= htmlspecialchars($lp->name) ?></strong> (<?= $lp->stock ?> left)
-                    </span>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-
-            <!-- ── Orders Table ────────────────────────────────────────── -->
-            <div class="table-wrap">
-                <?php if (empty($orders)): ?>
-                    <div class="empty-state"><p>No orders found.</p></div>
-                <?php else: ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Member</th>
-                            <th>Total (RM)</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Update Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($orders as $o): ?>
-                        <tr>
-                            <td>#<?= $o->id ?></td>
-                            <td><?= htmlspecialchars($o->username ?? 'Guest') ?></td>
-                            <td>RM <?= number_format($o->amount ?? 0, 2) ?></td>
-                            <td>
-                                <span class="badge badge-<?=
-                                    $o->status === 'delivered'       ? 'valid'   :
-                                    ($o->status === 'cancelled'      ? 'invalid' :
-                                    ($o->status === 'in_delivery'    ? 'locked'  : 'locked')) ?>">
-                                    <?= ucfirst(str_replace('_', ' ', $o->status ?? '-')) ?>
-                                </span>
-                            </td>
-                            <td><?= htmlspecialchars($o->created_at ?? '-') ?></td>
-                            <td>
-                                <form method="POST" action="?action=update_order_status" style="display:flex;gap:6px;align-items:center;">
-                                    <input type="hidden" name="id" value="<?= $o->id ?>">
-                                    <select name="status" class="filter-sel" style="padding:4px 8px;font-size:0.8rem;">
-                                        <?php foreach (['pending_payment','confirmed','in_delivery','delivered','cancelled'] as $s): ?>
-                                            <option value="<?= $s ?>" <?= $o->status === $s ? 'selected' : '' ?>>
-                                                <?= ucfirst(str_replace('_', ' ', $s)) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <button type="submit" class="btn-primary" style="padding:4px 12px;font-size:0.8rem;">Save</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-                <?php endif; ?>
-            </div>
-
-        </section>
-
-
+        
         <!-- ═══════════════════════════════════════════════════════
              STOCK
         ════════════════════════════════════════════════════════ -->

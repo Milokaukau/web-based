@@ -10,32 +10,48 @@ function getOrderListQuery(){
         o.amount,
         o.created_at,
         m.name AS member_name,
-        op.quantity,
-        op.price AS purchase_price,
-        p.name AS product_name,
-        pm.method AS payment_method,
-        pm.status AS payment_status
+        (
+            SELECT SUM(quantity) 
+            FROM tb_order_product 
+            WHERE order_id = o.id
+        ) AS quantity,
+        (
+            SELECT GROUP_CONCAT(p.name SEPARATOR ', ')
+            FROM tb_order_product op
+            JOIN tb_product p ON p.id = op.product_id
+            WHERE op.order_id = o.id
+        ) AS product_name,
+        (
+            SELECT method 
+            FROM tb_payment 
+            WHERE order_id = o.id 
+            ORDER BY id DESC 
+            LIMIT 1
+        ) AS payment_method,
+        (
+            SELECT status 
+            FROM tb_payment 
+            WHERE order_id = o.id 
+            ORDER BY id DESC 
+            LIMIT 1
+        ) AS payment_status
     FROM tb_order o
     JOIN tb_member m ON m.id = o.member_id
-    JOIN tb_order_product op ON op.order_id = o.id
-    JOIN tb_product p ON p.id = op.product_id
-    LEFT JOIN tb_payment pm ON pm.order_id = o.id
     ";
 }
 
 function getOrderList(){
-    $stmt = db()->query(getOrderListQuery());
-    return $stmt->fetchAll();
+    // Append order by descending so newest orders show first
+    $stmt = db()->query(getOrderListQuery() . " ORDER BY o.id DESC");
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
 }
 
 function getOrderListByMemberId($member_id){
     $stmt = db()->prepare(
-        getOrderListQuery()
-        ."WHERE o.member_id = ? 
-    ");
-    
+        getOrderListQuery() . " WHERE o.member_id = ? ORDER BY o.id DESC"
+    );
     $stmt->execute([$member_id]);
-    return $stmt->fetchAll();
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
 }
 
 /**
@@ -188,21 +204,40 @@ function getOrderItems($order_id) {
     return $stmt->fetchAll();
 }
 
-function getOrderById($order_id, $member_id) {
-    $stmt = db()->prepare("
-        SELECT 
-            o.id AS order_id, 
-            o.amount, 
-            o.status AS order_status, 
-            o.created_at, 
-            p.status AS payment_status, 
-            p.method AS payment_method
-        FROM tb_order o
-        LEFT JOIN tb_payment p ON o.id = p.order_id
-        WHERE o.id = ? AND o.member_id = ?
-    ");
-    $stmt->execute([$order_id, $member_id]);
-    return $stmt->fetch(); 
+function getOrderById($order_id, $member_id = null) {
+    // If member_id is null, bypass the check so admins can view the order
+    if ($member_id === null) {
+        $stmt = db()->prepare("
+            SELECT 
+                o.id AS order_id, 
+                o.amount, 
+                o.member_id,
+                o.status AS order_status, 
+                o.created_at, 
+                p.status AS payment_status, 
+                p.method AS payment_method
+            FROM tb_order o
+            LEFT JOIN tb_payment p ON o.id = p.order_id
+            WHERE o.id = ?
+        ");
+        $stmt->execute([$order_id]);
+    } else {
+        $stmt = db()->prepare("
+            SELECT 
+                o.id AS order_id, 
+                o.amount, 
+                o.status AS order_status, 
+                o.created_at, 
+                p.status AS payment_status, 
+                p.method AS payment_method
+            FROM tb_order o
+            LEFT JOIN tb_payment p ON o.id = p.order_id
+            WHERE o.id = ? AND o.member_id = ?
+        ");
+        $stmt->execute([$order_id, $member_id]);
+    }
+    
+    return $stmt->fetch(PDO::FETCH_OBJ); 
 }
 
 function cancelAndRefundOrder($order_id) {
