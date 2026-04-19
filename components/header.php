@@ -42,18 +42,24 @@ $categories = getAllCategories();
             <div class="category-dropdown">
                 <button class="dropbtn">Products <small>▼</small></button>
                 <div class="dropdown-content">
-<?php foreach ($categories as $cat): ?>
-    <?php
-        $catId = is_object($cat) ? $cat->id : $cat['id'];
-        $catName = is_object($cat) ? $cat->name : $cat['name'];
-        
-        $first_prod = getFirstProductByCategory($catId);
-        $target_id = $first_prod ? (is_object($first_prod) ? $first_prod->id : $first_prod['id']) : 1;
-    ?>
-    <a href="/pages/product.php?id=<?= $target_id ?>">
-        <?= htmlspecialchars(ucfirst($catName)) ?>
-    </a>
-<?php endforeach; ?>
+                    <?php foreach ($categories as $cat): ?>
+                        <?php
+                            $catId = is_object($cat) ? $cat->id : $cat['id'];
+                            
+                            // Skip the "uncategorized" category
+                            if ($catId == 0) {
+                                continue;
+                            }
+
+                            $catName = is_object($cat) ? $cat->name : $cat['name'];
+                            
+                            $first_prod = getFirstProductByCategory($catId);
+                            $target_id = $first_prod ? (is_object($first_prod) ? $first_prod->id : $first_prod['id']) : 1;
+                        ?>
+                        <a href="/pages/product.php?id=<?= $target_id ?>">
+                            <?= htmlspecialchars(ucfirst($catName)) ?>
+                        </a>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
