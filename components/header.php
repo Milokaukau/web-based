@@ -19,7 +19,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     }
 }
 
-$categories = getAllCategories() ?: [];
+$categories = getAllCategories() ?: []; // Ensure it's at least an empty array
 ?>
 
 <!DOCTYPE html>
@@ -74,10 +74,12 @@ $categories = getAllCategories() ?: [];
                     <a href="/pages/cart.php" class="cart-link">
                         CART 🛒 <span class="cart-count"><?= $cartCount > 0 ? $cartCount : "" ?></span>
                     </a>
+
                 <?php elseif(isAdmin()): ?>
                     <a href="/pages/admin/dashboard.php">DASHBOARD</a>
                     <span>|</span>
                     <a href="/pages/logout.php">LOGOUT</a>
+
                 <?php else: ?>
                     <a href="/pages/login.php">PROFILE</a>
                     <span>|</span>

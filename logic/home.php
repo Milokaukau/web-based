@@ -7,4 +7,4 @@ $arr = getLatestProduct();
 
 // Fetch slider products dynamically
 $slide_product_1 = getProductById(1); // Pro Max
-$slide_product_2 = getProductById(2); // LiteFlow
+$slide_product_2 = getProductById(18); // Coffee Cup

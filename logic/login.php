@@ -25,7 +25,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $errors['general'] = 'Invalid email or password.';
         }else{
             loginAdmin($user);
-            header("Location: /pages/admin/dashboard.php");
+            header("Location: /pages/admin/admin.php");
             exit;
         }
         }else{
@@ -70,6 +70,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     // if correct, log in and reset locked attempts
                     resetMemberLoginAttempts($userId);
                     loginMember($user);
+
+                    // Remember Me
+                    if (!empty($_POST['remember_me'])) {
+                        setRememberMeCookie($userId);
+                    }
+
                     header("Location: /pages/home.php");
                     exit;
                 }

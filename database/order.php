@@ -90,3 +90,64 @@ function insertOrder($member_id, $amount, $pay_method, $pay_status, $cart, $addr
         throw $e;
     }
 }
+
+function getOrders(): array {
+    $pdo = db();
+    return $pdo->query("
+        SELECT o.id,
+               o.amount,
+               o.status,
+               o.created_at,
+               m.name AS username
+        FROM tb_order o
+        LEFT JOIN tb_member m ON o.member_id = m.id
+        ORDER BY o.id DESC
+    ")->fetchAll(PDO::FETCH_OBJ);
+}
+ 
+// ── Order status breakdown for charts ─────────────────────────────────────
+function getOrderStatusBreakdown(): array {
+    $pdo = db();
+    try {
+        return $pdo->query("
+            SELECT status, COUNT(*) AS total
+            FROM tb_order
+            GROUP BY status
+        ")->fetchAll(PDO::FETCH_OBJ);
+    } catch (PDOException $e) {
+        return [(object)['status' => 'pending', 'total' => 0]];
+    }
+}
+
+function updateOrderStatus(int $id, string $status): void {
+    $stmt = db()->prepare("UPDATE tb_order SET status = ? WHERE id = ?");
+    $stmt->execute([$status, $id]);
+}
+ 
+// ── Monthly revenue (last 12 months, excluding cancelled) ─────────────────
+function getMonthlyRevenue(): array {
+    $pdo = db();
+    try {
+        return $pdo->query("
+            SELECT DATE_FORMAT(created_at, '%b %Y') AS month_label,
+                   DATE_FORMAT(created_at, '%Y-%m') AS month_key,
+                   SUM(amount)                      AS revenue
+            FROM tb_order
+            WHERE status != 'cancelled'
+              AND created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+            GROUP BY month_key, month_label
+            ORDER BY month_key ASC
+        ")->fetchAll(PDO::FETCH_OBJ);
+    } catch (PDOException $e) { /* fall through */ }
+ 
+    // Fallback: 12 months of zeroes
+    $result = [];
+    for ($i = 11; $i >= 0; $i--) {
+        $result[] = (object)[
+            'month_label' => date('M Y', strtotime("-$i months")),
+            'month_key'   => date('Y-m',  strtotime("-$i months")),
+            'revenue'     => 0,
+        ];
+    }
+    return $result;
+}

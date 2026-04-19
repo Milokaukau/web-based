@@ -63,13 +63,13 @@ require $project_root."components/header.php";
                 </div>
                 <div class="slide-content">
                     <p class="slide-tag" style="color:#7a9e7e;">EVERYDAY ESSENTIAL</p>
-                    <h2>Bottle<br>LiteFlow</h2>
-                    <p class="slide-desc">Simple hydration, everyday comfort.<br>Lightweight design for every routine.</p>
-                    <?php if ($slide_product_2): ?>
-                        <a href="/pages/product.php?id=<?= $slide_product_2->id ?>" class="primary-btn-link" style="background:#7a9e7e;">
-                            DISCOVER — RM<?= number_format($slide_product_2->price, 2) ?>
-                        </a>
-                    <?php endif; ?>
+                    <h2>Coffee<br>Cup</h2>
+                    <p class="slide-desc">The perfect companion for your morning brew.<br>Double-walled insulation keeps it hot for hours.</p>
+                <?php if ($slide_product_2): ?>
+                    <a href="/pages/product.php?id=<?= $slide_product_2->id ?>" class="primary-btn-link" style="background:#7a9e7e;">
+                    DISCOVER — RM<?= number_format($slide_product_2->price, 2) ?>
+                    </a>
+                <?php endif; ?>
                 </div>
             </div>
 
