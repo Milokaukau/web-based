@@ -16,11 +16,11 @@ if (empty($_SESSION['cart'])) {
 
 // ─── Collect & sanitise POST fields ──────────────────────────────────────────
 $pay_input = $_POST['pay_method'] ?? '';
-$pay_method = 'credit_card'; // default
+$pay_method = 'card'; // default
 if ($pay_input === 'tng') {
     $pay_method = 'e_wallet';
 } elseif ($pay_input === 'card') {
-    $pay_method = 'credit_card';
+    $pay_method = 'card';
 }
 
 $email      = filter_var($_POST['email']    ?? '', FILTER_SANITIZE_EMAIL);
@@ -48,7 +48,7 @@ $error       = null;
 $order_items = $_SESSION['cart']; // snapshot before clearing
 
 try {
-    $status = ($pay_method === 'credit_card') ? 'success' : 'failed';
+    $status = ($pay_method === 'card') ? 'success' : 'failed';
     $order_id = insertOrder(
         $member_id,
         $total,

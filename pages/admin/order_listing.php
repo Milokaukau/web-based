@@ -98,7 +98,7 @@ $order_status_labels = [
                         <option value="">All Payments</option>
                         <option value="e_wallet" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'e_wallet') ? 'selected' : '' ?>>E-Wallet</option>
                         <option value="online_banking" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'online_banking') ? 'selected' : '' ?>>Online Banking</option>
-                        <option value="credit_card" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'credit_card') ? 'selected' : '' ?>>Credit Card</option>
+                        <option value="card" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'card') ? 'selected' : '' ?>>Card</option>
                     </select>
 
                     <!-- 4. Date Range Filter -->

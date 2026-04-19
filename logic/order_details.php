@@ -61,7 +61,7 @@ $items = getOrderItems($order_id);
 $payment_methods = [
     'e_wallet'       => 'E-Wallet',
     'online_banking' => 'Online Banking',
-    'credit_card'    => 'Credit Card'
+    'card'    => 'Card'
 ];
 
 $order_status_labels = [
