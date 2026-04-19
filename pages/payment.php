@@ -1,7 +1,7 @@
 <?php
 require __DIR__.'/../vendor/autoload.php';
 
-$stripe_secret_key = "sk_test_51TLwrrJ29uQhAS4VbDUHOBhzQ6o4csZjo3zPdGFWRBc4RovsmI9uoE3jVqbhrIDa0hmJFNrH5hKS0vYE73hRzhf200GG6Zna2G";
+$stripe_secret_key = "CHANGE TO YOUR API KEY";
 \Stripe\Stripe::setApiKey($stripe_secret_key);
 
 $project_root = $_SERVER['DOCUMENT_ROOT']."/";
