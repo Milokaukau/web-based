@@ -83,19 +83,12 @@ if (is_post()) {
             $photo = save_photo($f, '../photos');
         }
 
-        $is_active = ((int)$stock <= 0) ? 0 : 1;
-
         update_product(db(), $color_id, $category_id, $name, $description,
                     $weight_g, $height_cm, $base_diameter_cm, $material,
                     $price, $stock, $photo, $id);
 
         temp('info', 'Record updated');
-
-        if ((int)$stock <= 0) {
-            redirect('../pages/admin/admin.php?page=stock');
-        } else {
-            redirect('../pages/admin/admin.php?page=stock');
-        }
+        redirect('../pages/admin/admin.php?page=stock');
     }
 }
 
@@ -108,8 +101,281 @@ $_title = 'Product | Update';
 include '../components/header.php';
 ?>
 
-<div style="display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:2rem 1rem;">
-    <div class="form-card" style="width:100%; max-width:720px;">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.page-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 5%;
+    background: #F7F7F7;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border: 1px solid #E5E7EB;
+    border-radius: 9999px;
+    background: #FFFFFF;
+    color: #9CA3AF;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: border-color 0.2s, color 0.2s;
+}
+.btn-back:hover {
+    border-color: #e08585;
+    color: #e08585;
+}
+
+.form-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 36px 36px 28px;
+    width: 100%;
+    max-width: 720px;
+}
+
+.form-card__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111111;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+.form-card__sub {
+    font-size: 0.82rem;
+    color: #9CA3AF;
+    margin-bottom: 24px;
+}
+.form-card__line {
+    width: 40px;
+    height: 3px;
+    background: #e08585;
+    border-radius: 9999px;
+    margin-bottom: 28px;
+}
+
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.form-table tr {
+    border-bottom: 1px solid #E5E7EB;
+}
+.form-table tr:last-child {
+    border-bottom: none;
+}
+.form-table th {
+    width: 190px;
+    text-align: left;
+    padding: 0.85rem 1rem 0.85rem 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    vertical-align: top;
+    padding-top: 1.1rem;
+    white-space: nowrap;
+}
+.form-table td {
+    padding: 0.65rem 0;
+}
+
+.form-table td input[type="text"],
+.form-table td input[type="number"],
+.form-table td select,
+.form-table td textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #D1D5DB;
+    border-radius: 9px;
+    background: #FFFFFF;
+    color: #111111;
+    font-size: 0.88rem;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    outline: none;
+    appearance: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-table td input:focus,
+.form-table td select:focus,
+.form-table td textarea:focus {
+    border-color: #fecaca;
+    box-shadow: 0 0 0 3px rgba(243,158,158,0.15);
+}
+.form-table td input::placeholder,
+.form-table td textarea::placeholder {
+    color: #9CA3AF;
+}
+.form-table td textarea {
+    resize: vertical;
+    line-height: 1.6;
+}
+.form-table td select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%239CA3AF' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.25rem;
+    cursor: pointer;
+}
+
+.hint {
+    display: block;
+    font-size: 0.72rem;
+    color: #9CA3AF;
+    margin-top: 5px;
+    font-family: 'Inter', sans-serif;
+}
+.err {
+    display: block;
+    font-size: 0.72rem;
+    color: #991B1B;
+    background: #FEE2E2;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 5px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.id-val {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #374151;
+    background: #F7F7F7;
+    padding: 5px 14px;
+    border-radius: 9999px;
+    border: 1px solid #E5E7EB;
+}
+
+.upload-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+}
+#preview {
+    width: 76px;
+    height: 76px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+    background: #F7F7F7;
+}
+.upload-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    border: 1px solid #E5E7EB;
+    border-radius: 9999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    background: #FFFFFF;
+    color: #6B7280;
+    transition: border-color 0.2s, color 0.2s;
+}
+.upload-label:hover {
+    border-color: #e08585;
+    color: #e08585;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #E5E7EB;
+}
+.btn-submit {
+    padding: 10px 28px;
+    border: none;
+    border-radius: 9999px;
+    background: #e08585;
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+}
+.btn-submit:hover  { background: #c97070; }
+.btn-submit:active { transform: scale(0.98); }
+
+.btn-reset {
+    padding: 10px 22px;
+    border: 1px solid #E5E7EB;
+    border-radius: 9999px;
+    background: transparent;
+    color: #9CA3AF;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+.btn-reset:hover { border-color: #e08585; color: #e08585; }
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+.alert-success { background: #DCFCE7; color: #166534; }
+.alert-error   { background: #FEE2E2; color: #991B1B; }
+
+@media (max-width: 600px) {
+    .form-card { padding: 24px 20px 20px; }
+    .form-table th {
+        display: block;
+        width: auto;
+        padding-bottom: 2px;
+        padding-top: 0.75rem;
+    }
+    .form-table tr  { display: block; padding: 0.5rem 0; }
+    .form-table td  { display: block; }
+}
+</style>
+
+<div class="page-wrap">
+    
+    <div class="form-card">
+        <a href="../pages/admin/admin.php?page=stock" class="btn-back">&#8592; Back to Stock</a>
+
+        <div class="form-card__title">Update product</div>
+        <div class="form-card__sub">Edit the fields below and click Submit to save changes.</div>
+        <div class="form-card__line"></div>
+
         <form method="post" enctype="multipart/form-data" novalidate>
             <table class="form-table">
                 <tr>
@@ -203,7 +469,7 @@ include '../components/header.php';
                     <td>
                         <div class="upload-wrap">
                             <img src="<?= photo_src($p->photo) ?>"
-                                    alt="Product photo" id="preview">
+                                 alt="Product photo" id="preview">
                             <label class="upload-label">
                                 &#128247; Choose image
                                 <?= html_file('photo', 'image/*', 'hidden') ?>
@@ -216,10 +482,11 @@ include '../components/header.php';
             </table>
 
             <div class="form-actions">
-                <button class="btn-submit" type="submit">Submit</button>
                 <button class="btn-reset" type="reset">Reset</button>
+                <button class="btn-submit" type="submit">Submit</button>
             </div>
         </form>
+
     </div>
 </div>
 
@@ -238,7 +505,7 @@ function initPhotoPreview() {
     const resetBtn = document.querySelector('button[type="reset"]');
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
-            preview.src = '';
+            preview.src = '<?= photo_src($p->photo ?? '') ?>';
         });
     }
 }
