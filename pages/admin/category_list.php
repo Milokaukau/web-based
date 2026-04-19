@@ -57,6 +57,20 @@ if (!isAdmin()) {
                 <a href="/pages/admin/category_add.php" class="btn-primary" style="margin-bottom: 20px;">+ Add New Category</a>
             </div>
 
+            <!-- ── Search & Filter Toolbar ────────────────────────────────────────── -->
+            <form method="GET" action="">
+                <div class="toolbar" style="margin-bottom: 20px;">
+                    <select name="status" class="filter-sel" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        <option value="1" <?= (isset($_GET['status']) && $_GET['status'] === '1') ? 'selected' : '' ?>>Active</option>
+                        <option value="0" <?= (isset($_GET['status']) && $_GET['status'] === '0') ? 'selected' : '' ?>>Inactive</option>
+                    </select>
+                    <?php if (isset($_GET['status']) && $_GET['status'] !== ''): ?>
+                        <a href="category_list.php" class="btn-outline">Clear</a>
+                    <?php endif; ?>
+                </div>
+            </form>
+
             <form id="batchForm" action="" method="POST">
                 <input type="hidden" name="action" id="batchActionType" value="">
 

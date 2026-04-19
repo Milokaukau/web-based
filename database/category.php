@@ -40,14 +40,30 @@ function getCategoryById($id) {
  * Fetches all categories along with the count of products in each category.
  * Used for the Admin Category List.
  */
-function getAllCategoriesWithCount() {
-    $stmt = db()->query("
+function getAllCategoriesWithCount($filters = []) {
+    $baseQuery = "
         SELECT c.*, COUNT(p.id) AS product_count 
         FROM tb_category c 
         LEFT JOIN tb_product p ON c.id = p.category_id 
-        GROUP BY c.id 
-        ORDER BY is_active DESC, id ASC
-    ");
+    ";
+    
+    $whereClauses = [];
+    $params = [];
+    
+    // Check if an exact status was selected (0 or 1)
+    if (isset($filters['status']) && $filters['status'] !== '') {
+        $whereClauses[] = "c.is_active = ?";
+        $params[] = $filters['status'];
+    }
+    
+    if (!empty($whereClauses)) {
+        $baseQuery .= " WHERE " . implode(" AND ", $whereClauses);
+    }
+    
+    $baseQuery .= " GROUP BY c.id ORDER BY c.is_active DESC, c.id ASC";
+    
+    $stmt = db()->prepare($baseQuery);
+    $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 

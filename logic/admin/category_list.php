@@ -61,5 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 // -------------------------------------------------------------
 // 2. Fetch Data for the UI (GET) 
 // -------------------------------------------------------------
-$admin_categories = getAllCategoriesWithCount(); 
+$filters = [
+    'status' => $_GET['status'] ?? ''
+];
+$admin_categories = getAllCategoriesWithCount($filters);
 ?>
