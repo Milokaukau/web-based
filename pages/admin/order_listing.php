@@ -1,7 +1,7 @@
 <?php
 $project_root = $_SERVER['DOCUMENT_ROOT']."/";
 require $project_root."config.php";
-require $project_root."logic/order_listing.php";
+require $project_root."logic/admin/order_listing.php";
 
 $_title = 'Order Management';
 
@@ -57,9 +57,9 @@ include $project_root.'components/header.php';
                             
                             <td>
                                 <select name="status" class="status-select" form="update-form-<?= $data->order_id ?>">
-                                    <option value="processing" <?= ($data->status === 'processing') ? 'selected' : '' ?>>Processing</option>
-                                    <option value="success" <?= ($data->status === 'success') ? 'selected' : '' ?>>Success</option>
-                                    <option value="failed" <?= ($data->status === 'failed') ? 'selected' : '' ?>>Failed</option>
+                                    <option value="processing" <?= ($data->payment_status === 'processing') ? 'selected' : '' ?>>Processing</option>
+                                    <option value="success" <?= ($data->payment_status === 'success') ? 'selected' : '' ?>>Success</option>
+                                    <option value="failed" <?= ($data->payment_status === 'failed') ? 'selected' : '' ?>>Failed</option>
                                 </select>
                             </td>
 
