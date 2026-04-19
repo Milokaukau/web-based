@@ -393,7 +393,11 @@ $highAttempts = getHighAttempts();
                 ⚠️ <strong><?= count($lowStockAlert) ?> product(s)</strong> are low in stock (≤10 units):
                 <?php foreach ($lowStockAlert as $lp): ?>
                     <span style="margin-left:8px;">
-                        <strong><?= htmlspecialchars($lp->name) ?></strong> (<?= $lp->stock ?> left)
+                        <strong><?= htmlspecialchars($lp->name) ?></strong>
+                        <?php if (!empty($lp->color_name)): ?>
+                            · <?= htmlspecialchars($lp->color_name) ?>
+                        <?php endif; ?>
+                        (<?= $lp->stock ?> left)
                     </span>
                 <?php endforeach; ?>
             </div>
@@ -478,16 +482,21 @@ $highAttempts = getHighAttempts();
             <div class="line"></div>
         </div>
 
-        <?php if (!empty($lowStockAlert)): ?>
-        <div class="alert alert-error" style="margin-bottom:20px;">
-            ⚠️ <strong><?= count($lowStockAlert) ?> product(s)</strong> are low in stock (≤10 units):
-            <?php foreach ($lowStockAlert as $lp): ?>
-                <span style="margin-left:8px;">
-                    <strong><?= htmlspecialchars($lp->name) ?></strong> (<?= $lp->stock ?> left)
-                </span>
-            <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
+            <!-- ── Low-Stock Alert Banner ───────────────────────────────── -->
+            <?php if (!empty($lowStockAlert)): ?>
+            <div class="alert alert-error" style="margin-bottom:20px;">
+                ⚠️ <strong><?= count($lowStockAlert) ?> product(s)</strong> are low in stock (≤10 units):
+                <?php foreach ($lowStockAlert as $lp): ?>
+                    <span style="margin-left:8px;">
+                        <strong><?= htmlspecialchars($lp->name) ?></strong>
+                        <?php if (!empty($lp->color_name)): ?>
+                            · <?= htmlspecialchars($lp->color_name) ?>
+                        <?php endif; ?>
+                        (<?= $lp->stock ?> left)
+                    </span>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
 
         <!-- Stats cards -->
         <div class="stats-grid" style="margin-bottom:20px;">
