@@ -54,6 +54,31 @@ function getOrderListByMemberId($member_id){
     return $stmt->fetchAll(PDO::FETCH_OBJ);
 }
 
+function getOrderListByMember($member_id){
+    $stmt = db()->prepare("
+        SELECT 
+            o.id AS order_id,
+            o.created_at,
+            p.id AS product_id,
+            p.name AS product_name,
+            p.price AS unit_price,
+            op.quantity,
+            o.amount,
+            m.name AS member_name,
+            pm.status
+        FROM tb_order o
+        JOIN tb_member m ON m.id = o.member_id
+        JOIN tb_order_product op ON op.order_id = o.id
+        JOIN tb_product p ON p.id = op.product_id
+        JOIN tb_payment pm ON pm.order_id = o.id
+        WHERE o.member_id = ? 
+        ORDER BY o.created_at DESC
+    ");
+    
+    $stmt->execute([$member_id]);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
 /**
  * Insert a new order with payment info and cart items.
  */
@@ -299,4 +324,3 @@ function getFilteredOrderList($filters = []) {
     $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_OBJ);
 }
-

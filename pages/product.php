@@ -14,7 +14,7 @@ require $project_root."components/header.php";
         
         <div class="product-gallery">
             <div class="main-image">
-                <img src="<?= $arr->photo ? '../' . $arr->photo : '../assets/placeholder.png' ?>" 
+                <img src="<?= $arr->photo ? '/images/' . $arr->photo : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($arr->name) ?>" 
                      alt="<?= htmlspecialchars($arr->name) ?>" id="mainProductImg">
             </div>
         </div>
@@ -79,8 +79,8 @@ require $project_root."components/header.php";
                         data-photo="<?= $arr->photo ?? '' ?>"
                         data-stock="<?= $arr->stock ?>"
                         onclick="addToCart(this)">
-                        <span>ADD TO BAG</span>
-                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" class="bag-icon">
+                        <span>ADD TO CART</span>
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" class="cart-icon">
                             <path stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M16 10V6a4 4 0 0 0-8 0v4m-2 0h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"></path>
                         </svg>
                     </button>
@@ -118,12 +118,15 @@ require $project_root."components/header.php";
             <h3 class="detail-title">SHIPPING & RETURNS</h3>
             <div class="detail-content">
                 <p>Orders are processed within 1-2 business days. <strong>All products include free standard shipping!</strong></p>
-                <p>If you aren’t perfectly satisfied with your NOAIR product, return it within 30 days in unused condition for a full refund.</p>
+                <p>If you aren't perfectly satisfied with your NOAIR product, return it within 30 days in unused condition for a full refund.</p>
             </div>
         </div>
     </div>
 </main>
 
+<script>
+    const isLoggedIn = <?= isMember() ? 'true' : 'false' ?>;
+</script>
 <script src="../js/product.js"></script>
 
 <?php 
