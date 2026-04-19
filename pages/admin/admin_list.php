@@ -66,6 +66,29 @@ requireSuperAdmin();
                     <a href="/pages/admin/admin_add.php" class="btn-primary" style="margin-bottom: 20px;">+ Add New Admin</a>
                 </div>
 
+            <!-- ── Search & Filter Toolbar ────────────────────────────────────────── -->
+                <form method="GET" action="">
+                    <div class="toolbar" style="margin-bottom: 20px;">
+                        <div class="search-wrap">
+                            <span class="search-icon">&#128269;</span>
+                            <input type="text" name="search_name" placeholder="Search name..."
+                                   value="<?= htmlspecialchars($_GET['search_name'] ?? '') ?>"
+                                   style="font-family: inherit; font-size: 0.9rem;">
+                        </div>
+                        <select name="status" class="filter-sel" onchange="this.form.submit()">
+                            <option value="">All Account Statuses</option>
+                            <option value="1" <?= (isset($_GET['status']) && $_GET['status'] === '1') ? 'selected' : '' ?>>Active</option>
+                            <option value="0" <?= (isset($_GET['status']) && $_GET['status'] === '0') ? 'selected' : '' ?>>Inactive</option>
+                        </select>
+                        <button type="submit" class="btn-primary">Search</button>
+                        <?php if (!empty($_GET['search_name']) || !empty($_GET['status'])): ?>
+                            <a href="admin_list.php" class="btn-outline">Clear</a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+
+
+
             <!-- Table Container -->
                 <div class="table-wrap" style="overflow: visible;">
                     <?php if (empty($admins)): ?>

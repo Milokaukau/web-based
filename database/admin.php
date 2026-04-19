@@ -82,3 +82,33 @@ function setAdminActiveStatus($admin_id, $is_active) {
     $stmt = db()->prepare("UPDATE tb_admin SET is_active = ? WHERE id = ?");
     return $stmt->execute([$is_active, $admin_id]);
 }
+
+function getFilteredAdmins($filters = []) {
+    $baseQuery = "SELECT id, name, email, photo, is_superadmin, is_active FROM tb_admin";
+    $whereClauses = [];
+    $params = [];
+    
+    // Check if a name search term was provided
+    if (!empty($filters['search_name'])) {
+        $whereClauses[] = "name LIKE ?";
+        $params[] = '%' . $filters['search_name'] . '%';
+    }
+    
+    // Check if an exact status block was selected (0 or 1)
+    // We strictly check against "" (empty string) because "0" evaluates to empty/falsy in PHP
+    if (isset($filters['status']) && $filters['status'] !== '') {
+        $whereClauses[] = "is_active = ?";
+        $params[] = $filters['status'];
+    }
+    
+    // Combine the where clauses if any exist
+    if (!empty($whereClauses)) {
+        $baseQuery .= " WHERE " . implode(" AND ", $whereClauses);
+    }
+    
+    $baseQuery .= " ORDER BY id ASC";
+    
+    $stmt = db()->prepare($baseQuery);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}

@@ -2,6 +2,12 @@
 // logic/admin/admin_list.php
 requireSuperAdmin();
 
-// Just fetch the list of admins
-$admins = getAllAdmins();
+// Capture GET filters
+$filters = [
+    'search_name' => $_GET['search_name'] ?? '',
+    'status'      => $_GET['status'] ?? ''
+];
+
+// Fetch the filtered list of admins
+$admins = getFilteredAdmins($filters);
 ?>
