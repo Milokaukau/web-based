@@ -79,7 +79,7 @@ if (isset($_POST['update_password'])){
 
 // handle photo upload
 if (isset($_POST['update_photo'])){
-    $upload_dir   = $project_root . 'uploads/members/';
+    $upload_dir   = $project_root . 'images/members/';
     $webcam_data  = trim($_POST['webcam_photo'] ?? '');
     $has_file     = !empty($_FILES['photo']['name']);
 

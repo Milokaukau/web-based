@@ -11,8 +11,8 @@ $_title = 'Your Profile';
 include $project_root . "components/header.php";
 
 $photo_url = !empty($member->photo)
-    ? '/uploads/members/' . htmlspecialchars($member->photo)
-    : '/images/default_avatar.png';
+    ? '/images/members/' . htmlspecialchars($member->photo)
+    : 'https://ui-avatars.com/api/?name=' . urlencode($member->name) . '&background=F39E9E&color=fff';
 ?>
 
 <div class="profile-container">

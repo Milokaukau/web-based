@@ -1,99 +1,134 @@
 <?php
-$isLoggedIn = isset($_SESSION['user_id']);
-$user_id = $_SESSION['user_id'] ?? null;
+require_once $_SERVER['DOCUMENT_ROOT'] . "/database/cart.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/database/product.php";
 
-// Handle cart actions
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [];
+}
+
+$isLoggedIn = isset($_SESSION['role']) && $_SESSION['role'] === 'member';
+$user_id    = $_SESSION['member_id'] ?? null;
+
+// ── Handle Actions ────────────────────────────────────────────────────────────
 if (isset($_GET['action']) && isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $color = $_GET['color'] ?? 1;
+
+    // Require login
+    if (!$isLoggedIn) {
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        header("Location: /pages/login.php");
+        exit;
+    }
+
+    $id       = (int)$_GET['id'];
+    $color    = isset($_GET['color']) ? (int)$_GET['color'] : 1;
     $cart_key = $id . "_" . $color;
 
-    if ($_GET['action'] == 'add') {
-        $name  = $_GET['name']  ?? '';
-        $price = $_GET['price'] ?? 0;
-        $photo = $_GET['photo'] ?? '';
-        $qty   = isset($_GET['qty']) ? intval($_GET['qty']) : 1;
+    // ── ADD ──────────────────────────────────────────────────────────────────
+    if ($_GET['action'] === 'add') {
+        $name  = urldecode($_GET['name']  ?? '');
+        $price = (float)($_GET['price']   ?? 0);
+        $photo = urldecode($_GET['photo'] ?? '');
+        $qty   = max(1, (int)($_GET['qty'] ?? 1));
 
+        // Update session
         if (isset($_SESSION['cart'][$cart_key])) {
             $_SESSION['cart'][$cart_key]['qty'] += $qty;
         } else {
             $_SESSION['cart'][$cart_key] = [
-                "id"    => $id,
-                "name"  => $name,
-                "price" => $price,
-                "qty"   => $qty,
-                "photo" => $photo,
-                "color" => $color
+                'id'    => $id,
+                'name'  => $name,
+                'price' => $price,
+                'qty'   => $qty,
+                'photo' => $photo,
+                'color' => $color,
             ];
         }
 
-        // --- DB Sync (Add/Update) ---
-        if ($isLoggedIn) {
-            $check = db()->prepare("SELECT id FROM tb_cart WHERE member_id = ? AND product_id = ?");
-            $check->execute([$user_id, $id]);
-            $existing = $check->fetch();
-            
-            if ($existing) {
-                $upd = db()->prepare("UPDATE tb_cart SET quantity = quantity + ? WHERE id = ?");
-                $upd->execute([$qty, $existing->id]);
-            } else {
-                $ins = db()->prepare("INSERT INTO tb_cart (member_id, product_id, quantity) VALUES (?, ?, ?)");
-                $ins->execute([$user_id, $id, $qty]);
-            }
+        // Sync to DB — INSERT or UPDATE
+        $existing = cartItemExists($user_id, $id);
+        if ($existing) {
+            incrementCartQuantity($user_id, $id, $qty); // UPDATE quantity + qty
+        } else {
+            insertCartItem($user_id, $id, $qty);        // INSERT new row
         }
     }
 
-    if (isset($_SESSION['cart'][$cart_key])) {
-        if ($_GET['action'] == 'plus') {
-            $_SESSION['cart'][$cart_key]['qty']++;
-            if ($isLoggedIn) {
-                db()->prepare("UPDATE tb_cart SET quantity = quantity + 1 WHERE member_id = ? AND product_id = ?")->execute([$user_id, $id]);
-            }
-        } elseif ($_GET['action'] == 'minus' && $_SESSION['cart'][$cart_key]['qty'] > 1) {
-            $_SESSION['cart'][$cart_key]['qty']--;
-            if ($isLoggedIn) {
-                db()->prepare("UPDATE tb_cart SET quantity = quantity - 1 WHERE member_id = ? AND product_id = ?")->execute([$user_id, $id]);
-            }
-        } elseif ($_GET['action'] == 'remove') {
-            unset($_SESSION['cart'][$cart_key]);
-            if ($isLoggedIn) {
-                db()->prepare("DELETE FROM tb_cart WHERE member_id = ? AND product_id = ?")->execute([$user_id, $id]);
-            }
+    // ── PLUS ─────────────────────────────────────────────────────────────────
+    elseif ($_GET['action'] === 'plus' && isset($_SESSION['cart'][$cart_key])) {
+        $_SESSION['cart'][$cart_key]['qty']++;
+
+        // UPDATE quantity + 1 in DB
+        $existing = cartItemExists($user_id, $id);
+        if ($existing) {
+            incrementCartQuantity($user_id, $id, 1);
+        } else {
+            // Safety: row missing in DB, re-insert
+            insertCartItem($user_id, $id, $_SESSION['cart'][$cart_key]['qty']);
         }
+    }
+
+    // ── MINUS ────────────────────────────────────────────────────────────────
+    elseif ($_GET['action'] === 'minus' && isset($_SESSION['cart'][$cart_key])) {
+        if ($_SESSION['cart'][$cart_key]['qty'] > 1) {
+            $_SESSION['cart'][$cart_key]['qty']--;
+
+            // UPDATE quantity - 1 in DB
+            decrementCartQuantity($user_id, $id, 1);
+        }
+        // If qty would hit 0, do nothing (let user press Remove instead)
+    }
+
+    // ── REMOVE ───────────────────────────────────────────────────────────────
+    elseif ($_GET['action'] === 'remove' && isset($_SESSION['cart'][$cart_key])) {
+        unset($_SESSION['cart'][$cart_key]);
+
+        // DELETE row from DB
+        deleteCartItem($user_id, $id);
     }
 
     header("Location: cart.php");
     exit;
 }
 
-// --- DB Sync (Initial Load) ---
+// ── DB Sync on Initial Page Load (runs once per session) ─────────────────────
 if ($isLoggedIn && empty($_SESSION['cart_synced'])) {
-    require_once $_SERVER['DOCUMENT_ROOT'] . "/database/product.php";
-    $stmt = db()->prepare("SELECT * FROM tb_cart WHERE member_id = ?");
-    $stmt->execute([$user_id]);
-    $db_items = $stmt->fetchAll();
-    
+    $db_items = getCartByMemberId($user_id);
+
     foreach ($db_items as $item) {
         $prod = getProductById($item->product_id);
-        $ckey = $item->product_id . "_" . ($prod ? $prod->color_id : 1);
+        if (!$prod) continue;
+
+        $ckey = $item->product_id . "_" . $prod->color_id;
+
         if (!isset($_SESSION['cart'][$ckey])) {
-            if ($prod) {
-                $_SESSION['cart'][$ckey] = [
-                    "id"    => $item->product_id,
-                    "name"  => $prod->name,
-                    "price" => $prod->price,
-                    "qty"   => $item->quantity,
-                    "photo" => $prod->photo,
-                    "color" => $prod->color_id ?? 1
-                ];
-            }
+            // Load from DB into session
+            $_SESSION['cart'][$ckey] = [
+                'id'    => $item->product_id,
+                'name'  => $prod->name,
+                'price' => $prod->price,
+                'qty'   => $item->quantity,
+                'photo' => $prod->photo,
+                'color' => $prod->color_id,
+            ];
+        } else {
+            // Session already has it — make sure DB quantity matches session
+            updateCartQuantity($user_id, $item->product_id, $_SESSION['cart'][$ckey]['qty']);
         }
     }
+
+    // Push any session items not yet in DB
+    foreach ($_SESSION['cart'] as $cart_key => $cart_item) {
+        $existing = cartItemExists($user_id, $cart_item['id']);
+        if (!$existing) {
+            insertCartItem($user_id, $cart_item['id'], $cart_item['qty']);
+        }
+    }
+
     $_SESSION['cart_synced'] = true;
 }
 
-// Variables for cart view
-$home_path  = "home.php"; 
+// ── View Variables ────────────────────────────────────────────────────────────
+$home_path  = "home.php";
 $subtotal   = 0;
 $item_count = 0;
 $shipping   = 0.00;

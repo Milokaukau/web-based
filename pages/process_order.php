@@ -10,7 +10,6 @@ require $project_root . "components/header.php";
 ?>
 
 <link rel="stylesheet" href="../css/style.css">
-<link rel="stylesheet" href="../css/process_order.css">
 
 <?php if ($error): ?>
 <!-- ══ ERROR STATE ══════════════════════════════════════════════════════════ -->
