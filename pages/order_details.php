@@ -52,7 +52,7 @@ include $project_root.'components/header.php';
         <?php foreach ($items as $item): ?>
             <div class="details-item-row">
                 <div class="item-thumbnail">
-                    <img src="/images/tmp.jpg" alt="Product Image">
+                    <img src="/images/<?= htmlspecialchars($item->photo) ?>" alt="Product Image">
                 </div>
                 
                 <div class="details-item-center">

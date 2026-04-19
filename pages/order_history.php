@@ -3,7 +3,7 @@ $project_root = $_SERVER['DOCUMENT_ROOT']."/";
 require $project_root."config.php";
 require $project_root."logic/order_history.php";
 
-$_title = 'My Order History';
+$_title = 'My Orders';
 include $project_root.'components/header.php';
 // echo "<pre>";
 // var_dump($orders);
@@ -11,7 +11,7 @@ include $project_root.'components/header.php';
 ?>
 
 <div class="container history-container">
-    <h1 class="history-title">Order History</h1>
+    <h1 class="history-title">My Orders</h1>
     <p class="orders-subtitle">Total Order(s) Placed: <?= count($orders) ?></p>
 
     <?php if (empty($orders)): ?>
@@ -47,7 +47,7 @@ include $project_root.'components/header.php';
                     <div class="order-body">
                         
                         <div class="item-thumbnail">
-                            <img src="/images/tmp.jpg" alt="Product Image Placeholder">
+                            <img src="/images/<?= htmlspecialchars($item->photo) ?>" alt="Product Image Placeholder">
                         </div>
 
                         <div class="item-center">
@@ -69,7 +69,7 @@ include $project_root.'components/header.php';
                 <?php endforeach; ?>
 
                 <div class="order-footer" style="padding: 15px 20px; border-top: 1px solid var(--border-ultra-light, #eee); display: flex; justify-content: flex-end; background-color: #fafafa; border-radius: 0 0 8px 8px;">
-                    <a href="order_details.php?id=<?= $order->order_id ?>" class="btn btn-primary" style="padding: 8px 16px;">
+                    <a href="order_details.php?id=<?= $order->order_id ?>" class="btn btn-primary" style="padding: 8px 16px; width: max-content;">
                         View order details
                     </a>
                 </div>

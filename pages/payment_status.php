@@ -138,7 +138,7 @@ require_once $project_root."components/header.php";
 
             <div class="status-actions">
                 <a href="/index.php" class="btn-primary">Continue Shopping</a>
-                <a href="/pages/orders.php" class="btn-secondary">View My Orders</a>
+                <a href="/pages/order_history.php" class="btn-secondary">View My Orders</a>
             </div>
 
             <?php else: ?>
