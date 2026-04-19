@@ -123,7 +123,7 @@ function requireAdmin() {
 // photo upload
 function uploadPhoto($file, $upload_dir, &$errors) {
     $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    $max_size      = 2 * 1024 * 1024; //2mb
+    $max_size      = 2 * 1024 * 1024; // 2mb
 
     if ($file['error'] !== UPLOAD_ERR_OK) {
         $errors[] = 'Photo upload failed. Please try again.';

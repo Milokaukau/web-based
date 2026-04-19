@@ -11,5 +11,5 @@ if (is_get()) {
     $stm->execute([$id]);
 
     temp('info', 'Record deleted');
-    redirect('../pages/product_maintenance.php');
+    redirect('../pages/admin/admin.php?page=stock');
 }
