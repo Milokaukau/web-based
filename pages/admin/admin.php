@@ -401,7 +401,11 @@ $highAttempts = getHighAttempts();
                 ⚠️ <strong><?= count($lowStockAlert) ?> product(s)</strong> are low in stock (≤10 units):
                 <?php foreach ($lowStockAlert as $lp): ?>
                     <span style="margin-left:8px;">
-                        <strong><?= htmlspecialchars($lp->name) ?></strong> (<?= $lp->stock ?> left)
+                        <strong><?= htmlspecialchars($lp->name) ?></strong>
+                        <?php if (!empty($lp->color_name)): ?>
+                            · <?= htmlspecialchars($lp->color_name) ?>
+                        <?php endif; ?>
+                        (<?= $lp->stock ?> left)
                     </span>
                 <?php endforeach; ?>
             </div>
@@ -413,9 +417,9 @@ $highAttempts = getHighAttempts();
             <?php else: ?>
             <div class="stock-grid">
                 <?php foreach ($products as $p):
-                    $stockStatus = $p->stock == 0 ? 'invalid' : ($p->stock < 10 ? 'locked' : 'valid');
-                    $stockLabel  = $p->stock == 0 ? 'Out of Stock' : ($p->stock < 10 ? 'Low Stock' : 'In Stock');
-                    $stockClass  = $p->stock == 0 ? 'stock-danger' : ($p->stock < 10 ? 'stock-warn' : 'stock-ok');
+                    $stockStatus = $p->stock == 0 ? 'invalid' : ($p->stock <= 10 ? 'locked' : 'valid');
+                    $stockLabel  = $p->stock == 0 ? 'Out of Stock' : ($p->stock <= 10 ? 'Low Stock' : 'In Stock');
+                    $stockClass  = $p->stock == 0 ? 'stock-danger' : ($p->stock <= 10 ? 'stock-warn' : 'stock-ok');
                 ?>
                 <div class="stock-card">
                     <div class="stock-img-wrapper <?= $stockClass ?>">
