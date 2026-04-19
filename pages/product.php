@@ -14,7 +14,7 @@ require $project_root."components/header.php";
         
         <div class="product-gallery">
             <div class="main-image">
-                <img src="<?= $arr->photo ? '../' . $arr->photo : '../assets/placeholder.png' ?>" 
+                <img src="<?= $arr->photo ? '/uploads/' . $arr->photo : '/assets/placeholder.png' ?>" 
                      alt="<?= htmlspecialchars($arr->name) ?>" id="mainProductImg">
             </div>
         </div>
@@ -118,7 +118,7 @@ require $project_root."components/header.php";
             <h3 class="detail-title">SHIPPING & RETURNS</h3>
             <div class="detail-content">
                 <p>Orders are processed within 1-2 business days. <strong>All products include free standard shipping!</strong></p>
-                <p>If you aren’t perfectly satisfied with your NOAIR product, return it within 30 days in unused condition for a full refund.</p>
+                <p>If you aren't perfectly satisfied with your NOAIR product, return it within 30 days in unused condition for a full refund.</p>
             </div>
         </div>
     </div>

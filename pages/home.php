@@ -40,7 +40,11 @@ require $project_root."components/header.php";
                     <p class="slide-tag" style="color:#5a8aad;">PREMIUM SERIES</p>
                     <h2>Bottle<br>Pro Max</h2>
                     <p class="slide-desc">Ultimate hydration, elevated.<br>Built for those who demand more.</p>
-                    <a href="/pages/product.php?id=1" class="primary-btn-link" style="background:#5a8aad;">DISCOVER — RM24.90</a>
+                    <?php if ($slide_product_1): ?>
+                        <a href="/pages/product.php?id=<?= $slide_product_1->id ?>" class="primary-btn-link" style="background:#5a8aad;">
+                            DISCOVER — RM<?= number_format($slide_product_1->price, 2) ?>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -61,7 +65,11 @@ require $project_root."components/header.php";
                     <p class="slide-tag" style="color:#7a9e7e;">EVERYDAY ESSENTIAL</p>
                     <h2>Bottle<br>LiteFlow</h2>
                     <p class="slide-desc">Simple hydration, everyday comfort.<br>Lightweight design for every routine.</p>
-                    <a href="/pages/product.php?id=2" class="primary-btn-link" style="background:#7a9e7e;">DISCOVER — RM15.90</a>
+                    <?php if ($slide_product_2): ?>
+                        <a href="/pages/product.php?id=<?= $slide_product_2->id ?>" class="primary-btn-link" style="background:#7a9e7e;">
+                            DISCOVER — RM<?= number_format($slide_product_2->price, 2) ?>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -98,7 +106,7 @@ require $project_root."components/header.php";
                                         <span class="product-tag tag-new">NEW</span>
                                     <?php endif; ?>
                                 </div>
-                                <img src="<?= !empty($row->photo) ? '../' . htmlspecialchars($row->photo) : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($row->name) ?>"
+                                <img src="<?= !empty($row->photo) ? '/uploads/' . htmlspecialchars($row->photo) : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($row->name) ?>"
                                      alt="<?= htmlspecialchars($row->name) ?>">
                             </div>
                             <div class="product-info-row">

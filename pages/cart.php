@@ -56,7 +56,9 @@ require $project_root."components/header.php";
                         <!-- Column 1: Product -->
                         <div style="flex: 2; display: flex; align-items: center; justify-content: flex-start; gap: 25px;">
                             <div style="width: 80px; height: 100px; display: flex; align-items: center; justify-content: center;">
-                                <img src="../<?= htmlspecialchars($item['photo'] ?? 'assets/placeholder.jpg') ?>" alt="Product" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                <a href="product.php?id=<?= $real_id ?>">
+                                    <img src="/uploads/<?= htmlspecialchars($item['photo'] ?? 'placeholder.jpg') ?>" alt="Product" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                </a>
                             </div>
                             <div style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">
                                 <div style="font-size: 17px; font-weight: 500; color: var(--text-dark, #333);"><?= htmlspecialchars($item['name']) ?></div>
@@ -107,8 +109,6 @@ require $project_root."components/header.php";
                         <span>RM <?= number_format($total, 2) ?></span>
                     </div>
                 </div>
-
-
 
                 <a href="payment.php" class="checkout-main-btn" style="display: block; text-align: center; text-decoration: none;">CHECKOUT</a>
             </div>

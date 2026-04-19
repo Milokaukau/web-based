@@ -28,7 +28,7 @@ require $project_root . "components/header.php";
             <?php foreach($wishlistProducts as $p): ?>
                 <div class="w-card">
                     <a href="product.php?id=<?= $p->id ?>" class="w-card-img-box">
-                        <img src="<?= $p->photo ? '../' . $p->photo : '../assets/placeholder.png' ?>" alt="<?= htmlspecialchars($p->name) ?>">
+                        <img src="<?= $p->photo ? '/uploads/' . $p->photo : '/assets/placeholder.png' ?>" alt="<?= htmlspecialchars($p->name) ?>">
                     </a>
                     
                     <div class="w-card-content">

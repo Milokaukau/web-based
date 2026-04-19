@@ -45,7 +45,7 @@ require $project_root . "components/header.php";
                 <a href="product.php?id=<?= $item->id ?>" class="search-product-card">
 
                     <?php if (!empty($item->photo)): ?>
-                        <img src="../<?= htmlspecialchars($item->photo) ?>"
+                        <img src="/uploads/<?= htmlspecialchars($item->photo) ?>"
                              alt="<?= htmlspecialchars($item->name) ?>"
                              class="card-img">
                     <?php else: ?>
