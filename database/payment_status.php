@@ -29,6 +29,18 @@ function processSuccessfulPayment($member_id, $amount_total, $pm, $cart) {
         $postcode
     );
 
+    if ($new_order_id && !empty($cart)) {
+        $db = db();
+        foreach ($cart as $item) {
+        $product_id = $item['id'] ?? null;
+        $quantity   = (int)($item['qty'] ?? 1); 
+            if ($product_id && $quantity > 0) {
+                $db->prepare("UPDATE tb_product SET stock = stock - ? WHERE id = ? AND stock >= ?")
+                ->execute([$quantity, $product_id, $quantity]);
+            }
+        }
+    }
+
     // Clear cart from db since it is now a confirmed order
     if ($member_id) {
         $db = db();

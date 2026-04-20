@@ -186,12 +186,24 @@ function getMonthlyRevenue(): array {
 }
 
 function updateOrderStatus($order_id, $status) {
-    $stmt = db()->prepare("
-        UPDATE tb_order 
-        SET status = ? 
-        WHERE id = ?
-    ");
-    $stmt->execute([$status, $order_id]); 
+    $db = db();
+
+    $prev = $db->prepare("SELECT status FROM tb_order WHERE id = ?");
+    $prev->execute([$order_id]);
+    $old_status = $prev->fetchColumn();
+
+    $stmt = $db->prepare("UPDATE tb_order SET status = ? WHERE id = ?");
+    $stmt->execute([$status, $order_id]);
+
+    if ($old_status === 'cancelled') {
+        $stmtStock = $db->prepare("
+            UPDATE tb_product p
+            JOIN tb_order_product op ON p.id = op.product_id
+            SET p.stock = p.stock - op.quantity
+            WHERE op.order_id = ?
+        ");
+        $stmtStock->execute([$order_id]);
+    }
 }
 
 function getOrdersByMember($member_id) {
