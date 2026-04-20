@@ -59,16 +59,14 @@ include $project_root.'components/header.php';
                             </div>
                         </div>
 
-                        <!-- <div class="item-actions">
-                            <button type="button" class="btn btn-buy-again" style="background-color: transparent; color: var(--text-dark, #333); border: 1px solid #ccc; padding: 8px 16px;">
-                                Buy it again
-                            </button>
-                        </div> -->
+                        <div class="item-actions" style="margin-left: auto; display: flex; align-items: center; font-weight: 600; color: var(--text-dark, #333); font-size: 1.1rem;">
+                            $<?= number_format((float)$item->purchase_price * (int)$item->quantity, 2) ?>
+                        </div>
 
                     </div>
                 <?php endforeach; ?>
 
-                <div class="order-footer" style="padding: 15px 20px; border-top: 1px solid var(--border-ultra-light, #eee); display: flex; justify-content: flex-end; background-color: #fafafa; border-radius: 0 0 8px 8px;">
+                <div class="order-footer" style="padding: 15px 20px; border-top: 1px solid var(--border-ultra-light, #eee); display: flex; justify-content: flex-end; border-radius: 0 0 8px 8px;">
                     <a href="order_details.php?id=<?= $order->order_id ?>" class="btn btn-primary" style="padding: 8px 16px; width: max-content;">
                         View order details
                     </a>

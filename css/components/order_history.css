@@ -68,7 +68,7 @@
 .order-body {
   padding: 25px 30px;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 30px;
   border-bottom: 1px solid var(--border-light);
 }
@@ -90,7 +90,7 @@
 }
 
 .item-thumbnail img {
-  width: 70%;
+  width: 100%;
   height: auto;
   object-fit: contain;
 }
