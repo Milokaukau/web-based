@@ -17,8 +17,14 @@ $order_status_labels = [
     'delivered'       => 'Delivered',
     'completed'       => 'Completed',
     'cancelled'       => 'Cancelled',
-    'pending_refund'  => 'Pending Refund',
-    'refunded'        => 'Refunded',
+];
+
+$payment_status_labels = [
+    'processing'     => 'Processing',
+    'success'        => 'Success',
+    'failed'         => 'Failed',
+    'pending_refund' => 'Pending Refund',
+    'refunded'       => 'Refunded',
 ];
 ?>
 <!DOCTYPE html>
@@ -87,15 +93,23 @@ $order_status_labels = [
 
                     <!-- 2. Order Status Filter -->
                     <select name="order_status" class="filter-sel" onchange="this.form.submit()">
-                        <option value="">All Statuses</option>
+                        <option value="">All Order Statuses</option>
                         <?php foreach ($order_status_labels as $val => $label): ?>
                             <option value="<?= $val ?>" <?= (isset($_GET['order_status']) && $_GET['order_status'] === $val) ? 'selected' : '' ?>><?= $label ?></option>
                         <?php endforeach; ?>
                     </select>
 
+                    <!-- 2B. Payment Status Filter -->
+                    <select name="payment_status" class="filter-sel" onchange="this.form.submit()">
+                        <option value="">All Payment Statuses</option>
+                        <?php foreach ($payment_status_labels as $val => $label): ?>
+                            <option value="<?= $val ?>" <?= (isset($_GET['payment_status']) && $_GET['payment_status'] === $val) ? 'selected' : '' ?>><?= $label ?></option>
+                        <?php endforeach; ?>
+                    </select>
+
                     <!-- 3. Payment Method Filter -->
                     <select name="payment_method" class="filter-sel" onchange="this.form.submit()">
-                        <option value="">All Payments</option>
+                        <option value="">All Payment Methods</option>
                         <option value="e_wallet" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'e_wallet') ? 'selected' : '' ?>>E-Wallet</option>
                         <option value="online_banking" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'online_banking') ? 'selected' : '' ?>>Online Banking</option>
                         <option value="card" <?= (isset($_GET['payment_method']) && $_GET['payment_method'] === 'card') ? 'selected' : '' ?>>Card</option>
@@ -118,12 +132,13 @@ $order_status_labels = [
                 <table>
                     <thead>
                         <tr>
-                            <th style="width: 10%;">Order ID</th>
-                            <th style="width: 15%;">Order Date</th>
-                            <th style="width: 20%;">Member</th>
-                            <th style="width: 15%;">Payment Method</th>
-                            <th style="width: 15%;">Amount</th>
-                            <th style="width: 15%;">Order Status</th>
+                            <th style="width: 8%;">Order ID</th>
+                            <th style="width: 12%;">Date</th>
+                            <th style="width: 15%;">Member</th>
+                            <th style="width: 12%;">Method</th>
+                            <th style="width: 11%;">Amount</th>
+                            <th style="width: 16%;">Payment Status</th>
+                            <th style="width: 16%;">Order Status</th>
                             <th style="width: 10%; text-align: right;">Action</th> 
                         </tr>
                     </thead>
@@ -146,7 +161,17 @@ $order_status_labels = [
                                         </span>
                                     </td>
                                     <td style="font-weight: 600; color: var(--coral);">
-                                        $<?= number_format((float)$data->amount, 2) ?>
+                                        RM<?= number_format((float)$data->amount, 2) ?>
+                                    </td>
+
+                                    <td>
+                                        <select class="filter-sel status-dropdown" data-order-id="<?= htmlspecialchars($data->order_id) ?>" data-update-type="payment_status">
+                                            <?php foreach ($payment_status_labels as $pval => $plabel): ?>
+                                                <option value="<?= $pval ?>" <?= ($data->payment_status === $pval) ? 'selected' : '' ?>>
+                                                    <?= $plabel ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </td>
                                     
                                     <td>

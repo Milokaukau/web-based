@@ -42,7 +42,7 @@ include $project_root.'components/header.php';
         </div>
         <div class="summary-block">
             <span>Total Amount</span>
-            <strong>$<?= number_format($order->amount, 2) ?></strong>
+            <strong>RM<?= number_format($order->amount, 2) ?></strong>
         </div>
     </div>
 
@@ -63,13 +63,13 @@ include $project_root.'components/header.php';
                         <div class="item-meta">
                             Color: <?= htmlspecialchars($item->color_name) ?> <br>
                             Qty: <?= htmlspecialchars($item->quantity) ?> 
-                            (@ $<?= number_format($item->purchase_price, 2) ?> each)
+                            (@ RM<?= number_format($item->purchase_price, 2) ?> each)
                         </div>
                     </div>
                 </div>
 
                 <div class="details-item-price">
-                    $<?= number_format($item->purchase_price * $item->quantity, 2) ?>
+                    RM<?= number_format($item->purchase_price * $item->quantity, 2) ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -79,15 +79,15 @@ include $project_root.'components/header.php';
         <div class="totals-wrapper">
             <div class="total-line">
                 <span>Subtotal</span>
-                <span>$<?= number_format($order->amount, 2) ?></span>
+                <span>RM<?= number_format($order->amount, 2) ?></span>
             </div>
             <div class="total-line">
                 <span>Shipping</span>
-                <span>$0.00</span> 
+                <span>RM0.00</span> 
             </div>
             <div class="total-line grand-total">
                 <span>Total</span>
-                <span>$<?= number_format($order->amount, 2) ?></span>
+                <span>RM<?= number_format($order->amount, 2) ?></span>
             </div>
         </div>
     </div>

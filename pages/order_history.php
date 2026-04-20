@@ -60,7 +60,7 @@ include $project_root.'components/header.php';
                         </div>
 
                         <div class="item-actions" style="margin-left: auto; display: flex; align-items: center; font-weight: 600; color: var(--text-dark, #333); font-size: 1.1rem;">
-                            $<?= number_format((float)$item->purchase_price * (int)$item->quantity, 2) ?>
+                            RM<?= number_format((float)$item->purchase_price * (int)$item->quantity, 2) ?>
                         </div>
 
                     </div>
