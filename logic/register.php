@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     if ($phone === '')
         $errors['phone'] = 'Phone number is required.';
-    elseif (!preg_match('/^[0-9+\-\s]{7,15}$/', $phone))
-        $errors['phone'] = 'Invalid phone number format.';
+    elseif (!preg_match('/^(\+?60|0)[0-9]{1,2}[\s\-]?[0-9]{7,8}$/', $phone))
+    $errors['phone'] = 'Invalid Malaysian phone number. Example: 012-3456789 or +60123456789.';
     
     if ($password === '')
         $errors['password'] = 'Password is required.';
@@ -46,8 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     if (empty($errors)){
         try {
             $id = registerMember($name, $email, $password, $gender, $phone);
-            header("Location: /pages/login.php");
-            exit;
+            redirectWith('/pages/login.php', 'success', 'Account created successfully! You can now log in.');
         } catch (PDOException $e) {
             // Check if the error code is exactly the 23000 constraint violation
             if ($e->getCode() == 23000) {
