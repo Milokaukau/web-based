@@ -98,7 +98,6 @@ requireSuperAdmin();
                         <thead>
                             <tr>
                                 <th style="width: 5%;">ID</th>
-                                <th style="width: 10%;">Photo</th>
                                 <th style="width: 25%;">Name</th>
                                 <th style="width: 25%;">Email</th>
                                 <th style="width: 15%;">Account Status</th>
@@ -109,10 +108,6 @@ requireSuperAdmin();
                             <?php foreach ($admins as $admin): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($admin['id']) ?></td>
-                                    <td>
-                                        <?php $photo_src = !empty($admin['photo']) ? '/uploads/admins/' . htmlspecialchars($admin['photo']) : '/assets/images/default-avatar.png'; ?>
-                                        <img src="<?= $photo_src ?>" alt="Admin Photo" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-card);">
-                                    </td>
                                     <td>
                                         <div style="font-weight: 600; color: var(--text-dark);">
                                             <?= htmlspecialchars($admin['name']) ?>

@@ -52,7 +52,7 @@ function is_active($paths, $current_uri) {
     </a>
     
     <div class="sidebar-section">Account</div>
-    <a class="nav-link <?= is_active('page=profile', $current_uri) ?>" href="/pages/admin/admin.php?page=profile">
+    <a class="nav-link <?= is_active(['page=profile', 'change_password.php'], $current_uri) ?>" href="/pages/admin/admin.php?page=profile">
         <span class="nav-icon">&#9881;</span> Admin Profile
     </a>
 </div>

@@ -112,3 +112,10 @@ function getFilteredAdmins($filters = []) {
     $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function getAdminPasswordHash(int $admin_id): ?string {
+    $stmt = db()->prepare("SELECT password FROM tb_admin WHERE id = ?");
+    $stmt->execute([$admin_id]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ? $result['password'] : null;
+}

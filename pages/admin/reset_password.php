@@ -4,10 +4,10 @@ require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
 // Redirect away if already logged in as admin
-if (isAdmin()) {
-    header("Location: /pages/admin/dashboard.php");
-    exit;
-}
+// if (isAdmin()) {
+//     header("Location: /pages/admin/admin.php");
+//     exit;
+// }
 
 require $project_root . "logic/reset_password_admin.php";
 

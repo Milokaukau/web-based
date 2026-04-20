@@ -45,6 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     if (empty($errors)){
         resetMemberPassword($token_row->member_id, password_hash($new_pass, PASSWORD_DEFAULT));
         deleteResetToken($token);
-        redirectWith('/pages/login.php', 'success', 'Password reset successfully. You can now log in.');
+        redirectWith('/pages/login.php', 'success', 'Password reset successfully. You can now log in using the new password.');
     }
 }
