@@ -457,23 +457,30 @@ $highAttempts = getHighAttempts();
         </section>
 
 
-        <!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════════
              STOCK
         ════════════════════════════════════════════════════════ -->
-        <?php elseif ($active_page === 'stock'): ?>
+<?php elseif ($active_page === 'stock'): ?>
 
-        <?php
-            $products      = getProducts();
-            $lowStockAlert = getLowStockProducts(10);
-        ?>
+    <?php
+        $products         = getProducts();
+        $lowStockAlert    = getLowStockProducts(10);
+        $categories = array_unique(array_filter(array_column($products, 'category'), fn($c) => $c !== null));
+        sort($categories);
+        $total_products   = count($products);
+        $in_stock_count   = count(array_filter($products, fn($p) => $p->is_active && $p->stock > 10));
+        $low_count        = count(array_filter($products, fn($p) => $p->is_active && $p->stock > 0 && $p->stock <= 10));
+        $oos_count = count(array_filter($products, fn($p) => $p->is_active && $p->stock == 0));
+        $inactive_count   = count(array_filter($products, fn($p) => !$p->is_active));
+    ?>
 
-        <section class="section-container">
+    <section class="section-container">
 
-            <div class="section-header">
-                <h1 class="admin-section-title">Stock Management</h1>
-                <p class="admin-section-sub">Monitor and update product inventory levels</p>
-                <div class="line"></div>
-            </div>
+        <div class="section-header">
+            <h1 class="admin-section-title">Stock management</h1>
+            <p class="admin-section-sub">Monitor and update product inventory levels</p>
+            <div class="line"></div>
+        </div>
 
             <!-- ── Low-Stock Alert Banner ───────────────────────────────── -->
             <?php if (!empty($lowStockAlert)): ?>
@@ -491,84 +498,534 @@ $highAttempts = getHighAttempts();
             </div>
             <?php endif; ?>
 
-            <!-- ── Stock Cards ─────────────────────────────────────────── -->
-            <?php if (empty($products)): ?>
-                <div class="empty-state"><p>No products found.</p></div>
-            <?php else: ?>
-            <div class="stock-grid">
+        <!-- Stats cards -->
+        <div class="stats-grid" style="margin-bottom:20px;">
+            <div class="stat-card">
+                <div class="stat-label">Total products</div>
+                <div class="stat-num"><?= $total_products ?></div>
+            </div>
+            <div class="stat-card s-valid">
+                <div class="stat-label">In stock</div>
+                <div class="stat-num"><?= $in_stock_count ?></div>
+            </div>
+            <div class="stat-card s-locked">
+                <div class="stat-label">Low stock</div>
+                <div class="stat-num"><?= $low_count ?></div>
+            </div>
+            <div class="stat-card s-invalid">
+                <div class="stat-label">Out of stock</div>
+                <div class="stat-num"><?= $oos_count ?></div>
+            </div>
+        </div>
+
+        <!-- Page header actions -->
+        <div class="page-header" style="margin-bottom:12px;">
+            <div>
+                <p class="sub" id="stock-record-count"><?= $total_products ?> record(s) found</p>
+            </div>
+            <div class="page-header-actions">
+                <button class="btn-oos" id="stock-toggle-oos" type="button">
+                    Out of Stock (<?= $oos_count ?>)
+                </button>
+                <button class="btn-oos" id="stock-toggle-inactive" type="button">
+                    Inactive (<?= $inactive_count ?>)
+                </button>
+                <button class="btn-view-toggle" id="stock-view-toggle" type="button">⊞ Card View</button>
+                <a class="btn-primary" href="../admin/product_insert.php" style="margin-left:auto;">+ Add Product</a>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-wrap" style="margin-bottom:12px;">
+            <input type="text" id="stock-search" placeholder="Search by ID, name, category, material…" autocomplete="off">
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-wrap" style="margin-bottom:16px;">
+            <select id="stock-cat-filter">
+                <option value="">All Categories</option>
+                <?php foreach ($categories as $cat): ?>
+                    <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <select id="stock-status-filter">
+                <option value="">All Status</option>
+                <option value="ok">In stock (&gt;10)</option>
+                <option value="warn">Low stock (1–10)</option>
+                <option value="danger">Out of stock (0)</option>
+            </select>
+
+            <div class="price-range">
+                <input type="number" id="stock-price-min" placeholder="Min price (RM)" min="0" step="0.01">
+                <span>–</span>
+                <input type="number" id="stock-price-max" placeholder="Max price (RM)" min="0" step="0.01">
+            </div>
+
+            <button id="stock-filter-reset" type="button">Reset</button>
+        </div>
+
+        <!-- ── TABLE VIEW ─────────────────────────────────────────── -->
+        <div id="stock-table-view">
+            <div class="tbl-wrap" style="overflow-x:auto;">
+                <table id="stock-table">
+                    <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th class="sortable" data-col="1" data-type="num">ID <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="2">Name <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="3">Category <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="4">Color <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="5">Description <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="6">Material <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="7" data-type="num">Weight (g) <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="8" data-type="num">Height (cm) <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="9" data-type="num">Base Diameter (cm) <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="10" data-type="num">Price (RM) <span class="sort-icon"></span></th>
+                        <th class="sortable" data-col="11" data-type="num">Stock <span class="sort-icon"></span></th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="stock-active-tbody">
+                        <?php foreach ($products as $p):
+                            $stockKey = $p->stock == 0 ? 'danger' : ($p->stock <= 10 ? 'warn' : 'ok');
+                            $stockLabel  = $p->stock == 0 ? 'Out of stock' : ($p->stock <= 10 ? 'Low stock' : 'In stock');
+                            $badgeCls    = $p->stock == 0 ? 'badge-invalid' : ($p->stock <= 10 ? 'badge-locked' : 'badge-valid');
+                            $isInactive  = !$p->is_active;
+                        ?>
+                        <tr class="<?= $isInactive ? 'row-disabled' : '' ?>"
+                            data-group="<?= $isInactive ? 'inactive' : 'active' ?>"
+                            data-id="<?= $p->id ?>"
+                            data-name="<?= htmlspecialchars(strtolower($p->name ?? '')) ?>"
+                            data-cat="<?= htmlspecialchars(strtolower($p->category ?? '')) ?>"
+                            data-material="<?= htmlspecialchars(strtolower($p->material ?? '')) ?>"
+                            data-status="<?= $stockKey ?>"
+                            data-price="<?= $p->price ?? 0 ?>">
+                            <td>
+                                <?php if (!empty($p->photo)): ?>
+                                    <img class="product-thumb"
+                                        src="/images/<?= htmlspecialchars($p->photo) ?>"
+                                        alt="<?= htmlspecialchars($p->name) ?>">
+                                <?php else: ?>
+                                    <span class="no-photo">No Photo</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?= $p->id ?></td>
+                            <td><?= htmlspecialchars($p->name ?? '-') ?></td>
+                            <td><?= htmlspecialchars($p->category_id ?? '-') ?></td>
+                            <td><?= htmlspecialchars($p->color_name ?? '-') ?></td>
+                            <td class="desc-cell" title="<?= htmlspecialchars($p->description ?? '') ?>">
+                                <?= htmlspecialchars($p->description ?? '-') ?>
+                            </td>
+                            <td><?= htmlspecialchars($p->material ?? '-') ?></td>
+                            <td><?= htmlspecialchars($p->weight_g ?? '-') ?></td>
+                            <td><?= htmlspecialchars($p->height_cm ?? '-') ?></td>
+                            <td><?= htmlspecialchars($p->base_diameter_cm ?? '-') ?></td>
+                            <td><?= number_format($p->price ?? 0, 2) ?></td>
+                            <td style="font-weight:500;"><?= $p->stock ?></td>
+                            <td><span class="badge <?= $badgeCls ?>"><?= $stockLabel ?></span></td>
+                            <td>
+                                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                                    <?php if ($isInactive): ?>
+                                        <!-- Inactive: Edit + Restore only -->
+                                        <a class="act-btn" href="product_update.php?id=<?= $p->id ?>">Edit</a>
+                                        <form method="GET" action="../../database/product_restore.php">
+                                            <input type="hidden" name="id" value="<?= $p->id ?>">
+                                            <button type="submit" class="act-btn unlock"
+                                                    onclick="return confirm('Restore this product?')">Restore</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <!-- Active (including OOS): Update stock + Edit + Delete -->
+                                        <form method="POST" action="?action=update_stock"
+                                            style="display:flex;gap:6px;align-items:center;">
+                                            <input type="hidden" name="id" value="<?= $p->id ?>">
+                                            <input type="number" name="stock" value="<?= $p->stock ?>" min="0"
+                                                style="width:70px;padding:4px 8px;
+                                                        border:1px solid #e5e7eb;border-radius:8px;font-size:0.85rem;">
+                                            <button type="submit" class="btn-primary"
+                                                    style="padding:4px 12px;font-size:0.8rem;">Update</button>
+                                        </form>
+                                        <a class="act-btn" href="product_update.php?id=<?= $p->id ?>">Edit</a>
+                                        <a class="act-btn del" href="../../database/product_delete.php?id=<?= $p->id ?>"
+                                           onclick="return confirm('Sure to delete?')">Delete</a>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-wrap" id="stock-table-pagination-wrap">
+                <span id="stock-table-pagination-info"></span>
+                <div id="stock-table-pagination"></div>
+            </div>
+        </div>
+
+        <!-- ── CARD VIEW ──────────────────────────────────────────── -->
+        <div id="stock-card-view" hidden>
+            <div class="stock-grid" id="stock-card-grid">
                 <?php foreach ($products as $p):
                     $stockStatus = $p->stock == 0 ? 'invalid' : ($p->stock <= 10 ? 'locked' : 'valid');
-                    $stockLabel  = $p->stock == 0 ? 'Out of Stock' : ($p->stock <= 10 ? 'Low Stock' : 'In Stock');
+                    $stockLabel  = $p->stock == 0 ? 'Out of stock' : ($p->stock <= 10 ? 'Low stock' : 'In stock');
                     $stockClass  = $p->stock == 0 ? 'stock-danger' : ($p->stock <= 10 ? 'stock-warn' : 'stock-ok');
+                    $stockKey    = $p->stock == 0 ? 'danger' : ($p->stock <= 10 ? 'warn' : 'ok');
+                    $isInactive  = !$p->is_active;
                 ?>
-                <div class="stock-card">
-                    <div class="stock-img-wrapper <?= $stockClass ?>">
-                        <div class="stock-qty-big"><?= $p->stock ?></div>
-                        <div class="stock-qty-label">units</div>
-                    </div>
-                    <div class="stock-info">
-                        <h5 class="stock-name"><?= htmlspecialchars($p->name ?? '-') ?></h5>
-<p class="stock-cat">
-    <?= htmlspecialchars($p->category ?? '-') ?>
-    <?php if (!empty($p->color_name)): ?>
-        · <span style="color:#6b7280;"><?= htmlspecialchars($p->color_name) ?></span>
-    <?php endif; ?>
-</p>
-                        <div class="stock-price">RM <?= number_format($p->price ?? 0, 2) ?></div>
-                        <span class="badge badge-<?= $stockStatus ?> stock-badge"><?= $stockLabel ?></span>
+                <div class="stock-card <?= $isInactive ? 'card-disabled' : '' ?>"
+                    data-group="<?= $isInactive ? 'inactive' : 'active' ?>"
+                    data-id="<?= $p->id ?>"
+                    data-name="<?= htmlspecialchars(strtolower($p->name ?? '')) ?>"
+                    data-cat="<?= htmlspecialchars(strtolower($p->category ?? '')) ?>"
+                    data-material="<?= htmlspecialchars(strtolower($p->material ?? '')) ?>"
+                    data-status="<?= $stockKey ?>"
+                    data-price="<?= $p->price ?? 0 ?>">
 
-                        <!-- ── Update Stock Form ────────────────────── -->
-                        <form method="POST" action="?action=update_stock" style="display:flex;gap:6px;align-items:center;margin-top:10px;">
-                            <input type="hidden" name="id" value="<?= $p->id ?>">
-                            <input type="number" name="stock" value="<?= $p->stock ?>" min="0"
-                                   style="width:70px;padding:4px 8px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.85rem;">
-                            <button type="submit" class="btn-primary" style="padding:4px 12px;font-size:0.8rem;">Update</button>
-                        </form>
+                    <div class="stock-img-wrapper <?= $stockClass ?>">
+                        <?php if (!empty($p->photo)): ?>
+                            <img src="/images/<?= htmlspecialchars($p->photo) ?>"
+                                alt="<?= htmlspecialchars($p->name) ?>"
+                                style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                            <div class="stock-qty-big"><?= $p->stock ?></div>
+                            <div class="stock-qty-label">units</div>
+                        <?php endif; ?>
                     </div>
+
+                    <div class="stock-info">
+                        <h5 class="stock-name">
+                            <span style="color:var(--text-muted);font-weight:500;font-size:0.78rem;">#<?= $p->id ?></span>
+                            <?= htmlspecialchars($p->name ?? '-') ?>
+                        </h5>
+                        <p class="stock-cat">
+                            <?= htmlspecialchars($p->category ?? '-') ?>
+                            <?php if (!empty($p->color_name)): ?>
+                                · <span style="color:#6b7280;"><?= htmlspecialchars($p->color_name) ?></span>
+                            <?php endif; ?>
+                        </p>
+                        <div class="stock-price">RM <?= number_format($p->price ?? 0, 2) ?></div>
+                        <div style="font-size:0.82rem;font-weight:600;color:var(--text-dark);margin-bottom:6px;">
+                            Stock: <?= $p->stock ?> units
+                        </div>
+                        <span class="badge badge-<?= $stockStatus ?> stock-badge"><?= $stockLabel ?></span>
+                    </div>
+
+                    <div class="stock-hover-overlay">
+                        <div class="shov-name"><?= htmlspecialchars($p->name ?? '-') ?></div>
+
+                        <div class="shov-meta">
+                            <div class="shov-row"><span>Category</span><span><?= htmlspecialchars($p->category ?? '-') ?></span></div>
+                            <?php if (!empty($p->color_name)): ?>
+                            <div class="shov-row"><span>Color</span><span><?= htmlspecialchars($p->color_name) ?></span></div>
+                            <?php endif; ?>
+                            <div class="shov-row"><span>Material</span><span><?= htmlspecialchars($p->material ?? '-') ?></span></div>
+                            <?php if (!empty($p->weight_g)): ?>
+                            <div class="shov-row"><span>Weight</span><span><?= htmlspecialchars($p->weight_g) ?> g</span></div>
+                            <?php endif; ?>
+                            <?php if (!empty($p->height_cm)): ?>
+                            <div class="shov-row"><span>Height</span><span><?= htmlspecialchars($p->height_cm) ?> cm</span></div>
+                            <?php endif; ?>
+                            <?php if (!empty($p->base_diameter_cm)): ?>
+                            <div class="shov-row"><span>Base Diameter</span><span><?= htmlspecialchars($p->base_diameter_cm) ?> cm</span></div>
+                            <?php endif; ?>
+                            <div class="shov-row"><span>Price</span><span>RM <?= number_format($p->price ?? 0, 2) ?></span></div>
+                            <div class="shov-row"><span>Stock</span><span><?= $p->stock ?> units</span></div>
+                        </div>
+
+                        <?php if (!$isInactive): ?>
+                        <form method="POST" action="?action=update_stock" class="shov-form">
+                            <input type="hidden" name="id" value="<?= $p->id ?>">
+                            <input type="number" name="stock" value="<?= $p->stock ?>" min="0">
+                            <button type="submit" class="btn-primary" style="padding:5px 12px;font-size:0.8rem;">Update</button>
+                        </form>
+                        <?php endif; ?>
+
+                        <div style="display:flex;gap:6px;margin-top:6px;">
+                            <?php if ($isInactive): ?>
+                                <a class="act-btn" style="flex:1;text-align:center;"
+                                   href="product_update.php?id=<?= $p->id ?>">Edit</a>
+                                <form method="GET" action="../../database/product_restore.php" style="flex:1;">
+                                    <input type="hidden" name="id" value="<?= $p->id ?>">
+                                    <button type="submit" class="act-btn unlock" style="width:100%;"
+                                            onclick="return confirm('Restore this product?')">Restore</button>
+                                </form>
+                            <?php else: ?>
+                                <a class="act-btn" style="flex:1;text-align:center;"
+                                   href="product_update.php?id=<?= $p->id ?>">Edit</a>
+                                <a class="act-btn del" style="flex:1;text-align:center;"
+                                   href="../../database/product_delete.php?id=<?= $p->id ?>"
+                                   onclick="return confirm('Sure to delete?')">Delete</a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
                 </div>
                 <?php endforeach; ?>
             </div>
-            <?php endif; ?>
 
-        </section>
-
-
-        <!-- ═══════════════════════════════════════════════════════
-             ADMIN PROFILE
-        ════════════════════════════════════════════════════════ -->
-        <?php elseif ($active_page === 'profile'): ?>
-
-        <?php $admin = getAdmin((int)($_SESSION['admin_id'] ?? 1)); ?>
-
-        <section class="section-container">
-            <div class="section-header">
-                <h1 class="admin-section-title">Admin Profile</h1>
-                <div class="line"></div>
+            <div class="pagination-wrap" id="stock-card-pagination-wrap">
+                <span id="stock-card-pagination-info"></span>
+                <div id="stock-card-pagination"></div>
             </div>
-            <div class="feature-card-wrap">
-                <div class="feature-card">
-                    <div class="member-avatar-wrap">
-                        <div class="member-avatar"><?= strtoupper(substr($admin->name ?? 'AD', 0, 2)) ?></div>
-                    </div>
-                    <div class="member-name"><?= htmlspecialchars($admin->name ?? '-') ?></div>
-                    <div class="member-role">Super Admin</div>
-                    <div class="profile-rows">
-                        <div class="profile-row">
-                            <span class="profile-lbl">Email</span>
-                            <span class="profile-val"><?= htmlspecialchars($admin->email ?? '-') ?></span>
-                        </div>
-                        <div class="profile-row">
-                            <span class="profile-lbl">Role</span>
-                            <span class="profile-val">Super Admin</span>
-                        </div>
-                        <div class="profile-row">
-                            <span class="profile-lbl">Status</span>
-                            <span class="profile-val"><span class="badge badge-valid">Active</span></span>
-                        </div>
-                    </div>
+        </div>
+
+    </section>
+
+    <script>
+        
+    (function () {
+        const ROWS_PER_PAGE  = 10;
+        const CARDS_PER_PAGE = 12;
+
+        let currentView  = localStorage.getItem('stockView') || 'table';
+        let showOos = false;
+        let showInactive = false;
+        let sortCol      = -1;
+        let sortAsc      = true;
+        let tablePage    = 1;
+        let cardPage     = 1;
+
+        const tableView   = document.getElementById('stock-table-view');
+        const cardView    = document.getElementById('stock-card-view');
+        const cardGrid    = document.getElementById('stock-card-grid');
+        const tbody       = document.getElementById('stock-active-tbody');
+        const allRows     = Array.from(tbody.querySelectorAll('tr'));
+        const allCards    = Array.from(cardGrid.querySelectorAll('.stock-card'));
+        const recordCount = document.getElementById('stock-record-count');
+
+
+        if (new URLSearchParams(window.location.search).get('show') === 'inactive') {
+        showInactive = true;
+        document.getElementById('stock-toggle-inactive').classList.add('active');}
+
+        document.querySelectorAll('[data-status]').forEach(el => {
+            console.log(el.dataset.id, el.dataset.group, el.dataset.status);
+        });
+
+        function setView(v) {
+            currentView = v;
+            tableView.hidden = v !== 'table';
+            cardView.hidden  = v !== 'card';
+            document.getElementById('stock-view-toggle').textContent =
+                v === 'table' ? '⊞ Card View' : '☰ Table View';
+            localStorage.setItem('stockView', v);
+            applyAll();
+        }
+
+        document.getElementById('stock-view-toggle').addEventListener('click', () =>
+            setView(currentView === 'table' ? 'card' : 'table'));
+
+            document.getElementById('stock-toggle-oos').addEventListener('click', function () {
+                showOos = !showOos;
+                if (showOos) {
+                    showInactive = false;
+                    document.getElementById('stock-toggle-inactive').classList.remove('active');
+                }
+                this.classList.toggle('active', showOos);
+                tablePage = cardPage = 1;
+                applyAll();
+            });
+
+            document.getElementById('stock-toggle-inactive').addEventListener('click', function () {
+                showInactive = !showInactive;
+                if (showInactive) {
+                    showOos = false;
+                    document.getElementById('stock-toggle-oos').classList.remove('active');
+                }
+                this.classList.toggle('active', showInactive);
+                tablePage = cardPage = 1;
+                applyAll();
+            });
+
+        const searchEl   = document.getElementById('stock-search');
+        const catFilter  = document.getElementById('stock-cat-filter');
+        const statFilter = document.getElementById('stock-status-filter');
+        const priceMin   = document.getElementById('stock-price-min');
+        const priceMax   = document.getElementById('stock-price-max');
+
+        [searchEl, catFilter, statFilter, priceMin, priceMax].forEach(el =>
+            el.addEventListener('input', () => { tablePage = cardPage = 1; applyAll(); }));
+
+        document.getElementById('stock-filter-reset').addEventListener('click', () => {
+            searchEl.value = catFilter.value = statFilter.value = priceMin.value = priceMax.value = '';
+            tablePage = cardPage = 1;
+            applyAll();
+        });
+
+        function matchesFilters(el) {
+            const group = el.dataset.group; 
+            const stock = el.dataset.status; 
+
+            if (showInactive && group !== 'inactive') return false;
+            if (!showInactive && group === 'inactive') return false;
+            if (showOos && stock !== 'danger') return false;
+
+            const q     = searchEl.value.toLowerCase().trim();
+            const cat   = catFilter.value.toLowerCase();
+            const stat  = statFilter.value;
+            const min   = parseFloat(priceMin.value);
+            const max   = parseFloat(priceMax.value);
+            const price = parseFloat(el.dataset.price);
+
+            if (q && !el.dataset.name.includes(q) &&
+                    !el.dataset.cat.includes(q) &&
+                    !(el.dataset.material || '').includes(q) &&
+                    !(el.dataset.id || '').includes(q)) return false;
+            if (cat  && el.dataset.cat !== cat)  return false;
+            if (stat && stock !== stat)           return false;
+            if (!isNaN(min) && price < min)       return false;
+            if (!isNaN(max) && price > max)       return false;
+            return true;
+        }
+
+        document.querySelectorAll('#stock-table thead th.sortable').forEach(th => {
+            th.style.cursor = 'pointer';
+            th.addEventListener('click', () => {
+                const col = parseInt(th.dataset.col);
+                if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
+                document.querySelectorAll('#stock-table thead .sort-icon')
+                    .forEach(s => s.textContent = '');
+                th.querySelector('.sort-icon').textContent = sortAsc ? ' ↑' : ' ↓';
+                tablePage = 1;
+                applyAll();
+            });
+        });
+
+
+        function getSortValue(row, col) {
+            const cells = row.querySelectorAll('td');
+            const cell  = cells[col];
+            if (!cell) return '';
+            const isNum = document.querySelector(`#stock-table thead th[data-col="${col}"]`)
+                                ?.dataset.type === 'num';
+            return isNum ? parseFloat(cell.textContent) || 0 : cell.textContent.trim().toLowerCase();
+        }
+
+        function buildPagination(containerId, infoId, total, perPage, currentPage, onPage) {
+            const totalPages = Math.max(1, Math.ceil(total / perPage));
+            const safeP      = Math.min(currentPage, totalPages);
+            const info       = document.getElementById(infoId);
+            const pag        = document.getElementById(containerId);
+
+            const from = total === 0 ? 0 : (safeP - 1) * perPage + 1;
+            const to   = Math.min(safeP * perPage, total);
+            info.textContent = total === 0
+                ? 'No records found'
+                : `Showing ${from}–${to} of ${total} record(s)`;
+
+            pag.innerHTML = '';
+            if (totalPages <= 1) return safeP;
+
+            const mkBtn = (label, page, disabled, active) => {
+                const b = document.createElement('button');
+                b.textContent = label;
+                b.className   = 'page-btn' + (active ? ' active' : '');
+                b.disabled    = disabled;
+                b.type        = 'button';
+                b.addEventListener('click', () => onPage(page));
+                pag.appendChild(b);
+            };
+
+            mkBtn('«', 1,         safeP === 1,          false);
+            mkBtn('‹', safeP - 1, safeP === 1,          false);
+
+            let start = Math.max(1, safeP - 2);
+            let end   = Math.min(totalPages, safeP + 2);
+            if (safeP <= 3)              end   = Math.min(5, totalPages);
+            if (safeP >= totalPages - 2) start = Math.max(1, totalPages - 4);
+
+            for (let i = start; i <= end; i++) mkBtn(i, i, false, i === safeP);
+
+            mkBtn('›', safeP + 1, safeP === totalPages, false);
+            mkBtn('»', totalPages, safeP === totalPages, false);
+
+            return safeP;
+        }
+
+        function applyAll() {
+            let visibleRows = allRows.filter(matchesFilters);
+
+            if (sortCol !== -1) {
+                visibleRows.sort((a, b) => {
+                    const av  = getSortValue(a, sortCol);
+                    const bv  = getSortValue(b, sortCol);
+                    const cmp = typeof av === 'number' ? av - bv : av.localeCompare(bv);
+                    return sortAsc ? cmp : -cmp;
+                });
+            }
+
+            tablePage = buildPagination(
+                'stock-table-pagination', 'stock-table-pagination-info',
+                visibleRows.length, ROWS_PER_PAGE, tablePage,
+                (p) => { tablePage = p; applyAll(); }
+            );
+
+            const tStart = (tablePage - 1) * ROWS_PER_PAGE;
+            const tEnd   = tStart + ROWS_PER_PAGE;
+
+            allRows.forEach(r => { r.hidden = true; tbody.appendChild(r); });
+            visibleRows.forEach((r, i) => { r.hidden = !(i >= tStart && i < tEnd); });
+
+            const visibleCards = allCards.filter(matchesFilters);
+
+            cardPage = buildPagination(
+                'stock-card-pagination', 'stock-card-pagination-info',
+                visibleCards.length, CARDS_PER_PAGE, cardPage,
+                (p) => { cardPage = p; applyAll(); }
+            );
+
+            const cStart = (cardPage - 1) * CARDS_PER_PAGE;
+            const cEnd   = cStart + CARDS_PER_PAGE;
+
+            allCards.forEach(c => { c.hidden = true; });
+            visibleCards.forEach((c, i) => { c.hidden = !(i >= cStart && i < cEnd); });
+
+            const total = currentView === 'table' ? visibleRows.length : visibleCards.length;
+            recordCount.textContent = total + ' record(s) found';
+        }
+
+        setView(currentView);
+    })();
+    </script>
+
+<!-- ═══════════════════════════════════════════════════════
+        ADMIN PROFILE
+════════════════════════════════════════════════════════ -->
+<?php elseif ($active_page === 'profile'): ?>
+
+<?php $admin = getAdmin((int)($_SESSION['admin_id'] ?? 1)); ?>
+
+<section class="section-container">
+    <div class="section-header">
+        <h1 class="admin-section-title">Admin Profile</h1>
+        <div class="line"></div>
+    </div>
+    <div class="feature-card-wrap">
+        <div class="feature-card">
+            <div class="member-avatar-wrap">
+                <div class="member-avatar"><?= strtoupper(substr($admin->name ?? 'AD', 0, 2)) ?></div>
+            </div>
+            <div class="member-name"><?= htmlspecialchars($admin->name ?? '-') ?></div>
+            <div class="member-role">Super Admin</div>
+            <div class="profile-rows">
+                <div class="profile-row">
+                    <span class="profile-lbl">Email</span>
+                    <span class="profile-val"><?= htmlspecialchars($admin->email ?? '-') ?></span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-lbl">Role</span>
+                    <span class="profile-val">Super Admin</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-lbl">Status</span>
+                    <span class="profile-val"><span class="badge badge-valid">Active</span></span>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
 
 
         <!-- ═══════════════════════════════════════════════════════

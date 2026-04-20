@@ -9,7 +9,7 @@ require_once $project_root . "database/product.php";
 require_once $project_root . "database/category.php";
 require_once $project_root . "logic/auth_helper.php";
 
-$isLoggedIn = isset($_SESSION['user_id']); 
+$isLoggedIn = isset($_SESSION['user_id']);
 
 $wishlistCount = isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0;
 $cartCount = 0;
@@ -81,10 +81,7 @@ $categories = getAllCategories() ?: []; // Ensure it's at least an empty array
                         CART 🛒 <span class="cart-count"><?= $cartCount > 0 ? $cartCount : "" ?></span>
                     </a>
 
-                <?php elseif(isAdmin()): ?>
-                    <a href="/pages/admin/dashboard.php">DASHBOARD</a>
-                    <span>|</span>
-                    <a href="/pages/logout.php">LOGOUT</a>
+                
 
                 <?php else: ?>
                     <a href="/pages/login.php">PROFILE</a>

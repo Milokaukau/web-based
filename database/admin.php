@@ -30,3 +30,4 @@ function getChartSummaryStats(): object {
         'total_products' => $totalProducts,
     ];
 }
+
