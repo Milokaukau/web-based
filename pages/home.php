@@ -95,26 +95,28 @@ require $project_root."components/header.php";
         <div class="new-arrival-grid">
             <?php if(isset($arr) && count($arr) > 0): ?>
                 <?php foreach($arr as $row): ?>
-                    <div class="product-card">
-                        <a href="product.php?id=<?= $row->id ?>" class="product-link" style="text-decoration:none;">
-                            <div class="img-wrapper">
-                                <div class="tag-container">
-                                    <?php if ($row->stock <= 0): ?>
-                                        <span class="product-tag tag-sold-out">SOLD OUT</span>
-                                    <?php elseif ($row->id >= 4): ?>
-                                        <span class="product-tag tag-new">NEW</span>
-                                    <?php endif; ?>
+                    <?php if ($row->is_active != 0): ?>
+                        <div class="product-card">
+                            <a href="product.php?id=<?= $row->id ?>" class="product-link" style="text-decoration:none;">
+                                <div class="img-wrapper">
+                                    <div class="tag-container">
+                                        <?php if ($row->stock <= 0): ?>
+                                            <span class="product-tag tag-sold-out">SOLD OUT</span>
+                                        <?php elseif ($row->id >= 4): ?>
+                                            <span class="product-tag tag-new">NEW</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <img src="<?= !empty($row->photo) ? '/images/' . htmlspecialchars($row->photo) : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($row->name) ?>"
+                                        alt="<?= htmlspecialchars($row->name) ?>">
                                 </div>
-                                <img src="<?= !empty($row->photo) ? '/images/' . htmlspecialchars($row->photo) : 'https://placehold.co/600x600/FDFBFA/F39E9E?text=' . urlencode($row->name) ?>"
-                                     alt="<?= htmlspecialchars($row->name) ?>">
-                            </div>
-                            <div class="product-info-row">
-                                <h5 class="product-name"><?= htmlspecialchars($row->name) ?></h5>
-                                <p class="product-cat">NOAIR Series</p>
-                                <div class="product-price">RM <?= number_format($row->price, 2) ?></div>
-                            </div>
-                        </a>
-                    </div>
+                                <div class="product-info-row">
+                                    <h5 class="product-name"><?= htmlspecialchars($row->name) ?></h5>
+                                    <p class="product-cat">NOAIR Series</p>
+                                    <div class="product-price">RM <?= number_format($row->price, 2) ?></div>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="empty-state" style="text-align:center;width:100%;grid-column:1/-1;padding:40px 0;">
