@@ -46,7 +46,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     $errors['general'] = "Account locked. Try again in {$mins} minute(s).";
                 }elseif (!password_verify($password, $user->password)){
 
-                    // if wrong fail to login again, then lock longer haha
+                    // if wrong fail to login again, then lock longer 
                     $attempts = ($user->login_attempts ?? 0) + 1;
                     if ($attempts >= $MAX_ATTEMPTS){
                         // lock logic:
@@ -54,7 +54,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                         // 2nd lock (5th attempt) : 3 minutes
                         // 3rd lock (6th attempt) : 5 minutes
                         $extra_attempts = $attempts - $MAX_ATTEMPTS;
-                        $lock_duration =  1 + ($extra_attempts * 2);
+                        $lock_duration =  3 + ($extra_attempts * 2);
                         $locked_until = date('Y-m-d H:i:s', strtotime("+{$lock_duration} minutes"));
 
                         lockMemberAccount($user->id, $locked_until);

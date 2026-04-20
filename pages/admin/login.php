@@ -55,7 +55,11 @@ include $project_root . 'components/header.php';
             <button type="submit" class="btn btn-primary">Login as Admin</button>
         </form>
 
-        <p class="auth-footer"><a href="/pages/login.php">← Member Login</a></p>
+        <p class="auth-footer">
+    <a href="/pages/admin/forgot_password.php">Forgot Password?</a>
+    &nbsp;·&nbsp;
+    <a href="/pages/login.php">← Member Login</a>
+</p>
     </div>
 </div>
 

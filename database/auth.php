@@ -117,3 +117,36 @@ function getAdminByEmail($email){
     $stmt->execute([$email]);
     return $stmt->fetch();
 }
+// ADMIN PASSWORD RESET TOKENS
+
+function saveAdminResetToken($admin_id, $token){
+    $stmt = db()->prepare("DELETE FROM tb_admin_password_reset WHERE admin_id = ?");
+    $stmt->execute([$admin_id]);
+
+    $expires_at = date('Y-m-d H:i:s', strtotime("+15 minutes"));
+    $stmt = db()->prepare("
+        INSERT INTO tb_admin_password_reset (admin_id, token, expires_at)
+        VALUES (?, ?, ?)
+    ");
+    $stmt->execute([$admin_id, $token, $expires_at]);
+}
+
+function getAdminResetToken($token){
+    $now = date('Y-m-d H:i:s');
+    $stmt = db()->prepare("
+        SELECT * FROM tb_admin_password_reset
+        WHERE token = ? AND expires_at > ?
+    ");
+    $stmt->execute([$token, $now]);
+    return $stmt->fetch();
+}
+
+function deleteAdminResetToken($token){
+    $stmt = db()->prepare("DELETE FROM tb_admin_password_reset WHERE token = ?");
+    $stmt->execute([$token]);
+}
+
+function resetAdminPassword($admin_id, $hashed_password){
+    $stmt = db()->prepare("UPDATE tb_admin SET password = ? WHERE id = ?");
+    $stmt->execute([$hashed_password, $admin_id]);
+}

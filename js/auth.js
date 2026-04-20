@@ -60,14 +60,15 @@ $(document).ready(function(){
         if (e.key === 'Escape') $('#photo-lightbox').removeClass('open');
     });
 
-    // SHOW / HIDE PASSWORD
-    $('.toggle-password').on('click', function(){
+// SHOW / HIDE PASSWORD
+ $('.toggle-password').on('click', function(){
         var targetId = $(this).data('target');
-        var $input = targetId
+         var $input = targetId
             ? $('#' + targetId)
             : $(this).closest('.form-group, .password-wrapper, .password-group').find('input[type="password"], input[type="text"]').first();
-        var isHidden = $input.attr('type') === 'password';
+         var isHidden = $input.attr('type') === 'password';
         $input.attr('type', isHidden ? 'text' : 'password');
+        
         var newIcon = isHidden ? '⌣' : '👁';
         if ($(this).find('.eye-icon').length) {
             $(this).find('.eye-icon').text(newIcon);
