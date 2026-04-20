@@ -5,7 +5,7 @@ function getAllCategories() {
     $stmt = db()->query("
         SELECT DISTINCT c.* 
         FROM tb_category c
-        JOIN tb_product p ON c.id = p.category_id
+        JOIN tb_product p ON c.id = p.category_id AND p.is_active = 1
         WHERE c.id != 0
         ORDER BY c.id ASC
     ");
@@ -50,7 +50,7 @@ function getAllCategoriesWithCount($filters = []) {
     $baseQuery = "
         SELECT c.*, COUNT(p.id) AS product_count 
         FROM tb_category c 
-        LEFT JOIN tb_product p ON c.id = p.category_id 
+        LEFT JOIN tb_product p ON c.id = p.category_id AND p.is_active = 1
     ";
     
     $whereClauses = [];

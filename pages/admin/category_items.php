@@ -142,9 +142,8 @@ if (!isAdmin()) {
                                         </td>
                                         <td>
                                             <div style="display: flex; justify-content: flex-end; gap: 8px; align-items: center;">
-                                                <button type="button" class="btn-outline" style="padding: 4px 10px; font-size: 0.75rem;">Edit</button>
-                                                <button type="button" class="btn-outline" onclick="alert('Remove functionality handled by another module.'); return false;" style="padding: 4px 10px; font-size: 0.75rem; border-color: #FCA5A5; color: var(--danger-text);">Remove</button>
-                                                
+                                                <a href="/pages/admin/product_update.php?id=<?= $product['id'] ?>&cat_id=<?= $category['id'] ?>" class="btn-outline" style="padding: 4px 10px; font-size: 0.75rem; text-decoration: none;">Edit</a>
+                                                <a href="/database/product_delete.php?id=<?= $product['id'] ?>&cat_id=<?= $category['id'] ?>" class="btn-outline" onclick="return confirm('Are you sure you want to delete this product?');" style="padding: 4px 10px; font-size: 0.75rem; border-color: #FCA5A5; color: var(--danger-text); text-decoration: none;">Delete</a>                                                                                                
                                                 <div class="cat-dropdown-container" style="position: relative; display: inline-block;">
                                                     <button type="button" class="btn-outline dropdown-trigger" onclick="toggleCatDropdown(event, <?= $product['id'] ?>)" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--border-input); color: var(--text-body); cursor: pointer;">Change Cat</button>
                                                     
@@ -155,7 +154,7 @@ if (!isAdmin()) {
                                                         </div>
                                                         <div id="cat-list-<?= $product['id'] ?>" style="max-height: 200px; overflow-y: auto; padding: 4px 0;">
                                                             <?php foreach ($all_categories as $cat): ?>
-                                                                <?php if ($cat['id'] != $category['id'] && $cat['is_active'] == 1): ?>
+                                                                <?php if ($cat['id'] != $category['id'] && ($cat['is_active'] == 1 || $cat['id'] == 0)): ?>
                                                                     <div class="cat-form-item" style="margin: 0;">
                                                                         <button type="button" onclick="submitSingleMove(<?= $product['id'] ?>, <?= $cat['id'] ?>, '<?= addslashes(htmlspecialchars($cat['name'])) ?>')" style="width: 100%; text-align: left; background: none; border: none; padding: 8px 16px; font-size: 0.8rem; font-family: 'Inter', sans-serif; cursor: pointer; color: var(--text-body); transition: background 0.15s;" onmouseover="this.style.background='var(--bg-page)'" onmouseout="this.style.background='none'">
                                                                             <?= htmlspecialchars($cat['name']) ?>
@@ -195,7 +194,7 @@ if (!isAdmin()) {
                                 </div>
                                 <div id="cat-list-batch" style="max-height: 250px; overflow-y: auto; padding: 4px 0;">
                                     <?php foreach ($all_categories as $cat): ?>
-                                        <?php if ($cat['id'] != $category['id'] && $cat['is_active'] == 1): ?>
+                                        <?php if ($cat['id'] != $category['id'] && ($cat['is_active'] == 1 || $cat['id'] == 0)): ?>
                                             <div class="cat-form-item" style="margin: 0;">
                                                 <button type="button" onclick="submitBatchMove(<?= $cat['id'] ?>, '<?= addslashes(htmlspecialchars($cat['name'])) ?>')" style="width: 100%; text-align: left; background: none; border: none; padding: 10px 16px; font-size: 0.85rem; font-family: 'Inter', sans-serif; cursor: pointer; color: var(--text-body); transition: background 0.15s;" onmouseover="this.style.background='var(--bg-page)'" onmouseout="this.style.background='none'">
                                                     <?= htmlspecialchars($cat['name']) ?>

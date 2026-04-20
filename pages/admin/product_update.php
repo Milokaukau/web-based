@@ -88,7 +88,10 @@ if (is_post()) {
                     $price, $stock, $photo, $id);
 
         temp('info', 'Record updated');
-        redirect('../admin/admin.php?page=stock');
+        
+        $cat_id = req('cat_id');
+        $return_url = $cat_id ? "/pages/admin/category_items.php?id=" . $cat_id : "../admin/admin.php?page=stock";
+        redirect($return_url);
     }
 }
 
@@ -106,13 +109,15 @@ include '../../components/header.php';
 <div class="page-wrap">
     
     <div class="form-card">
-        <a href="/pages/admin/admin.php?page=stock" class="btn-back">&#8592; Back to Stock</a>
+        <?php $back_url = !empty($_GET['cat_id']) ? "/pages/admin/category_items.php?id=" . htmlspecialchars($_GET['cat_id']) : "/pages/admin/admin.php?page=stock"; ?>
+        <a href="<?= $back_url ?>" class="btn-back">&#8592; Back</a>
 
         <div class="form-card__title">Update product</div>
         <div class="form-card__sub">Edit the fields below and click Submit to save changes.</div>
         <div class="form-card__line"></div>
 
         <form method="post" enctype="multipart/form-data" novalidate>
+            <input type="hidden" name="cat_id" value="<?= htmlspecialchars($_GET['cat_id'] ?? '') ?>">
             <table class="form-table">
                 <tr>
                     <th>ID</th>

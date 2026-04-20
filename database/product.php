@@ -168,10 +168,11 @@ function get_categories(): array {
  */
 function getProductsByCategoryId($category_id) {
     // We use a LEFT JOIN so products without a color still show up
+    // Added AND p.is_active = 1 to hide soft-deleted products
     $sql = "SELECT p.*, c.name AS color_name 
             FROM tb_product p 
             LEFT JOIN tb_color c ON p.color_id = c.id 
-            WHERE p.category_id = ?";
+            WHERE p.category_id = ? AND p.is_active = 1";
             
     $stmt = db()->prepare($sql);
     $stmt->execute([$category_id]);

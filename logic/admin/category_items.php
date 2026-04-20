@@ -61,7 +61,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $category_id = (int)$_GET['id'];
 $category = getCategoryById($category_id);
 $products = getProductsByCategoryId($category_id); 
-$all_categories = getAllCategories(); 
+$all_categories = getAllCategoriesWithCount(); 
 
 if (!$category) {
     redirectWith('/pages/admin/category_list.php', 'error', 'Category not found.');
