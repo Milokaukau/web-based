@@ -47,6 +47,8 @@ include $project_root . 'components/header.php';
             <button type="submit" class="btn btn-primary btn-full">Reset Password</button>
         </form>
 
-        <p class="auth-footer"><a href="/pages/admin/login.php">Back to Admin Login</a></p>
+        <p class="auth-footer"><a href="/pages/admin/login.php">Go Back</a></p>
     </div>
 </div>
+
+<?php include $project_root . 'components/footer.php'; ?>

@@ -1205,3 +1205,13 @@ tr:hover td {
     padding: 28px 20px;
   }
 }
+
+.forgot-password-link {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}

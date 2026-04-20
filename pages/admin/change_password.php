@@ -59,7 +59,7 @@ unset($_SESSION['form_errors'], $_SESSION['form_data']);
                             <!-- Restored the Forgot Password link inline with the label -->
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                                 <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin: 0;">Current Password</label>
-                                <a href="/pages/admin/forgot_password.php?from=change_password" style="font-size: 0.75rem; color: #6b7280; text-decoration: underline;">
+                                 <a href="/pages/admin/forgot_password.php?from=change_password" class="forgot-password-link">
                                     Forgot Password?
                                 </a>
                             </div>

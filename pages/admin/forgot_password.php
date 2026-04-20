@@ -40,7 +40,7 @@ include $project_root . 'components/header.php';
             <?php $from_profile = ($_GET['from'] ?? $_POST['from'] ?? '') === 'change_password'; ?>
             <p class="auth-footer">
                 <a href="<?= $from_profile ? '/pages/admin/change_password.php' : '/pages/admin/login.php' ?>">
-                    <?= $from_profile ? 'Back to Profile' : 'Back to Login' ?>
+                    Go Back
                 </a>
             </p>
 
@@ -67,7 +67,7 @@ include $project_root . 'components/header.php';
             </form>
             <p class="auth-footer">
                 <a href="<?= $from_profile ? '/pages/admin/change_password.php' : '/pages/admin/login.php' ?>">
-                    <?= $from_profile ? 'Back to Profile' : 'Back to Login' ?>
+                    Go Back
                 </a>
             </p>
 
