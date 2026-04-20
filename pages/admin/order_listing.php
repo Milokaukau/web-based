@@ -146,7 +146,7 @@ $order_status_labels = [
                                         </span>
                                     </td>
                                     <td style="font-weight: 600; color: var(--coral);">
-                                        $<?= number_format((float)$data->amount, 2) ?>
+                                        RM<?= number_format((float)$data->amount, 2) ?>
                                     </td>
                                     
                                     <td>

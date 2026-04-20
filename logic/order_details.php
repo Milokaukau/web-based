@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             } elseif ($order_to_cancel->order_status === 'confirmed') {
                 // SCENARIO B: Paid Order (Uses our new database function!)
                 cancelAndRefundOrder($cancel_id);
-                $flash_message = 'Your order has been cancelled and the amount has been instantly refunded.';
+                $flash_message = 'Your order has been cancelled and your refund will be processed shortly.';
             }
             
             $_SESSION['flash'] = [

@@ -82,7 +82,7 @@ $order_status_labels = [
                     
                     <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
                         <strong>Total Amount:</strong> 
-                        <span style="font-weight: 700; color: var(--coral); font-size: 1.1rem;">$<?= number_format($order->amount, 2) ?></span>
+                        <span style="font-weight: 700; color: var(--coral); font-size: 1.1rem;">RM<?= number_format($order->amount, 2) ?></span>
                     </div>
 
                     <!-- Modification action grouped in overview (On the same line) -->
@@ -155,10 +155,10 @@ $order_status_labels = [
                                     <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Color: <?= htmlspecialchars($item->color_name) ?></div>
                                 <?php endif; ?>
                             </td>
-                            <td style="text-align: center;">$<?= number_format((float)$item->purchase_price, 2) ?></td>
+                            <td style="text-align: center;">RM<?= number_format((float)$item->purchase_price, 2) ?></td>
                             <td style="text-align: center; font-weight: 500;"><?= htmlspecialchars($item->quantity) ?></td>
                             <td style="text-align: right; font-weight: 600; color: var(--coral);">
-                                $<?= number_format(((float)$item->purchase_price * (int)$item->quantity), 2) ?>
+                                RM<?= number_format(((float)$item->purchase_price * (int)$item->quantity), 2) ?>
                             </td>
                         </tr>
                         <?php endforeach; ?>
