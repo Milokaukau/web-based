@@ -44,6 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         resetAdminPassword($token_row->admin_id, password_hash($new_pass, PASSWORD_DEFAULT));
         deleteAdminResetToken($token);
-        redirectWith('/pages/admin/login.php', 'success', 'Password reset successfully. You can now log in.');
+        redirectWith('/pages/admin/login.php', 'success', 'Password reset successfully. You can now log in using the new password.');
     }
 }
