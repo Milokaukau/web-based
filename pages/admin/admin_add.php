@@ -74,9 +74,9 @@ if (!isAdmin()) {
 
                     <div class="form-row">
                         <label for="password" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Temporary Password</label>
-                        <input type="password" id="password" name="password" 
+                        <input type="password" id="password" name="password" minlength="8"
                                style="width: 100%; padding: 10px 14px; border: 1px solid var(--border-input); border-radius: 9px; background: var(--bg-input);">
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Must be at least 6 characters.</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Must be at least 8 characters.</div>
                         <?php if (!empty($errors['password'])) echo "<div style='color: var(--danger-text); font-size: 0.8rem; margin-top: 5px;'>" . htmlspecialchars($errors['password']) . "</div>"; ?>
                     </div>
 
