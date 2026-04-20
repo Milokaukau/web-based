@@ -148,6 +148,9 @@ $photo_url = !empty($member->photo)
 
             <button type="submit" class="btn btn-primary">Update Password</button>
         </form>
+        <p class="forgot-link" style="margin-top: 14px;">
+            <a href="/pages/forgot_password.php?from=profile&email=<?= urlencode($member->email) ?>">Forgot password?</a>
+        </p>
     </div>
 
     <!-- TAB: PROFILE PHOTO -->

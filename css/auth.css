@@ -70,17 +70,17 @@
     box-sizing: border-box;
 }
 
-.toggle-password{
+.toggle-password {
     position: absolute;
     right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 10px;        
+    transform: none;  
     background: none;
     border: none;
     cursor: pointer;
     font-size: 0.95rem;
     color: #888;
-    padding:0;
+    padding: 0;
     line-height: 1;
     z-index: 1;
 }

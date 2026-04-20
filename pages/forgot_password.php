@@ -3,11 +3,12 @@ $project_root = $_SERVER['DOCUMENT_ROOT'] . "/";
 require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
-// redirect away if user is already logged in
-if (isLoggedIn()){
-    header("Location: /pages/home.php");
-    exit;
-}
+// redirect away if user is already logged in, UNLESS they came from their profile
+//$from_profile = ($_GET['from'] ?? $_POST['from'] ?? '') === 'profile'
+//if (isLoggedIn() && !$from_profile){
+//    header("Location: /pages/home.php");
+ //   exit;
+//}
 
 require $project_root . "logic/forgot_password.php";
 
@@ -40,16 +41,21 @@ include $project_root . 'components/header.php';
 
             <p style="text-align:center;margin-top:16px;font-size:14px;">
                 Didn't receive an email?
-                <a href="/pages/forgot_password.php" class="try-again-link">Try again</a>
+                <a href="/pages/forgot_password.php<?= $from_profile ? '?from=profile' : '' ?>" class="try-again-link">Try again</a>
             </p>
 
-            <p class="auth-footer"><a href="/pages/login.php">Back to Login</a></p>
+            <p class="auth-footer">
+                <a href="<?= isLoggedIn() ? '/pages/profile.php' : '/pages/login.php' ?>">
+                    Go Back
+                </a>
+            </p>
 
         <?php else: ?>
 
             <p class="forgot-desc">A reset password link will be sent to your email address.</p>
 
             <form id="forgot-form" method="POST" novalidate>
+                <input type="hidden" name="from" value="<?= $from_profile ? 'profile' : '' ?>">
 
                 <div class="form-group">
                     <label for="email">Email Address</label>
@@ -65,7 +71,11 @@ include $project_root . 'components/header.php';
                 <button type="submit" class="btn btn-primary btn-full">Send Reset Link</button>
             </form>
 
-            <p class="auth-footer"><a href="/pages/login.php">Back to Login</a></p>
+            <p class="auth-footer">
+                <a href="<?= isLoggedIn() ? '/pages/profile.php' : '/pages/login.php' ?>">
+                    Go Back
+                </a>
+            </p>
 
         <?php endif; ?>
     </div>

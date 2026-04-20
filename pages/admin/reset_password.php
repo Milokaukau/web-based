@@ -3,12 +3,6 @@ $project_root = $_SERVER['DOCUMENT_ROOT'] . "/";
 require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
-// Redirect away if already logged in as admin
-// if (isAdmin()) {
-//     header("Location: /pages/admin/admin.php");
-//     exit;
-// }
-
 require $project_root . "logic/reset_password_admin.php";
 
 $_title = 'Admin Reset Password';
@@ -53,7 +47,7 @@ include $project_root . 'components/header.php';
             <button type="submit" class="btn btn-primary btn-full">Reset Password</button>
         </form>
 
-        <p class="auth-footer"><a href="/pages/admin/login.php">Back to Admin Login</a></p>
+        <p class="auth-footer"><a href="/pages/admin/login.php">Go Back</a></p>
     </div>
 </div>
 

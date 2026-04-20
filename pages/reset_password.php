@@ -3,12 +3,6 @@ $project_root = $_SERVER['DOCUMENT_ROOT'] . "/";
 require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
-// redirect away if already logged in
-if (isLoggedIn()){
-    header("Location: /pages/home.php");
-    exit;
-}
-
 require $project_root . "logic/reset_password.php";
 
 $_title = 'Reset Password';
@@ -54,7 +48,7 @@ include $project_root . 'components/header.php';
             <button type="submit" class="btn btn-primary btn-full">Reset Password</button>
         </form>
 
-        <p class="auth-footer"><a href="/pages/login.php">Back to Login</a></p>
+        <p class="auth-footer"><a href="/pages/login.php">Go Back</a></p>
     </div>
 </div>
 

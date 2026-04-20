@@ -3,15 +3,9 @@ $project_root = $_SERVER['DOCUMENT_ROOT'] . "/";
 require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
-// redirect away if user is already logged in
-if (isLoggedIn()){
-    header("Location: /pages/home.php");
-    exit;
-}
+require $project_root . "logic/forgot_password_admin.php";
 
-require $project_root . "logic/forgot_password.php";
-
-$_title = 'Forgot Password';
+$_title = 'Admin Forgot Password';
 include $project_root . 'components/header.php';
 ?>
 
@@ -19,7 +13,7 @@ include $project_root . 'components/header.php';
     <div class="auth-box">
         <h2 class="auth-title">Forgot Password</h2>
 
-        <?php 
+        <?php
         $flash = $_SESSION['flash'] ?? null;
         unset($_SESSION['flash']);
         ?>
@@ -40,21 +34,28 @@ include $project_root . 'components/header.php';
 
             <p style="text-align:center;margin-top:16px;font-size:14px;">
                 Didn't receive an email?
-                <a href="/pages/forgot_password.php" class="try-again-link">Try again</a>
+                <a href="/pages/admin/forgot_password.php" class="try-again-link">Try again</a>
             </p>
 
-            <p class="auth-footer"><a href="/pages/login.php">Back to Login</a></p>
+            <?php $from_profile = ($_GET['from'] ?? $_POST['from'] ?? '') === 'change_password'; ?>
+            <p class="auth-footer">
+                <a href="<?= $from_profile ? '/pages/admin/change_password.php' : '/pages/admin/login.php' ?>">
+                    Go Back
+                </a>
+            </p>
 
         <?php else: ?>
 
-            <p class="forgot-desc">A reset password link will be sent to your email address.</p>
+            <?php $from_profile = ($_GET['from'] ?? '') === 'change_password'; ?>
+            <p class="forgot-desc">A reset password link will be sent to your admin email address.</p>
 
             <form id="forgot-form" method="POST" novalidate>
+                <input type="hidden" name="from" value="<?= $from_profile ? 'change_password' : '' ?>">
 
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" name="email"
-                        value="<?= htmlspecialchars($_POST['email'] ?? $_GET['email'] ?? '') ?>"
+                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                         placeholder="you@example.com"
                         class="<?= isset($errors['email']) ? 'input-error' : '' ?>">
                     <?php if (!empty($errors['email'])): ?>
@@ -64,11 +65,12 @@ include $project_root . 'components/header.php';
 
                 <button type="submit" class="btn btn-primary btn-full">Send Reset Link</button>
             </form>
-
-            <p class="auth-footer"><a href="/pages/login.php">Back to Login</a></p>
+            <p class="auth-footer">
+                <a href="<?= $from_profile ? '/pages/admin/change_password.php' : '/pages/admin/login.php' ?>">
+                    Go Back
+                </a>
+            </p>
 
         <?php endif; ?>
     </div>
 </div>
-
-<?php include $project_root . 'components/footer.php'; ?>
