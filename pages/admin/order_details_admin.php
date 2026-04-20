@@ -19,10 +19,20 @@ if (!$order) {
 }
 
 $order_status_labels = [
-    'pending_payment' => 'Pending Payment', 'confirmed' => 'Confirmed',
-    'in_delivery' => 'In Delivery', 'delivered' => 'Delivered',
-    'completed' => 'Completed', 'cancelled' => 'Cancelled',
-    'pending_refund' => 'Pending Refund', 'refunded' => 'Refunded',
+    'pending_payment' => 'Pending Payment', 
+    'confirmed'       => 'Confirmed',
+    'in_delivery'     => 'In Delivery', 
+    'delivered'       => 'Delivered',
+    'completed'       => 'Completed', 
+    'cancelled'       => 'Cancelled',
+];
+
+$payment_status_labels = [
+    'processing'     => 'Processing',
+    'success'        => 'Success',
+    'failed'         => 'Failed',
+    'pending_refund' => 'Pending Refund',
+    'refunded'       => 'Refunded',
 ];
 ?>
 <!DOCTYPE html>
@@ -65,7 +75,7 @@ $order_status_labels = [
                 <div class="feature-card" style="flex: 1; max-width: none; text-align: left; padding: 24px; background: #fff; border-radius: 12px; border: 1px solid var(--border-card); box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
                     <h3 style="margin-bottom: 16px; color: var(--text-dark); border-bottom: 1px solid var(--border-card); padding-bottom: 8px;">Order Overview</h3>
                     
-                    <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                                        <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
                         <strong>Date:</strong> 
                         <span><?= date('M d, Y h:i A', strtotime($order->created_at)) ?></span>
                     </div>
@@ -75,20 +85,26 @@ $order_status_labels = [
                         <span><?= !empty($order->payment_method) ? htmlspecialchars(ucwords(str_replace('_', ' ', $order->payment_method))) : '-' ?></span>
                     </div>
                     
-                    <div style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
-                        <strong>Payment Status:</strong> 
-                        <span class="badge <?= $order->payment_status === 'success' ? 'badge-valid' : 'badge-invalid' ?>"><?= htmlspecialchars(strtoupper($order->payment_status ?? 'UNKNOWN')) ?></span>
-                    </div>
-                    
                     <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
                         <strong>Total Amount:</strong> 
                         <span style="font-weight: 700; color: var(--coral); font-size: 1.1rem;">RM<?= number_format($order->amount, 2) ?></span>
                     </div>
 
-                    <!-- Modification action grouped in overview (On the same line) -->
+                    <!-- Modification actions grouped in overview -->
                     <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-card); display: flex; align-items: center; justify-content: space-between;">
-                        <strong>Modify Status:</strong>
-                        <select class="filter-sel status-dropdown" data-order-id="<?= htmlspecialchars($order->order_id) ?>" style="width: auto; min-width: 140px; margin: 0; font-size: 0.9rem; padding: 6px 10px;">
+                        <strong>Payment Status:</strong>
+                        <select class="filter-sel status-dropdown" data-order-id="<?= htmlspecialchars($order->order_id) ?>" data-update-type="payment_status" style="width: auto; min-width: 155px; margin: 0; font-size: 0.9rem; padding: 6px 10px;">
+                            <?php foreach ($payment_status_labels as $val => $label): ?>
+                                <option value="<?= $val ?>" <?= ($order->payment_status === $val) ? 'selected' : '' ?>>
+                                    <?= $label ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <strong>Order Status:</strong>
+                        <select class="filter-sel status-dropdown" data-order-id="<?= htmlspecialchars($order->order_id) ?>" data-update-type="order_status" style="width: auto; min-width: 155px; margin: 0; font-size: 0.9rem; padding: 6px 10px;">
                             <?php foreach ($order_status_labels as $val => $label): ?>
                                 <option value="<?= $val ?>" <?= ($order->order_status === $val) ? 'selected' : '' ?>>
                                     <?= $label ?>
@@ -176,6 +192,7 @@ $order_status_labels = [
 document.querySelectorAll('.status-dropdown').forEach(function(dropdown) {
     dropdown.addEventListener('change', function() {
         const orderId = this.dataset.orderId;
+        const updateType = this.dataset.updateType || 'order_status'; // Capture the type
         const newStatus = this.value;
         const originalShadow = this.style.boxShadow;
         
@@ -183,15 +200,17 @@ document.querySelectorAll('.status-dropdown').forEach(function(dropdown) {
 
         const formData = new FormData();
         formData.append('order_id', orderId);
+        formData.append('update_type', updateType); // Send it up
         formData.append('status', newStatus);
 
+        // Uses the router you built in order_listing.php
         fetch('/pages/admin/order_listing.php', {
             method: 'POST',
             body: formData
         }).then(response => {
             setTimeout(() => { this.style.boxShadow = originalShadow; }, 500);
         }).catch(err => {
-            alert('Failed to update order status.');
+            alert('Failed to update status.');
             this.style.boxShadow = originalShadow;
         });
     });

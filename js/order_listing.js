@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".status-dropdown").forEach(function (dropdown) {
     dropdown.addEventListener("change", function () {
       const orderId = this.dataset.orderId;
+      const type = this.dataset.updateType || "order_status"; // Distinguish which status to modify
       const newStatus = this.value;
       const originalShadow = this.style.boxShadow;
 
@@ -10,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const formData = new FormData();
       formData.append("order_id", orderId);
+      formData.append("update_type", type);
       formData.append("status", newStatus);
-
       fetch("/pages/admin/order_listing.php", {
         method: "POST",
         body: formData,

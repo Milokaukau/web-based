@@ -267,8 +267,8 @@ function cancelAndRefundOrder($order_id) {
         $stmtOrder = $db->prepare("UPDATE tb_order SET status = 'cancelled' WHERE id = ?");
         $stmtOrder->execute([$order_id]);
         
-        // 2. Update Payment Status to refunded
-        $stmtPay = $db->prepare("UPDATE tb_payment SET status = 'refunded' WHERE order_id = ? AND status = 'success'");
+        // 2. Update Payment Status to pending_refund (was 'refunded')
+        $stmtPay = $db->prepare("UPDATE tb_payment SET status = 'pending_refund' WHERE order_id = ? AND status = 'success'");
         $stmtPay->execute([$order_id]);
         
         // 3. Restore Stock
@@ -305,6 +305,10 @@ function getFilteredOrderList($filters = []) {
         $whereClauses[] = "(SELECT method FROM tb_payment WHERE order_id = o.id ORDER BY id DESC LIMIT 1) = ?";
         $params[] = $filters['payment_method'];
     }
+        if (!empty($filters['payment_status'])) {
+        $whereClauses[] = "(SELECT status FROM tb_payment WHERE order_id = o.id ORDER BY id DESC LIMIT 1) = ?";
+        $params[] = $filters['payment_status'];
+    }
     // Updated date range filtering
     if (!empty($filters['date_from'])) {
         $whereClauses[] = "DATE(o.created_at) >= ?";
@@ -323,4 +327,15 @@ function getFilteredOrderList($filters = []) {
     $stmt = db()->prepare($baseQuery);
     $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
+function updateOrderPaymentStatus($order_id, $status) {
+    // Uses ORDER BY ... LIMIT 1 to only update the latest payment attempt for that order
+    $stmt = db()->prepare("
+        UPDATE tb_payment 
+        SET status = ? 
+        WHERE order_id = ?
+        ORDER BY id DESC LIMIT 1
+    ");
+    $stmt->execute([$status, $order_id]); 
 }
