@@ -54,7 +54,7 @@ include $project_root . 'components/header.php';
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" name="email"
-                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                        value="<?= htmlspecialchars($_POST['email'] ?? $_GET['email'] ?? '') ?>"
                         placeholder="you@example.com"
                         class="<?= isset($errors['email']) ? 'input-error' : '' ?>">
                     <?php if (!empty($errors['email'])): ?>

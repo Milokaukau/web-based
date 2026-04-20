@@ -30,6 +30,7 @@ $categories = getAllCategories() ?: []; // Ensure it's at least an empty array
         <title><?= 'NOAIR | ' . ($_title ?? 'NOAIR') ?></title>
         <link rel="stylesheet" href="/css/style.css">  
         <link rel="stylesheet" href="/css/auth.css">
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     </head>
 <body>
     <header class="site-header">
