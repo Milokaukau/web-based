@@ -44,9 +44,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $errors['password2'] = 'Passwords do not match.';
 
     if (empty($errors)){
-        $id = registerMember($name, $email, $password, $gender, $phone);
-        header("Location: /pages/login.php");
-        exit;
+        try {
+            $id = registerMember($name, $email, $password, $gender, $phone);
+            header("Location: /pages/login.php");
+            exit;
+        } catch (PDOException $e) {
+            // Check if the error code is exactly the 23000 constraint violation
+            if ($e->getCode() == 23000) {
+                $errors['email'] = 'This email is already registered. Please log in.';
+            } else {
+                // Fallback for other database errors
+                $errors['general'] = 'Registration failed due to a server error. Please try again.';
+            }
+        }
     }
 
 }
