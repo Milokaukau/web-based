@@ -91,19 +91,19 @@ $payment_status_labels = [
                         <input type="hidden" name="member_id" id="hidden-member-val" value="<?= htmlspecialchars($_GET['member_id'] ?? '') ?>">
                     </div>
 
-                    <!-- 2. Order Status Filter -->
-                    <select name="order_status" class="filter-sel" onchange="this.form.submit()">
-                        <option value="">All Order Statuses</option>
-                        <?php foreach ($order_status_labels as $val => $label): ?>
-                            <option value="<?= $val ?>" <?= (isset($_GET['order_status']) && $_GET['order_status'] === $val) ? 'selected' : '' ?>><?= $label ?></option>
-                        <?php endforeach; ?>
-                    </select>
-
                     <!-- 2B. Payment Status Filter -->
                     <select name="payment_status" class="filter-sel" onchange="this.form.submit()">
                         <option value="">All Payment Statuses</option>
                         <?php foreach ($payment_status_labels as $val => $label): ?>
                             <option value="<?= $val ?>" <?= (isset($_GET['payment_status']) && $_GET['payment_status'] === $val) ? 'selected' : '' ?>><?= $label ?></option>
+                        <?php endforeach; ?>
+                    </select>
+
+                    <!-- 2. Order Status Filter -->
+                    <select name="order_status" class="filter-sel" onchange="this.form.submit()">
+                        <option value="">All Order Statuses</option>
+                        <?php foreach ($order_status_labels as $val => $label): ?>
+                            <option value="<?= $val ?>" <?= (isset($_GET['order_status']) && $_GET['order_status'] === $val) ? 'selected' : '' ?>><?= $label ?></option>
                         <?php endforeach; ?>
                     </select>
 
