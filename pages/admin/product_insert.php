@@ -207,4 +207,4 @@ function initPhotoPreview() {
 initPhotoPreview();
 </script>
 
-<?php include '../../components/footer.php'; ?>
+<?php include '../../components/admin_footer.php'; ?>

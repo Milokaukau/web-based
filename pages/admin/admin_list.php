@@ -189,7 +189,7 @@ requireSuperAdmin();
     </div><!-- /content -->
 </div><!-- /layout -->
 
-<?php include $project_root . "components/footer.php"; ?>
+<?php include $project_root . "components/admin_footer.php"; ?>
 <script src="/js/admin_list.js"></script>
 <script src="/js/admin.js"></script>
 </body>

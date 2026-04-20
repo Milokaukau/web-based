@@ -179,7 +179,7 @@ $order_status_labels = [
     </div>
 </div>
 
-<?php include $project_root . "components/footer.php"; ?>
+<?php include $project_root . "components/admin_footer.php"; ?>
 <script src="/js/admin.js"></script>
 <script src="/js/order_listing.js"></script>
 </body>

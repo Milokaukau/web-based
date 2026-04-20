@@ -41,10 +41,6 @@ function is_active($paths, $current_uri) {
         <span class="nav-icon">&#128110;</span> Admins
     </a>
     <?php endif; ?>
-
-    <a class="nav-item <?= $active === 'product' ? 'active' : '' ?>" href="/pages/product_maintenance.php">
-        <span class="nav-icon">&#128230;</span> Product
-    </a>
     
     <a class="nav-link <?= is_active(['category_list.php', 'category_items.php', 'category_add.php'], $current_uri) ?>" href="/pages/admin/category_list.php">
         <span class="nav-icon">&#128193;</span> Categories

@@ -147,7 +147,7 @@ $order_status_labels = [
                         <tr>
                             <td style="color: var(--text-muted); font-weight: 600;"><?= $row_idx++ ?></td>
                             <td>
-                                <img src="/uploads/products/<?= htmlspecialchars($item->photo) ?>" alt="<?= htmlspecialchars($item->product_name) ?>" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-card);">
+                                <img src="/images/<?= htmlspecialchars($item->photo) ?>" alt="<?= htmlspecialchars($item->product_name) ?>" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-card);">
                             </td>
                             <td>
                                 <div style="font-weight: 600; color: var(--text-dark);"><?= htmlspecialchars($item->product_name) ?></div>
@@ -170,7 +170,7 @@ $order_status_labels = [
     </div>
 </div>
 
-<?php include $project_root . "components/footer.php"; ?>
+<?php include $project_root . "components/admin_footer.php"; ?>
 <script src="/js/admin.js"></script>
 <script>
 document.querySelectorAll('.status-dropdown').forEach(function(dropdown) {

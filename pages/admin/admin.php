@@ -934,7 +934,7 @@ $highAttempts = getHighAttempts();
     </div><!-- /content -->
 </div><!-- /layout -->
 
-<?php require $project_root . "components/footer.php"; ?>
+<?php require $project_root . "components/admin_footer.php"; ?>
 <script src="/js/admin.js"></script>
 </body>
 </html>
