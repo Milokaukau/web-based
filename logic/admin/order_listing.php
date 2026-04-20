@@ -9,11 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'], $_POST['s
     if (isset($_POST['update_type']) && $_POST['update_type'] === 'payment_status') {
         updateOrderPaymentStatus($_POST['order_id'], $_POST['status']);
     } else {
-        if ($_POST['status'] === 'cancelled') {
-            cancelAndRefundOrder($_POST['order_id']);
-        } else {
-            updateOrderStatus($_POST['order_id'], $_POST['status']);
-        }
+        updateOrderStatus($_POST['order_id'], $_POST['status']);
     }
     echo "success";
     exit;

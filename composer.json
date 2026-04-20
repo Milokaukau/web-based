@@ -1,11 +1,4 @@
 {
-    "name": "xxxyy/web-based",
-    "authors": [
-        {
-            "name": "Kelly",
-            "email": "kellyngui2006@gmail.com"
-        }
-    ],
     "require": {
         "stripe/stripe-php": "^20.0"
     }

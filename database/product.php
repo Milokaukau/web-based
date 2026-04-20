@@ -1,9 +1,25 @@
 <?php
 require_once "db.php";
 
+// ══════════════════════════════════════════════════════════════
+//  READ — single product
+// ══════════════════════════════════════════════════════════════
+
+function getProductById($id) {
+    if (!$id) return null;
+    $stmt = db()->prepare("
+        SELECT p.*, cat.name AS category_name
+        FROM   tb_product p
+        LEFT JOIN tb_category cat ON p.category_id = cat.id
+        WHERE  p.id = ?
+    ");
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_OBJ);
+}
+
 function getFirstProductByCategory($category_id) {
     if (!$category_id) return null;
-    $stmt = db()->prepare("SELECT id FROM tb_product WHERE category_id = ? AND is_active = 1 LIMIT 1");
+    $stmt = db()->prepare("SELECT id FROM tb_product WHERE category_id = ? LIMIT 1");
     $stmt->execute([$category_id]);
     return $stmt->fetch(PDO::FETCH_OBJ);
 }
@@ -33,6 +49,17 @@ function getProductsByCategory($category_id): array {
         LEFT JOIN tb_category cat ON p.category_id = cat.id
         WHERE  p.category_id = ?
         GROUP BY p.name
+    ");
+    $stmt->execute([$category_id]);
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+}
+
+function getVariantsByCategory($category_id): array {
+    if (!$category_id) return [];
+    $stmt = db()->prepare("
+        SELECT id, name, color_id, photo, stock
+        FROM   tb_product
+        WHERE  category_id = ?
     ");
     $stmt->execute([$category_id]);
     return $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -166,35 +193,4 @@ function updateProductCategory($product_id, $new_category_id) {
 function moveAllProductsToCategory($old_category_id, $new_category_id) {
     $stmt = db()->prepare("UPDATE tb_product SET category_id = ? WHERE category_id = ?");
     return $stmt->execute([$new_category_id, $old_category_id]);
-}
-
-function getProductById($id) {
-    if (!$id) return null;
-    $stmt = db()->prepare("
-        SELECT p.*, cat.name AS category_name
-        FROM   tb_product p
-        LEFT JOIN tb_category cat ON p.category_id = cat.id
-        WHERE  p.id = ? AND p.is_active = 1
-    ");
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_OBJ);
-}
-
-function getVariantsByCategory($category_id): array {
-    if (!$category_id) return [];
-    $stmt = db()->prepare("
-        SELECT id, name, color_id, photo, stock
-        FROM   tb_product
-        WHERE  category_id = ? AND is_active = 1
-    ");
-    $stmt->execute([$category_id]);
-    return $stmt->fetchAll(PDO::FETCH_OBJ);
-}
-
-function getProductCategoryId($id) {
-    if (!$id) return null;
-    $stmt = db()->prepare("SELECT category_id FROM tb_product WHERE id = ?");
-    $stmt->execute([$id]);
-    $row = $stmt->fetch(PDO::FETCH_OBJ);
-    return $row ? $row->category_id : null;
 }
