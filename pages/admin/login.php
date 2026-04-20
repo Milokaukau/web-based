@@ -16,7 +16,7 @@ include $project_root . 'components/header.php';
 
 <div class="auth-container">
     <div class ="auth-box">
-        <h2 class="auth-title">LOGIN</h2>
+        <h2 class="auth-title">ADMIN LOGIN</h2>
 
         <?php if (!empty($_SESSION['flash'])): ?>
             <div class="alert alert-<?= $_SESSION['flash']['type'] ?>">
@@ -31,7 +31,7 @@ include $project_root . 'components/header.php';
         <?php endif; ?>
 
         <form id="login-form" method="POST" novalidate>
-            <input type="hidden" name="role" value="member">
+            <input type="hidden" name="role" value="admin">
 
             <div class="form-group">
                 <input type="text" id="login" name="login" placeholder="Email"
@@ -69,7 +69,7 @@ include $project_root . 'components/header.php';
         </form>
 
         <p class="auth-footer">New User? <a href="/pages/register.php">Create</a></p>
-        <p class="auth-footer admin-link"><a href="/pages/admin/login.php">Login as Admin</a></p>
+        <p class="auth-footer admin-link"><a href="/pages/login.php">Login as Member</a></p>
     </div>
 </div>
 
