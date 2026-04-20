@@ -15,11 +15,11 @@
                         </div>
                         <div class="footer-contact-item">
                             <span class="footer-contact-icon">✉️</span>
-                            <span>hello@noair.com</span>
+                            <a href="mailto:hello@noair.com">hello@noair.com</a>
                         </div>
                         <div class="footer-contact-item">
                             <span class="footer-contact-icon">📞</span>
-                            <span>+60 3-4145 0123</span>
+                            <a href="tel:+60341450123">+60 3-4145 0123</a>
                         </div>
                     </div>
                 </div>

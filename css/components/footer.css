@@ -70,6 +70,17 @@
     margin-top: 1px;
 }
 
+.footer-contact-item a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-contact-item a:hover {
+    color: var(--primary, #e91e8c);
+    text-decoration: underline;
+}
+
 /* Right: Map */
 .footer-map {
     display: flex;
