@@ -56,8 +56,10 @@ require $project_root."components/header.php";
 
             <div class="option-group">
                 <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                    <span class="option-label">Size: <span class="selected-value"><?= htmlspecialchars($arr->category_name ?? 'Standard') ?></span></span>
-                </div>
+                <?php if ($arr->category_id != 0): ?>    
+                    <span class="option-label">Category: <span class="selected-value"><?= htmlspecialchars($arr->category_name ?? 'Standard') ?></span></span>
+                <?php endif; ?>
+            </div>
             </div>
 
             <div class="option-group">
