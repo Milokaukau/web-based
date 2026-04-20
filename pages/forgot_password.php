@@ -3,8 +3,9 @@ $project_root = $_SERVER['DOCUMENT_ROOT'] . "/";
 require $project_root . "config.php";
 require_once $project_root . "logic/auth_helper.php";
 
-// redirect away if user is already logged in
-if (isLoggedIn()){
+// redirect away if user is already logged in, UNLESS they came from their profile
+$from_profile = isset($_GET['email']) || isset($_POST['email']);
+if (isLoggedIn() && !$from_profile){
     header("Location: /pages/home.php");
     exit;
 }
@@ -43,7 +44,11 @@ include $project_root . 'components/header.php';
                 <a href="/pages/forgot_password.php" class="try-again-link">Try again</a>
             </p>
 
-            <p class="auth-footer"><a href="/pages/login.php">Back to Login</a></p>
+            <p class="auth-footer">
+                <a href="<?= isLoggedIn() ? '/pages/profile.php' : '/pages/login.php' ?>">
+                    <?= isLoggedIn() ? 'Back to Profile' : 'Back to Login' ?>
+                </a>
+            </p>
 
         <?php else: ?>
 
@@ -65,7 +70,11 @@ include $project_root . 'components/header.php';
                 <button type="submit" class="btn btn-primary btn-full">Send Reset Link</button>
             </form>
 
-            <p class="auth-footer"><a href="/pages/login.php">Back to Login</a></p>
+            <p class="auth-footer">
+                <a href="<?= isLoggedIn() ? '/pages/profile.php' : '/pages/login.php' ?>">
+                    <?= isLoggedIn() ? 'Back to Profile' : 'Back to Login' ?>
+                </a>
+            </p>
 
         <?php endif; ?>
     </div>

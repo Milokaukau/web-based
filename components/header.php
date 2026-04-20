@@ -7,15 +7,39 @@ $project_root = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\') . DIRECTORY_SEPARATOR;
 
 require_once $project_root . "database/product.php";
 require_once $project_root . "database/category.php";
+require_once $project_root . "database/cart.php";
+require_once $project_root . "database/wishlist.php";
 require_once $project_root . "logic/auth_helper.php";
 
-$isLoggedIn = isset($_SESSION['user_id']);
+$isLoggedIn = isMember();
 
-$wishlistCount = isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0;
+$wishlistCount = 0;
 $cartCount = 0;
-if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $cartCount += $item['qty'] ?? 0;
+
+if ($isLoggedIn) {
+    // If logged in, fetch live totals from the database
+    $member_id = $_SESSION['member_id'];
+    
+    // Cart total
+    $cart_items = getCartByMemberId($member_id);
+    if (!empty($cart_items)) {
+        foreach ($cart_items as $item) {
+            $cartCount += $item->quantity; 
+        }
+    }
+    
+    // Wishlist total
+    $wishlist_items = getWishlistByMemberId($member_id);
+    if (!empty($wishlist_items)) {
+        $wishlistCount = count($wishlist_items);
+    }
+} else {
+    // If not logged in, rely on the guest session cache
+    $wishlistCount = isset($_SESSION['wishlist']) ? count($_SESSION['wishlist']) : 0;
+    if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $item) {
+            $cartCount += $item['qty'] ?? 0;
+        }
     }
 }
 
@@ -81,7 +105,10 @@ $categories = getAllCategories() ?: []; // Ensure it's at least an empty array
                         CART 🛒 <span class="cart-count"><?= $cartCount > 0 ? $cartCount : "" ?></span>
                     </a>
 
-                
+                <?php elseif(isAdmin()): ?>
+                    <a href="/pages/admin/admin.php">ADMIN PANEL</a>
+                    <span>|</span>
+                    <a href="/pages/logout.php" style="color: #d9534f;">LOGOUT</a>
 
                 <?php else: ?>
                     <a href="/pages/login.php">PROFILE</a>
