@@ -98,21 +98,6 @@ if ($action === 'update_order_status' && $_SERVER['REQUEST_METHOD'] === 'POST') 
     exit;
 }
 
-if ($action === 'change_pw' && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $new  = $_POST['new_password']     ?? '';
-    $conf = $_POST['confirm_password'] ?? '';
-    if ($new && $new === $conf && strlen($new) >= 6) {
-        $hashed = password_hash($new, PASSWORD_DEFAULT);
-        $stmt   = db()->prepare("UPDATE tb_admin SET password = ? WHERE id = ?");
-        $stmt->execute([$hashed, $_SESSION['admin_id'] ?? 1]);
-        $_SESSION['flash'] = ['type' => 'success', 'message' => 'Password updated successfully.'];
-    } else {
-        $_SESSION['flash'] = ['type' => 'error', 'message' => 'Passwords do not match or are too short (min 6 chars).'];
-    }
-    header("Location: /pages/admin/admin.php?page=profile");
-    exit;
-}
-
 // ── Shared page state ─────────────────────────────────────────────────────
 $active_page = $_GET['page'] ?? 'members';
 
@@ -915,8 +900,15 @@ $highAttempts = getHighAttempts();
                             <span class="profile-val"><span class="badge badge-valid">Active</span></span>
                         </div>
                     </div>
+
+                    <div style="display:flex; justify-content:center; margin-top:24px;">
+                        <a href="/pages/admin/change_password.php" class="btn-primary" style="padding: 10px 24px; text-decoration: none;">
+                            Change Password
+                        </a>
+                    </div>
                 </div>
             </div>
+            
         </section>
 
 

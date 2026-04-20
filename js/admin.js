@@ -53,6 +53,13 @@ document.querySelectorAll(".nav-link").forEach((link) => {
     }
     // Force highlight the parent lists if inside sub-menus:
     else if (
+      currentPath.includes("change_password.php") &&
+      linkUrl.searchParams.get("page") === "profile"
+    ) {
+      link.classList.add("active");
+    }
+    // Force highlight the parent lists if inside sub-menus:
+    else if (
       (currentPath.includes("admin_add.php") ||
         currentPath.includes("admin_edit.php")) &&
       linkUrl.pathname.includes("admin_list.php")
@@ -73,4 +80,17 @@ document.querySelectorAll(".nav-link").forEach((link) => {
       link.classList.add("active");
     }
   }
+});
+
+/* ───────────── SHOW/HIDE PASSWORD TOGGLE ───────────── */
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".toggle-password").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      const input = this.previousElementSibling;
+      const isHidden = input.getAttribute("type") === "password";
+
+      input.setAttribute("type", isHidden ? "text" : "password");
+      this.textContent = isHidden ? "⌣" : "👁";
+    });
+  });
 });
