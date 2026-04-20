@@ -1,5 +1,5 @@
 /* --- 1. IMPORTS --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap");
 @import url("components/header.css");
 @import url("components/footer.css");
 @import url("components/index.css");
@@ -13,49 +13,54 @@
 @import url("components/shop.css");
 @import url("components/search.css");
 @import url("components/order.css");
+@import url("components/order_listing.css");
+@import url("components/order_history.css");
+@import url("components/order_details.css");
 
 /* --- 2. GLOBAL VARIABLES --- */
 :root {
-    /* Primary Branding (Main Scale Center) */
-    --main-coral: #F39E9E;
-    --main-coral-dark: #e08585;
-    --main-coral-soft: #ffb8b8;
+  /* Primary Branding (Main Scale Center) */
+  --main-coral: #f39e9e;
+  --main-coral-dark: #e08585;
+  --main-coral-soft: #ffb8b8;
 
-    /* Supporting Palette */
-    --brand-accent: #A280A8;
-    /* Amethyst */
-    --brand-secondary: #D98DAD;
-    /* Rose */
+  /* Supporting Palette */
+  --brand-accent: #a280a8; /* Amethyst */
+  --brand-secondary: #d98dad; /* Rose */
 
-    /* Backgrounds & Neutrals */
-    --bg-peach: #F0C9A3;
-    --bg-cream: #E6DBB1;
-    --bg-tan: #CFA884;
+  /* Backgrounds & Neutrals */
+  --bg-peach: #f0c9a3;
+  --bg-cream: #e6dbb1;
+  --bg-tan: #cfa884;
 
-    /* Text & Borders */
-    --text-dark: #2D2D2D;
-    --text-muted: #967B78;
-    --white: #FFFFFF;
-    --border-light: #F2F2F2;
+  /* Text & Borders */
+  --text-dark: #2d2d2d;
+  --text-muted: #967b78;
+  --white: #ffffff;
+  --border-light: #f2f2f2;
 }
 
 /* --- 3. BASE RESET --- */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-    background-color: var(--white);
-    color: var(--text-dark);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
+  background-color: var(--white);
+  color: var(--text-dark);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* --- 4. GLOBAL TYPOGRAPHY --- */
@@ -64,108 +69,106 @@ h2,
 h3,
 h4,
 .logo {
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
 }
 
 /* --- 5. GLOBAL UI ELEMENTS (Buttons/Inputs) --- */
 button,
 .btn {
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    border: none;
-    transition: all 0.3s ease;
+  font-family: "Inter", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
 }
 
 /* Primary Action Style - Applied to Checkout/Continue Shopping */
 .btn-primary {
-    background-color: var(--main-coral);
-    color: var(--text-dark);
-    padding: 15px 30px;
+  background-color: var(--main-coral);
+  color: var(--text-dark);
+  padding: 15px 30px;
 }
 
 .btn-primary:hover {
-    background-color: var(--bg-peach);
+  background-color: var(--bg-peach);
 }
 
 /* Input Fields */
 input,
 select,
 textarea {
-    font-family: 'Inter', sans-serif;
-    border: 1px solid var(--border-light);
-    padding: 12px;
-    font-size: 0.9rem;
-    color: var(--text-dark);
-    outline: none;
+  font-family: "Inter", sans-serif;
+  border: 1px solid var(--border-light);
+  padding: 12px;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  outline: none;
 }
 
 input:focus {
-    border-color: var(--main-coral);
+  border-color: var(--main-coral);
 }
 
 /* --- 6. UTILITY CLASSES --- */
 .text-muted {
-    color: var(--text-muted);
+  color: var(--text-muted);
 }
-
 .bg-soft {
-    background-color: #FDFBFA;
+  background-color: #fdfbfa;
 }
-
 .container {
-    width: 90%;
-    max-width: 1400px;
-    margin: 0 auto;
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Show/hide password toggle */
 .password-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .password-wrapper input[type="password"],
 .password-wrapper input[type="text"] {
-    width: 100%;
-    padding-right: 2.8rem;
+  width: 100%;
+  padding-right: 2.8rem;
 }
 
 .toggle-password {
-    position: absolute;
-    right: 0.6rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.2rem 0.4rem;
-    color: #888;
-    font-size: 1.1rem;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    transition: color 0.2s;
+  position: absolute;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  color: #888;
+  font-size: 1.1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
 }
 
 .toggle-password:hover {
-    color: #333;
+  color: #333;
 }
 
 .toggle-password .eye-icon {
-    pointer-events: none;
+  pointer-events: none;
 }

@@ -104,8 +104,7 @@ require_once $project_root."components/header.php";
 
             <h1 class="status-title">Order Confirmed!</h1>
             <p class="status-msg">
-                Thank you for your purchase. A confirmation has been sent to
-                <?= $customer_email ? '<strong>' . htmlspecialchars($customer_email) . '</strong>' : 'your email' ?>.
+                Thank you for your purchase. Your item(s) will be shipped soon.
             </p>
 
             <div class="status-details">
@@ -133,13 +132,13 @@ require_once $project_root."components/header.php";
                 </div>
                 <div class="status-detail-row">
                     <span class="label">Payment status</span>
-                    <span class="value" style="color:#4caf89;">Paid ✓</span>
+                    <span class="value" style="color:#4caf89;">Success ✓</span>
                 </div>
             </div>
 
             <div class="status-actions">
                 <a href="/index.php" class="btn-primary">Continue Shopping</a>
-                <a href="/pages/orders.php" class="btn-secondary">View My Orders</a>
+                <a href="/pages/order_history.php" class="btn-secondary">View My Orders</a>
             </div>
 
             <?php else: ?>

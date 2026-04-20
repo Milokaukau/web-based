@@ -1,131 +1,156 @@
 .site-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 5%;
-    background-color: var(--white);
-    border-bottom: 1px solid var(--border-ultra-light);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 5%;
+  background-color: var(--white);
+  border-bottom: 1px solid var(--border-ultra-light);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.header-left, .header-right {
-    display: flex;
-    align-items: center;
-    gap: 3.5rem;
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 3.5rem;
 }
 
 .logo {
-    font-size: 1.2rem;
-    font-weight: 800;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    color: var(--text-dark);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--text-dark);
 }
 
 /* Category Dropdown */
-.category-dropdown { position: relative; }
+.category-dropdown {
+  position: relative;
+}
 
 .dropbtn {
-    background: none;
-    border: none;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    color: var(--text-dark);
+  background: none;
+  border: none;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--text-dark);
 }
 
 .dropbtn small {
-    font-size: 0.5rem;
-    color: var(--main-coral);
-    margin-left: 5px;
+  font-size: 0.5rem;
+  color: var(--main-coral);
+  margin-left: 5px;
 }
 
 .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    margin-top: 5px;
-    background: var(--white);
-    min-width: 150px;
-    border: 1px solid var(--border-ultra-light);
-    padding: 10px 0;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Adds a nice subtle shadow */
+  display: none;
+  position: absolute;
+  top: 100%;
+  margin-top: 5px;
+  background: var(--white);
+  min-width: 150px;
+  border: 1px solid var(--border-ultra-light);
+  padding: 10px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Adds a nice subtle shadow */
 }
 
 /* This transparent bridge stops the menu from disappearing when the mouse crosses the gap */
 .dropdown-content::after {
-    content: "";
-    position: absolute;
-    top: -20px;
-    left: 0;
-    width: 100%;
-    height: 20px;
-    background: transparent;
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: transparent;
 }
 
 .dropdown-content a {
-    display: block;
-    padding: 12px 20px;
-    font-size: 0.65rem;
-    letter-spacing: 1px;
+  display: block;
+  padding: 12px 20px;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
 }
 
 .dropdown-content a:hover {
-    color: var(--main-coral);
-    background-color: #FAFAFA;
+  color: var(--main-coral);
+  background-color: #fafafa;
 }
 
-.category-dropdown:hover .dropdown-content { display: block; }
+.category-dropdown:hover .dropdown-content {
+  display: block;
+}
 
 /* Minimalist Underline Search */
 .search-form {
-    border-bottom: 1px solid var(--text-dark);
-    padding-bottom: 3px;
-    display: flex;
+  border-bottom: 1px solid var(--text-dark);
+  padding-bottom: 3px;
+  display: flex;
 }
 
 .search-form input {
-    border: none;
-    background: transparent;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 1.5px;
-    outline: none;
-    width: 150px;
-    color: var(--text-dark);
-    text-transform: uppercase;
+  border: none;
+  background: transparent;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  outline: none;
+  width: 150px;
+  color: var(--text-dark);
+  text-transform: uppercase;
 }
 
 .search-form input::placeholder {
-    color: var(--text-muted);
-    opacity: 0.5;
+  color: var(--text-muted);
+  opacity: 0.5;
 }
 
 /* Nav Links */
 .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
 }
 
 .nav-links a {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
 }
 
-.nav-links a:hover { color: var(--main-coral); }
+.nav-links a:hover {
+  color: var(--main-coral);
+}
 
 .count-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 2px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: var(--main-coral);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 2px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--main-coral);
+}
+
+/* Custom sizing and centering for the new Profile Dropdown */
+.dropdown-content.user-menu {
+  min-width: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: left;
+}
+
+/* Ensure the dropbtn inherits the correct flex layout within the nav */
+.nav-links .category-dropdown {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links .dropbtn {
+  padding: 0; /* Removes default button padding so it aligns seamlessly with links */
 }

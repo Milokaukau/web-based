@@ -154,26 +154,7 @@ $highAttempts = getHighAttempts();
 <div class="layout">
 
     <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="sidebar-section">Main</div>
-        <a class="nav-link <?= $active_page === 'members'      ? 'active' : '' ?>" href="?page=members">
-            <span class="nav-icon">&#128101;</span> Members
-        </a>
-        <a class="nav-link <?= $active_page === 'orders'       ? 'active' : '' ?>" href="?page=orders">
-            <span class="nav-icon">&#128230;</span> Orders
-        </a>
-        <a class="nav-link <?= $active_page === 'stock'        ? 'active' : '' ?>" href="?page=stock">
-            <span class="nav-icon">&#128202;</span> Stock
-        </a>
-        <div class="sidebar-section">Analytics</div>
-        <a class="nav-link <?= $active_page === 'charts'       ? 'active' : '' ?>" href="?page=charts">
-            <span class="nav-icon">&#128202;</span> Data Charts
-        </a>
-        <div class="sidebar-section">Account</div>
-        <a class="nav-link <?= $active_page === 'profile'      ? 'active' : '' ?>" href="?page=profile">
-            <span class="nav-icon">&#9881;</span> Admin Profile
-        </a>
-    </div>
+    <?php include $project_root . "components/admin_sidebar.php"; ?>
 
     <!-- CONTENT -->
     <div class="content">
@@ -368,96 +349,7 @@ $highAttempts = getHighAttempts();
             <?php endif; ?>
         </section>
 
-
         <!-- ═══════════════════════════════════════════════════════
-             ORDERS
-        ════════════════════════════════════════════════════════ -->
-        <?php elseif ($active_page === 'orders'): ?>
-
-        <?php
-            $orders        = getOrders();
-            $lowStockAlert = getLowStockProducts(10);
-        ?>
-
-        <section class="section-container">
-
-            <div class="section-header">
-                <h1 class="admin-section-title">Order Listing</h1>
-                <p class="admin-section-sub">All customer orders at a glance</p>
-                <div class="line"></div>
-            </div>
-
-            <!-- ── Low-Stock Alert Banner ───────────────────────────────── -->
-            <?php if (!empty($lowStockAlert)): ?>
-            <div class="alert alert-error" style="margin-bottom:20px;">
-                ⚠️ <strong><?= count($lowStockAlert) ?> product(s)</strong> are low in stock (≤10 units):
-                <?php foreach ($lowStockAlert as $lp): ?>
-                    <span style="margin-left:8px;">
-                        <strong><?= htmlspecialchars($lp->name) ?></strong>
-                        <?php if (!empty($lp->color_name)): ?>
-                            · <?= htmlspecialchars($lp->color_name) ?>
-                        <?php endif; ?>
-                        (<?= $lp->stock ?> left)
-                    </span>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-
-            <!-- ── Orders Table ────────────────────────────────────────── -->
-            <div class="table-wrap">
-                <?php if (empty($orders)): ?>
-                    <div class="empty-state"><p>No orders found.</p></div>
-                <?php else: ?>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>Member</th>
-                            <th>Total (RM)</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th>Update Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($orders as $o): ?>
-                        <tr>
-                            <td>#<?= $o->id ?></td>
-                            <td><?= htmlspecialchars($o->username ?? 'Guest') ?></td>
-                            <td>RM <?= number_format($o->amount ?? 0, 2) ?></td>
-                            <td>
-                                <span class="badge badge-<?=
-                                    $o->status === 'delivered'       ? 'valid'   :
-                                    ($o->status === 'cancelled'      ? 'invalid' :
-                                    ($o->status === 'in_delivery'    ? 'locked'  : 'locked')) ?>">
-                                    <?= ucfirst(str_replace('_', ' ', $o->status ?? '-')) ?>
-                                </span>
-                            </td>
-                            <td><?= htmlspecialchars($o->created_at ?? '-') ?></td>
-                            <td>
-                                <form method="POST" action="?action=update_order_status" style="display:flex;gap:6px;align-items:center;">
-                                    <input type="hidden" name="id" value="<?= $o->id ?>">
-                                    <select name="status" class="filter-sel" style="padding:4px 8px;font-size:0.8rem;">
-                                        <?php foreach (['pending_payment','confirmed','in_delivery','delivered','cancelled'] as $s): ?>
-                                            <option value="<?= $s ?>" <?= $o->status === $s ? 'selected' : '' ?>>
-                                                <?= ucfirst(str_replace('_', ' ', $s)) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                    <button type="submit" class="btn-primary" style="padding:4px 12px;font-size:0.8rem;">Save</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-                <?php endif; ?>
-            </div>
-
-        </section>
-
-
-<!-- ═══════════════════════════════════════════════════════
              STOCK
         ════════════════════════════════════════════════════════ -->
 <?php elseif ($active_page === 'stock'): ?>
@@ -997,35 +889,35 @@ $highAttempts = getHighAttempts();
 
 <?php $admin = getAdmin((int)($_SESSION['admin_id'] ?? 1)); ?>
 
-<section class="section-container">
-    <div class="section-header">
-        <h1 class="admin-section-title">Admin Profile</h1>
-        <div class="line"></div>
-    </div>
-    <div class="feature-card-wrap">
-        <div class="feature-card">
-            <div class="member-avatar-wrap">
-                <div class="member-avatar"><?= strtoupper(substr($admin->name ?? 'AD', 0, 2)) ?></div>
+        <section class="section-container">
+            <div class="section-header">
+                <h1 class="admin-section-title">Admin Profile</h1>
+                <div class="line"></div>
             </div>
-            <div class="member-name"><?= htmlspecialchars($admin->name ?? '-') ?></div>
-            <div class="member-role">Super Admin</div>
-            <div class="profile-rows">
-                <div class="profile-row">
-                    <span class="profile-lbl">Email</span>
-                    <span class="profile-val"><?= htmlspecialchars($admin->email ?? '-') ?></span>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-lbl">Role</span>
-                    <span class="profile-val">Super Admin</span>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-lbl">Status</span>
-                    <span class="profile-val"><span class="badge badge-valid">Active</span></span>
+            <div class="feature-card-wrap">
+                <div class="feature-card">
+                    <div class="member-avatar-wrap">
+                        <div class="member-avatar"><?= strtoupper(substr($admin->name ?? 'AD', 0, 2)) ?></div>
+                    </div>
+                    <div class="member-name"><?= htmlspecialchars($admin->name ?? '-') ?></div>
+                    <div class="member-role">Super Admin</div>
+                    <div class="profile-rows">
+                        <div class="profile-row">
+                            <span class="profile-lbl">Email</span>
+                            <span class="profile-val"><?= htmlspecialchars($admin->email ?? '-') ?></span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="profile-lbl">Role</span>
+                            <span class="profile-val"><?= htmlspecialchars($admin->is_superadmin ? 'Super Admin' : 'Regular Admin') ?></span>
+                        </div>
+                        <div class="profile-row">
+                            <span class="profile-lbl">Status</span>
+                            <span class="profile-val"><span class="badge badge-valid">Active</span></span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
 
         <!-- ═══════════════════════════════════════════════════════
@@ -1042,7 +934,7 @@ $highAttempts = getHighAttempts();
     </div><!-- /content -->
 </div><!-- /layout -->
 
-<?php require $project_root . "components/footer.php"; ?>
+<?php require $project_root . "components/admin_footer.php"; ?>
 <script src="/js/admin.js"></script>
 </body>
 </html>

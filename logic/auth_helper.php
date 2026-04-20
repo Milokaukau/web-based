@@ -21,6 +21,7 @@ if (!function_exists('loginAdmin')) {
         $_SESSION['admin_id']   = $admin->id;
         $_SESSION['admin_name'] = $admin->name;
         $_SESSION['role']       = 'admin';
+        $_SESSION['is_superadmin'] = $admin->is_superadmin;
     }
 }
 
@@ -118,8 +119,12 @@ if (!function_exists('isAdmin')) {
     }
 }
 
+function isSuperAdmin(){
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin' && isset($_SESSION['is_superadmin']) && $_SESSION['is_superadmin'] == 1;
+}
+
 if (!function_exists('redirectWith')) {
-    function redirectWith($url, $type, $message) {
+    function redirectWith($url, $type, $message){
         $_SESSION['flash'] = ['type' => $type, 'message' => $message];
         header("Location: $url");
         exit;
@@ -141,6 +146,13 @@ if (!function_exists('requireAdmin')) {
         if (!isAdmin()) {
             redirectWith('/pages/admin/login.php', 'error', 'Unauthorised access.');
         }
+    }
+}
+
+function requireSuperAdmin(){
+    if(!isSuperAdmin()){
+        header("Location: /pages/not_found.php");
+        exit;
     }
 }
 

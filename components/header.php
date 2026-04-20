@@ -69,7 +69,7 @@ $categories = getAllCategories() ?: []; // Ensure it's at least an empty array
                         <a href="/pages/profile.php" class="dropbtn">PROFILE <small>▼</small></a>
                         <div class="dropdown-content" style="right: 0; left: auto;">
                             <a href="/pages/profile.php">MY ACCOUNT</a>
-                            <a href="/pages/orders.php">MY ORDERS</a>
+                            <a href="/pages/order_history.php">MY ORDERS</a>
                             <a href="/pages/logout.php" style="border-top: 1px solid #f8f8f8; color: #d9534f;">LOGOUT</a>
                         </div>
                     </div>

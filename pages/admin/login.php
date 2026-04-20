@@ -41,10 +41,12 @@ include $project_root . 'components/header.php';
                 <?php endif; ?>
             </div>
 
-            <div class="form-group password-group">
-                <input type="password" id="password" name="password" placeholder="Password"
-                    class="<?= isset($errors['password']) ? 'input-error' : '' ?>">
-                <button type="button" class="toggle-password" id="toggle-password" title="Show/hide password">👁</button>
+            <div class="form-group">
+                <div class="password-group">
+                    <input type="password" id="password" name="password" placeholder="Password"
+                        class="<?= isset($errors['password']) ? 'input-error' : '' ?>">
+                    <button type="button" class="toggle-password" id="toggle-password" title="Show/hide password">👁</button>
+                </div>
                 <?php if (!empty($errors['password'])): ?>
                     <span class="error-msg"><?= htmlspecialchars($errors['password']) ?></span>
                 <?php endif; ?>

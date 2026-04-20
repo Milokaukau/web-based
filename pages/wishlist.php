@@ -18,7 +18,7 @@ require $project_root . "components/header.php";
         </div>
         <div class="w-empty-state">
             <p>You haven't saved any items to your wishlist yet. Start shopping and add your favorite items to your wishlist.</p>
-            <a href="shop.php" class="w-continue-btn">Continue Shopping</a>
+            <a href="/pages/home.php" class="w-continue-btn">Continue Shopping</a>
         </div>
     <?php else: ?>
         <div class="wishlist-header">
