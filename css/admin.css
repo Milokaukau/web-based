@@ -491,6 +491,16 @@ tr:hover td { background: var(--bg-page); }
 /* ═══════════════════════════════════════════════════════════
    STOCK GRID (product cards)
 ══════════════════════════════════════════════════════════ */
+.page-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-header-actions a.btn-primary {
+    margin-left: auto;
+}
+
 .stock-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -532,6 +542,293 @@ tr:hover td { background: var(--bg-page); }
 .stock-cat  { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
 .stock-price { font-size: 1rem; font-weight: 800; color: var(--coral); margin-bottom: 8px; }
 .stock-badge { display: block; margin: 0 auto; width: fit-content; }
+
+/* ── Stock card hover overlay ────────────────────────────── */
+.stock-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.stock-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    padding: 16px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 2;
+}
+
+.stock-card:hover .stock-hover-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.shov-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-card);
+}
+
+.shov-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border-card);
+    margin: 0;
+}
+
+.shov-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.shov-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+}
+
+.shov-row span:first-child {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.shov-row span:last-child {
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: right;
+    word-break: break-word;
+    max-width: 60%;
+}
+
+.shov-form {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-card);
+    margin-top: auto;
+}
+
+.shov-form input[type="number"] {
+    width: 65px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+}
+
+
+.stock-tbl-wrap table {
+    min-width: unset;
+}
+
+#stock-table td img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 7px;
+    display: block;
+    max-width: 48px;
+}
+
+#stock-table {
+    min-width: 1400px;
+    width: 100%;
+}
+
+#stock-table th,
+#stock-table td {
+    padding: 12px 20px;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+#stock-table th:first-child,
+#stock-table td:first-child {
+    min-width: 64px;
+    width: 64px;
+}
+
+#stock-table .desc-cell {
+    min-width: 180px;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: default;
+}
+
+/* ── Stock page header actions ───────────────────────────── */
+.btn-oos {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 1px solid var(--border-card);
+    border-radius: 9999px;
+    background: var(--white);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-oos:hover { border-color: var(--coral); color: var(--coral); }
+.btn-oos.active {
+    background: var(--danger-bg);
+    color: var(--danger-text);
+    border-color: #FCA5A5;
+}
+
+.btn-view-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: 1px solid var(--border-card);
+    border-radius: 9999px;
+    background: var(--white);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-view-toggle:hover { border-color: var(--coral); color: var(--coral); }
+
+/* ── Stock filters ────────────────────────────────────────── */
+.filter-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+.filter-wrap select,
+.filter-wrap input[type="number"] {
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--border-input);
+    border-radius: 9px;
+    background: var(--white);
+    font-size: 0.82rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s;
+}
+.filter-wrap select:focus,
+.filter-wrap input[type="number"]:focus {
+    border-color: var(--coral-soft);
+    box-shadow: 0 0 0 3px rgba(243,158,158,0.15);
+}
+.filter-wrap select { min-width: 150px; }
+.filter-wrap input[type="number"] { width: 130px; }
+
+.price-range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.price-range span { color: var(--text-muted); font-size: 0.85rem; }
+
+#stock-filter-reset {
+    height: 38px;
+    padding: 0 16px;
+    border: 1px solid var(--border-input);
+    border-radius: 9999px;
+    background: var(--white);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+#stock-filter-reset:hover { border-color: var(--coral); color: var(--coral); }
+
+/* ── Stock search ─────────────────────────────────────────── */
+#stock-search {
+    width: 100%;
+    max-width: 400px;
+    padding: 9px 14px;
+    border: 1px solid var(--border-input);
+    border-radius: 9px;
+    background: var(--white);
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+#stock-search:focus {
+    border-color: var(--coral-soft);
+    box-shadow: 0 0 0 3px rgba(243,158,158,0.15);
+}
+#stock-search::placeholder { color: var(--text-muted); }
+
+/* ── Pagination (stock) ───────────────────────────────────── */
+.pagination-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.pagination-wrap span {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.pagination-wrap div {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.page-btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--border-card);
+    border-radius: 9999px;
+    background: var(--white);
+    font-size: 0.78rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-body);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.page-btn:hover:not(:disabled) { border-color: var(--coral); color: var(--coral); }
+.page-btn.active {
+    background: var(--coral);
+    color: var(--white);
+    border-color: var(--coral);
+    font-weight: 700;
+}
+.page-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
 
 /* ═══════════════════════════════════════════════════════════
    FOOTER

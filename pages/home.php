@@ -1,7 +1,6 @@
 <?php
 $project_root = $_SERVER['DOCUMENT_ROOT']."/";
-require $project_root . "config.php";
-require_once $project_root."logic/auth_helper.php";
+require $project_root."config.php";
 require $project_root."logic/home.php";
 
 $_title = "Home";
