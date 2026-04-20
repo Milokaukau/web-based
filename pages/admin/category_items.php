@@ -214,6 +214,9 @@ if (!isAdmin()) {
     </div>
 </div>
 
+<?php include $project_root . "components/admin_footer.php"; ?>
+
+
 <script src="/js/category_items.js"></script>
 <script src="/js/admin.js"></script>
 </body>
