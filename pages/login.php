@@ -54,7 +54,7 @@ include $project_root . 'components/header.php';
             </div>
 
             <div class="forgot-link">
-                <a href="/pages/forgot_password.php">Forgot Password</a>
+                <a id="forgot-password-link" href="/pages/forgot_password.php">Forgot Password</a>
             </div>
 
             <div class="form-group remember-me">

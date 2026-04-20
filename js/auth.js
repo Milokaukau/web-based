@@ -116,6 +116,30 @@ $(document).ready(function(){
         $(this).find('button[type="submit"]').prop('disabled', true).text('Signing in...');
     });
 
+    // PASS EMAIL TO FORGOT PASSWORD LINK (member)
+    function updateForgotLink() {
+        var email = $('#login').val().trim();
+        var base = '/pages/forgot_password.php';
+        var href = email ? base + '?email=' + encodeURIComponent(email) : base;
+        $('#forgot-password-link').attr('href', href);
+    }
+    $('#login').on('input change', updateForgotLink);
+    $('#forgot-password-link').on('click', function(e) {
+        updateForgotLink();
+    });
+
+    // PASS EMAIL TO FORGOT PASSWORD LINK (admin)
+    function updateAdminForgotLink() {
+        var email = $('#login').val().trim();
+        var base = '/pages/admin/forgot_password.php';
+        var href = email ? base + '?email=' + encodeURIComponent(email) : base;
+        $('#admin-forgot-password-link').attr('href', href);
+    }
+    $('#login').on('input change', updateAdminForgotLink);
+    $('#admin-forgot-password-link').on('click', function(e) {
+        updateAdminForgotLink();
+    });
+
     /* =====================
        WEBCAM CAPTURE
        ===================== */
