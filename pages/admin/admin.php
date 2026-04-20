@@ -288,8 +288,14 @@ $highAttempts = getHighAttempts();
             <div class="feature-card-wrap">
                 <div class="feature-card">
                     <div class="member-avatar-wrap">
-                        <div class="member-avatar"><?= strtoupper(substr($member->name, 0, 2)) ?></div>
-                    </div>
+    <?php if (!empty($member->photo)): ?>
+        <img src="/images/members/<?= htmlspecialchars($member->photo) ?>"
+             alt="<?= htmlspecialchars($member->name) ?>"
+             style="width:80px;height:80px;border-radius:50%;object-fit:cover;">
+    <?php else: ?>
+        <div class="member-avatar"><?= strtoupper(substr($member->name, 0, 2)) ?></div>
+    <?php endif; ?>
+</div>
                     <div class="member-name"><?= htmlspecialchars($member->name) ?></div>
                     <div class="member-role"><?= htmlspecialchars($member->email) ?></div>
 

@@ -42,9 +42,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 // check if account is locked
 
                 if(!empty($user->locked_until) && strtotime($user->locked_until) > time()){
-                    $mins = ceil((strtotime($user->locked_until) - time()) / 60);
-                    $errors['general'] = "Account locked. Try again in {$mins} minute(s).";
-                }elseif (!password_verify($password, $user->password)){
+    $lock_seconds = strtotime($user->locked_until) - time();
+    $one_year = 365 * 24 * 60 * 60;
+
+    if ($lock_seconds > $one_year) {
+        // Admin-imposed permanent block
+        $errors['general'] = "Your account has been suspended. Please contact support for assistance.";
+    } else {
+        // Auto-lock from failed attempts
+        $mins = ceil($lock_seconds / 60);
+        $errors['general'] = "Account temporarily locked due to too many failed attempts. Try again in {$mins} minute(s).";
+    }
+}elseif (!password_verify($password, $user->password)){
 
                     // if wrong fail to login again, then lock longer 
                     $attempts = ($user->login_attempts ?? 0) + 1;
