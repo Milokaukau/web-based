@@ -66,7 +66,7 @@ if (is_post()) {
 // ----------------------------------------------------------------------------
 
 $colors      = get_colors(db());
-$cat_options = get_categories(db());
+$cat_options = get_active_categories(db());
 
 $_title = 'Product | Insert';
 include '../../components/header.php';

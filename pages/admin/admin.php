@@ -411,7 +411,7 @@ $highAttempts = getHighAttempts();
                     Out of Stock (<?= $oos_count ?>)
                 </button>
                 <button class="btn-oos" id="stock-toggle-inactive" type="button">
-                    Deactivate (<?= $inactive_count ?>)
+                    Deactivated (<?= $inactive_count ?>)
                 </button>
                 <button class="btn-view-toggle" id="stock-view-toggle" type="button">⊞ Card View</button>
                 <a class="btn-primary" href="../admin/product_insert.php" style="margin-left:auto;">+ Add Product</a>

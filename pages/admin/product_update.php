@@ -98,7 +98,7 @@ if (is_post()) {
 // ----------------------------------------------------------------------------
 
 $colors      = get_colors();
-$cat_options = get_categories();
+$cat_options = get_active_categories();
 
 $_title = 'Product | Update';
 include '../../components/header.php';

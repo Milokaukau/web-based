@@ -136,6 +136,11 @@ function get_categories(): array {
                ->fetchAll(PDO::FETCH_KEY_PAIR);
 }
 
+function get_active_categories(): array {
+    return db()->query("SELECT id, name FROM tb_category WHERE is_active = 1 ORDER BY name")
+               ->fetchAll(PDO::FETCH_KEY_PAIR);
+}
+
 /**
  * Fetch all products in a specific category (including their Color Name)
  */
