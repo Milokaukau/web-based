@@ -38,10 +38,11 @@ The project follows a modular, MVC-inspired directory structure to separate conc
 1. **Extract ZIP:** Extract the .zip folder of this project.
 2. **Open VS Code:** Open the project in Visual Studio Code.
 3. **Install dependencies:** Run `composer require stripe/stripe-php` and `composer require phpmailer/phpmailer`.
-4. **Turn on XAMPP:** Start Apache and MySQL services.
-5. **Import database:** Import the provided `db_noair.sql` file in phpMyAdmin.
-6. **Change Port:** Change the port(s) in `/config.php` if your port for Apache or MySQL services is different.
-7. **Run the project:** Run `php -S localhost:8000` in the project root in the terminal.
+4. **Setup Stripe Secret Key:** Create an account in [Stripe](https://stripe.com/en-my) and use your own secret key for the project in `pages/payment_status.php` and `pages/payment.php`.
+5. **Turn on XAMPP:** Start Apache and MySQL services.
+6. **Import database:** Import the provided `db_noair.sql` file in phpMyAdmin.
+7. **Change Port:** Change the port(s) in `/config.php` if your port for Apache or MySQL services is different.
+8. **Run the project:** Run `php -S localhost:8000` in the project root in the terminal.
 
 ## Login Default Passwords
 - **Member:** 12345678
