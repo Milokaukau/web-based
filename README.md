@@ -42,3 +42,7 @@ The project follows a modular, MVC-inspired directory structure to separate conc
 5. **Import database:** Import the provided `db_noair.sql` file in phpMyAdmin.
 6. **Change Port:** Change the port(s) in `/config.php` if your port for Apache or MySQL services is different.
 7. **Run the project:** Run `php -S localhost:8000` in the project root in the terminal.
+
+## Login Default Passwords
+- **Member:** 12345678
+- **Admin:** password
