@@ -29,7 +29,7 @@ include $project_root.'components/header.php';
                         </div>
                         <div class="order-info">
                             <span>Total</span>
-                            <strong>$<?= number_format($order->amount, 2) ?></strong>
+                            <strong>RM<?= number_format($order->amount, 2) ?></strong>
                         </div>
                         <div class="order-info">
                             <span>Order #</span>
