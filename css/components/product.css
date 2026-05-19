@@ -162,7 +162,7 @@
     border-radius: 30px;
     height: 40px;
     padding: 0 16px;
-    width: 120px;
+    width: 140px;
     justify-content: space-between;
     background: var(--white);
     transition: all 0.2s ease;
@@ -194,7 +194,7 @@
 .quantity-picker input {
     border: none;
     text-align: center;
-    width: 35px;
+    width: 50px;
     font-weight: 600;
     font-size: 1rem;
     color: var(--text-dark, #2D2D2D) !important;

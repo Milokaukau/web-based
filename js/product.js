@@ -1,4 +1,10 @@
 function addToCart(btn) {
+    // Require login
+    if (typeof isLoggedIn !== 'undefined' && !isLoggedIn) {
+        window.location.href = '/pages/login.php';
+        return;
+    }
+
     const qty = parseInt(document.getElementById('qty').value) || 1;
     const activeSwatch = document.querySelector('.swatch.active');
     
@@ -41,6 +47,12 @@ function changeQty(amt) {
 }
 
 function addToWishlist(btn) {
+    // Require login
+    if (typeof isLoggedIn !== 'undefined' && !isLoggedIn) {
+        window.location.href = '/pages/login.php';
+        return;
+    }
+
     const id = btn.dataset.id;
     if (!id) return;
     

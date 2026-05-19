@@ -14,7 +14,7 @@ function getOrderList(){
     JOIN tb_member m ON m.id = o.member_id
     JOIN tb_order_product op ON op.order_id = o.id
     JOIN tb_product p ON p.id = op.product_id
-    JOIN tb_payment pm ON pm.id = o.payment_id
+    JOIN tb_payment pm ON pm.order_id = o.id
     ");
     return $stmt->fetchAll();
 }
@@ -23,7 +23,10 @@ function getOrderListByMember($member_id){
     $stmt = db()->prepare("
         SELECT 
             o.id AS order_id,
+            o.created_at,
+            p.id AS product_id,
             p.name AS product_name,
+            p.price AS unit_price,
             op.quantity,
             o.amount,
             m.name AS member_name,
@@ -32,8 +35,9 @@ function getOrderListByMember($member_id){
         JOIN tb_member m ON m.id = o.member_id
         JOIN tb_order_product op ON op.order_id = o.id
         JOIN tb_product p ON p.id = op.product_id
-        JOIN tb_payment pm ON pm.id = o.payment_id
+        JOIN tb_payment pm ON pm.order_id = o.id
         WHERE o.member_id = ? 
+        ORDER BY o.created_at DESC
     ");
     
     $stmt->execute([$member_id]);
@@ -58,21 +62,20 @@ function insertOrder($member_id, $amount, $pay_method, $pay_status, $cart, $addr
     $db->beginTransaction();
 
     try {
-        // 1. Insert payment record
+        // 1. Insert order record
         $stmt = $db->prepare("
-            INSERT INTO tb_payment (method, status, created_at, completed_at)
-            VALUES (?, ?, NOW(), NOW())
+            INSERT INTO tb_order (member_id, amount, status, created_at)
+            VALUES (?, ?, 'confirmed', NOW())
         ");
-        $stmt->execute([$pay_method, $pay_status]);
-        $payment_id = $db->lastInsertId();
-
-        // 2. Insert order record
-        $stmt = $db->prepare("
-            INSERT INTO tb_order (member_id, payment_id, amount, created_at)
-            VALUES (?, ?, ?, NOW())
-        ");
-        $stmt->execute([$member_id, $payment_id, $amount]);
+        $stmt->execute([$member_id, $amount]);
         $order_id = $db->lastInsertId();
+
+        // 2. Insert payment record
+        $stmt = $db->prepare("
+            INSERT INTO tb_payment (order_id, method, status, created_at, completed_at)
+            VALUES (?, ?, ?, NOW(), NOW())
+        ");
+        $stmt->execute([$order_id, $pay_method, $pay_status]);
 
         // 3. Insert each cart item as an order_product row
         $stmt = $db->prepare("
