@@ -185,7 +185,7 @@ function err($key) {
 // ============================================================================
 
 // Global PDO object
-require_once"db.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . '/database/db.php';
 
 // Is unique?
 function is_unique($value, $table, $field) {

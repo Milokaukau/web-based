@@ -468,9 +468,9 @@ $highAttempts = getHighAttempts();
         $categories = array_unique(array_filter(array_column($products, 'category'), fn($c) => $c !== null));
         sort($categories);
         $total_products   = count($products);
-        $in_stock_count   = count(array_filter($products, fn($p) => $p->stock > 10));
-        $low_count        = count(array_filter($products, fn($p) => $p->stock > 0 && $p->stock <= 10));
-        $oos_count        = count(array_filter($products, fn($p) => $p->stock == 0));
+        $in_stock_count   = count(array_filter($products, fn($p) => $p->is_active && $p->stock > 10));
+        $low_count        = count(array_filter($products, fn($p) => $p->is_active && $p->stock > 0 && $p->stock <= 10));
+        $oos_count = count(array_filter($products, fn($p) => $p->is_active && $p->stock == 0));
         $inactive_count   = count(array_filter($products, fn($p) => !$p->is_active));
     ?>
 
@@ -524,11 +524,14 @@ $highAttempts = getHighAttempts();
                 <p class="sub" id="stock-record-count"><?= $total_products ?> record(s) found</p>
             </div>
             <div class="page-header-actions">
+                <button class="btn-oos" id="stock-toggle-oos" type="button">
+                    Out of Stock (<?= $oos_count ?>)
+                </button>
                 <button class="btn-oos" id="stock-toggle-inactive" type="button">
                     Inactive (<?= $inactive_count ?>)
                 </button>
                 <button class="btn-view-toggle" id="stock-view-toggle" type="button">⊞ Card View</button>
-                <a class="btn-primary" href="../../logic/product_insert.php" style="margin-left:auto;">+ Add Product</a>
+                <a class="btn-primary" href="../admin/product_insert.php" style="margin-left:auto;">+ Add Product</a>
             </div>
         </div>
 
@@ -586,7 +589,7 @@ $highAttempts = getHighAttempts();
                     </thead>
                     <tbody id="stock-active-tbody">
                         <?php foreach ($products as $p):
-                            $stockKey    = $p->stock == 0 ? 'danger' : ($p->stock <= 10 ? 'warn' : 'ok');
+                            $stockKey = $p->stock == 0 ? 'danger' : ($p->stock <= 10 ? 'warn' : 'ok');
                             $stockLabel  = $p->stock == 0 ? 'Out of stock' : ($p->stock <= 10 ? 'Low stock' : 'In stock');
                             $badgeCls    = $p->stock == 0 ? 'badge-invalid' : ($p->stock <= 10 ? 'badge-locked' : 'badge-valid');
                             $isInactive  = !$p->is_active;
@@ -624,29 +627,28 @@ $highAttempts = getHighAttempts();
                             <td><span class="badge <?= $badgeCls ?>"><?= $stockLabel ?></span></td>
                             <td>
                                 <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-                                    <form method="POST" action="?action=update_stock"
-                                        style="display:flex;gap:6px;align-items:center;">
-                                        <input type="hidden" name="id" value="<?= $p->id ?>">
-                                        <input type="number" name="stock" value="<?= $p->stock ?>" min="0"
-                                            style="width:70px;padding:4px 8px;
-                                                    border:1px solid #e5e7eb;border-radius:8px;font-size:0.85rem;">
-                                        <button type="submit" class="btn-primary"
-                                                style="padding:4px 12px;font-size:0.8rem;">Update</button>
-                                    </form>
-                                    <a class="act-btn" href="../../logic/product_update.php?id=<?= $p->id ?>">Edit</a>
                                     <?php if ($isInactive): ?>
-                                        <form method="GET" action="../../logic/product_restore.php" style="display:inline;">
+                                        <!-- Inactive: Edit + Restore only -->
+                                        <a class="act-btn" href="product_update.php?id=<?= $p->id ?>">Edit</a>
+                                        <form method="GET" action="../../database/product_restore.php">
                                             <input type="hidden" name="id" value="<?= $p->id ?>">
-                                            <input type="hidden" name="stock" id="restore-stock-<?= $p->id ?>" value="<?= $p->stock ?>">
                                             <button type="submit" class="act-btn unlock"
-                                                    onclick="
-                                                        this.form.stock.value = this.closest('div').querySelector('input[name=stock]').value;
-                                                        return confirm('Restore this product?');
-                                                    ">Restore</button>
+                                                    onclick="return confirm('Restore this product?')">Restore</button>
                                         </form>
                                     <?php else: ?>
-                                        <a class="act-btn del" href="../../logic/product_delete.php?id=<?= $p->id ?>"
-                                        onclick="return confirm('Sure to delete?')">Delete</a>
+                                        <!-- Active (including OOS): Update stock + Edit + Delete -->
+                                        <form method="POST" action="?action=update_stock"
+                                            style="display:flex;gap:6px;align-items:center;">
+                                            <input type="hidden" name="id" value="<?= $p->id ?>">
+                                            <input type="number" name="stock" value="<?= $p->stock ?>" min="0"
+                                                style="width:70px;padding:4px 8px;
+                                                        border:1px solid #e5e7eb;border-radius:8px;font-size:0.85rem;">
+                                            <button type="submit" class="btn-primary"
+                                                    style="padding:4px 12px;font-size:0.8rem;">Update</button>
+                                        </form>
+                                        <a class="act-btn" href="product_update.php?id=<?= $p->id ?>">Edit</a>
+                                        <a class="act-btn del" href="../../database/product_delete.php?id=<?= $p->id ?>"
+                                           onclick="return confirm('Sure to delete?')">Delete</a>
                                     <?php endif; ?>
                                 </div>
                             </td>
@@ -676,7 +678,7 @@ $highAttempts = getHighAttempts();
                     data-group="<?= $isInactive ? 'inactive' : 'active' ?>"
                     data-id="<?= $p->id ?>"
                     data-name="<?= htmlspecialchars(strtolower($p->name ?? '')) ?>"
-                    data-cat="<?= htmlspecialchars(strtolower($p->category_id ?? '')) ?>"
+                    data-cat="<?= htmlspecialchars(strtolower($p->category ?? '')) ?>"
                     data-material="<?= htmlspecialchars(strtolower($p->material ?? '')) ?>"
                     data-status="<?= $stockKey ?>"
                     data-price="<?= $p->price ?? 0 ?>">
@@ -732,29 +734,29 @@ $highAttempts = getHighAttempts();
                             <div class="shov-row"><span>Stock</span><span><?= $p->stock ?> units</span></div>
                         </div>
 
+                        <?php if (!$isInactive): ?>
                         <form method="POST" action="?action=update_stock" class="shov-form">
                             <input type="hidden" name="id" value="<?= $p->id ?>">
                             <input type="number" name="stock" value="<?= $p->stock ?>" min="0">
                             <button type="submit" class="btn-primary" style="padding:5px 12px;font-size:0.8rem;">Update</button>
                         </form>
+                        <?php endif; ?>
 
                         <div style="display:flex;gap:6px;margin-top:6px;">
-                            <a class="act-btn" style="flex:1;text-align:center;"
-                            href="../../logic/product_update.php?id=<?= $p->id ?>">Edit</a>
                             <?php if ($isInactive): ?>
-                                <form method="GET" action="../../logic/product_restore.php" style="flex:1;">
+                                <a class="act-btn" style="flex:1;text-align:center;"
+                                   href="product_update.php?id=<?= $p->id ?>">Edit</a>
+                                <form method="GET" action="../../database/product_restore.php" style="flex:1;">
                                     <input type="hidden" name="id" value="<?= $p->id ?>">
-                                    <input type="hidden" name="stock" class="restore-stock-val" value="<?= $p->stock ?>">
                                     <button type="submit" class="act-btn unlock" style="width:100%;"
-                                            onclick="
-                                                this.form.stock.value = this.closest('.stock-hover-overlay').querySelector('input[name=stock]').value;
-                                                return confirm('Restore this product?');
-                                            ">Restore</button>
+                                            onclick="return confirm('Restore this product?')">Restore</button>
                                 </form>
                             <?php else: ?>
+                                <a class="act-btn" style="flex:1;text-align:center;"
+                                   href="product_update.php?id=<?= $p->id ?>">Edit</a>
                                 <a class="act-btn del" style="flex:1;text-align:center;"
-                                href="../../logic/product_delete.php?id=<?= $p->id ?>"
-                                onclick="return confirm('Sure to delete?')">Delete</a>
+                                   href="../../database/product_delete.php?id=<?= $p->id ?>"
+                                   onclick="return confirm('Sure to delete?')">Delete</a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -772,11 +774,13 @@ $highAttempts = getHighAttempts();
     </section>
 
     <script>
+        
     (function () {
         const ROWS_PER_PAGE  = 10;
         const CARDS_PER_PAGE = 12;
 
         let currentView  = localStorage.getItem('stockView') || 'table';
+        let showOos = false;
         let showInactive = false;
         let sortCol      = -1;
         let sortAsc      = true;
@@ -796,6 +800,10 @@ $highAttempts = getHighAttempts();
         showInactive = true;
         document.getElementById('stock-toggle-inactive').classList.add('active');}
 
+        document.querySelectorAll('[data-status]').forEach(el => {
+            console.log(el.dataset.id, el.dataset.group, el.dataset.status);
+        });
+
         function setView(v) {
             currentView = v;
             tableView.hidden = v !== 'table';
@@ -809,12 +817,27 @@ $highAttempts = getHighAttempts();
         document.getElementById('stock-view-toggle').addEventListener('click', () =>
             setView(currentView === 'table' ? 'card' : 'table'));
 
-        document.getElementById('stock-toggle-inactive').addEventListener('click', function () {
-            showInactive = !showInactive;
-            this.classList.toggle('active', showInactive);
-            tablePage = cardPage = 1;
-            applyAll();
-        });
+            document.getElementById('stock-toggle-oos').addEventListener('click', function () {
+                showOos = !showOos;
+                if (showOos) {
+                    showInactive = false;
+                    document.getElementById('stock-toggle-inactive').classList.remove('active');
+                }
+                this.classList.toggle('active', showOos);
+                tablePage = cardPage = 1;
+                applyAll();
+            });
+
+            document.getElementById('stock-toggle-inactive').addEventListener('click', function () {
+                showInactive = !showInactive;
+                if (showInactive) {
+                    showOos = false;
+                    document.getElementById('stock-toggle-oos').classList.remove('active');
+                }
+                this.classList.toggle('active', showInactive);
+                tablePage = cardPage = 1;
+                applyAll();
+            });
 
         const searchEl   = document.getElementById('stock-search');
         const catFilter  = document.getElementById('stock-cat-filter');
@@ -832,31 +855,30 @@ $highAttempts = getHighAttempts();
         });
 
         function matchesFilters(el) {
-            const group = el.dataset.group;
-            if (showInactive) {
-                if (group !== 'inactive') return false;
-            } else {
-                if (group === 'inactive') return false;
-            }
+            const group = el.dataset.group; 
+            const stock = el.dataset.status; 
+
+            if (showInactive && group !== 'inactive') return false;
+            if (!showInactive && group === 'inactive') return false;
+            if (showOos && stock !== 'danger') return false;
 
             const q     = searchEl.value.toLowerCase().trim();
             const cat   = catFilter.value.toLowerCase();
             const stat  = statFilter.value;
             const min   = parseFloat(priceMin.value);
             const max   = parseFloat(priceMax.value);
-            const price = parseFloat(el.dataset.price); 
+            const price = parseFloat(el.dataset.price);
 
             if (q && !el.dataset.name.includes(q) &&
                     !el.dataset.cat.includes(q) &&
                     !(el.dataset.material || '').includes(q) &&
                     !(el.dataset.id || '').includes(q)) return false;
-            if (cat  && el.dataset.cat !== cat)     return false;
-            if (stat && el.dataset.status !== stat) return false;
-            if (!isNaN(min) && price < min)          return false;
-            if (!isNaN(max) && price > max)          return false;
+            if (cat  && el.dataset.cat !== cat)  return false;
+            if (stat && stock !== stat)           return false;
+            if (!isNaN(min) && price < min)       return false;
+            if (!isNaN(max) && price > max)       return false;
             return true;
         }
-
 
         document.querySelectorAll('#stock-table thead th.sortable').forEach(th => {
             th.style.cursor = 'pointer';
@@ -870,6 +892,7 @@ $highAttempts = getHighAttempts();
                 applyAll();
             });
         });
+
 
         function getSortValue(row, col) {
             const cells = row.querySelectorAll('td');

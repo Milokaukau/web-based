@@ -144,9 +144,8 @@ function update_product($db, $color_id, $category_id, $name, $description,
 }
 
 function updateStock(int $id, int $stock): void {
-    $is_active = ($stock > 0) ? 1 : 0;
-    $stmt = db()->prepare("UPDATE tb_product SET stock = ?, is_active = ? WHERE id = ?");
-    $stmt->execute([$stock, $is_active, $id]);
+    $stmt = db()->prepare("UPDATE tb_product SET stock = ? WHERE id = ?");
+    $stmt->execute([$stock, $id]);
 }
 
 
