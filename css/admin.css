@@ -193,7 +193,7 @@ a {
 .content {
   flex: 1;
   padding: 40px 5%;
-  overflow-x: visible;
+  overflow-x: hidden;
   position: relative;
   z-index: 10;
 }
@@ -951,7 +951,6 @@ tr:hover td {
 }
 
 #stock-table {
-  min-width: 1400px;
   width: 100%;
 }
 
